@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sdf version="1.6">
+	<model name="abu2021-field-assembly_v1">
+		<pose>0 0 0 0 0 0</pose>
+		<link name="abu2021-field_v1:1">
+			<pose>0.0 0.0 0.0 0.0 -0.0 0.0</pose>
+			<inertial>
+				<mass>59181.859355374036</mass>
+				<pose>5.974000036241068 -5.978000153447726 0.027923545491539255 -0.0 -0.0 -0.0</pose>
+				<inertia>
+					<ixx>721828.0980594795</ixx>
+					<ixy>150.58989116477966</ixy>
+					<ixz>-0.00013456575870513917</ixz>
+					<iyy>724566.1228817665</iyy>
+					<iyz>0.00056494060754776</iyz>
+					<izz>1446346.3505817468</izz>
+				</inertia>
+			</inertial>
+			<collision name="abu2021-field_v1:1_collision">
+				<geometry>
+					<mesh>
+						<uri>model://abu2021-field-assembly_v1/meshes/abu2021-field_v1.stl</uri>
+					</mesh>
+				</geometry>
+			</collision>
+			<visual name="abu2021-field_v1:1_visual">
+				<geometry>
+					<mesh>
+						<uri>model://abu2021-field-assembly_v1/meshes/abu2021-field_v1.stl</uri>
+					</mesh>
+				</geometry>
+			</visual>
+		</link>
+		<link name="abu2021-bot1_v1:1">
+			<pose>4.3589999996125695 -5.20656565952797 0.05 -6.123233995736766e-17 -0.0 -1.5707963267948966</pose>
+			<inertial>
+				<mass>368.9300851066366</mass>
+				<pose>0.7714343401440225 -0.3849999999999989 0.04203782341456153 0.0 -6.123233995736766e-17 1.5707963267948966</pose>
+				<inertia>
+					<ixx>54.89344677057266</ixx>
+					<ixy>-2.9802322387695314e-12</ixy>
+					<ixz>4.656612873077393e-14</ixz>
+					<iyy>23.309783274757116</iyy>
+					<iyz>1.5366822481155395e-12</iyz>
+					<izz>72.85054373433292</izz>
+				</inertia>
+			</inertial>
+			<collision name="abu2021-bot1_v1:1_collision">
+				<geometry>
+					<mesh>
+						<uri>model://abu2021-field-assembly_v1/meshes/abu2021-bot1_v1.stl</uri>
+					</mesh>
+				</geometry>
+			</collision>
+			<visual name="abu2021-bot1_v1:1_visual">
+				<geometry>
+					<mesh>
+						<uri>model://abu2021-field-assembly_v1/meshes/abu2021-bot1_v1.stl</uri>
+					</mesh>
+				</geometry>
+			</visual>
+		</link>
+		<link name="abu2021-bot1_v1:2">
+			<pose>7.58899999961257 -6.749434339816377 0.05000000000000007 6.123233995736766e-17 -0.0 1.5707963267948966</pose>
+			<inertial>
+				<mass>368.9300851066366</mass>
+				<pose>0.7714343401440225 -0.3849999999999998 0.042037823414561505 -0.0 -6.123233995736766e-17 -1.5707963267948966</pose>
+				<inertia>
+					<ixx>54.89344677057862</ixx>
+					<ixy>5.960464477539063e-12</ixy>
+					<ixz>4.656612873077393e-14</ixz>
+					<iyy>23.309783274757862</iyy>
+					<iyz>-1.5832483768463134e-12</iyz>
+					<izz>72.85054373434185</izz>
+				</inertia>
+			</inertial>
+			<collision name="abu2021-bot1_v1:2_collision">
+				<geometry>
+					<mesh>
+						<uri>model://abu2021-field-assembly_v1/meshes/abu2021-bot1_v1.stl</uri>
+					</mesh>
+				</geometry>
+			</collision>
+			<visual name="abu2021-bot1_v1:2_visual">
+				<geometry>
+					<mesh>
+						<uri>model://abu2021-field-assembly_v1/meshes/abu2021-bot1_v1.stl</uri>
+					</mesh>
+				</geometry>
+			</visual>
+		</link>
+		<link name="abu2021-bot2_v1:1">
+			<pose>5.97399999961257 -8.477999999672173 0.05 0.0 -0.0 0.0</pose>
+			<inertial>
+				<mass>374.8572202871688</mass>
+				<pose>-1.709388186554861e-11 -1.7763568394002505e-15 0.24847088045861426 -0.0 -0.0 -0.0</pose>
+				<inertia>
+					<ixx>14.292181737101078</ixx>
+					<ixy>-5.960464477539063e-12</ixy>
+					<ixz>-3.2838433980941775e-10</ixz>
+					<iyy>51.384479815119505</iyy>
+					<iyz>-3.725290298461914e-13</iyz>
+					<izz>43.980991881871226</izz>
+				</inertia>
+			</inertial>
+			<collision name="abu2021-bot2_v1:1_collision">
+				<geometry>
+					<mesh>
+						<uri>model://abu2021-field-assembly_v1/meshes/abu2021-bot2_v1.stl</uri>
+					</mesh>
+				</geometry>
+			</collision>
+			<visual name="abu2021-bot2_v1:1_visual">
+				<geometry>
+					<mesh>
+						<uri>model://abu2021-field-assembly_v1/meshes/abu2021-bot2_v1.stl</uri>
+					</mesh>
+				</geometry>
+			</visual>
+		</link>
+		<link name="abu2021-bot2_v1:2">
+			<pose>5.97399999961257 -3.477999999672173 0.05 0.0 -0.0 0.0</pose>
+			<inertial>
+				<mass>374.8572202871688</mass>
+				<pose>-1.709388186554861e-11 0.0 0.24847088045861426 -0.0 -0.0 -0.0</pose>
+				<inertia>
+					<ixx>14.292181737107038</ixx>
+					<ixy>0.0</ixy>
+					<ixz>-3.2838433980941775e-10</ixz>
+					<iyy>51.384479815119505</iyy>
+					<iyz>-4.656612873077393e-14</iyz>
+					<izz>43.980991881871226</izz>
+				</inertia>
+			</inertial>
+			<collision name="abu2021-bot2_v1:2_collision">
+				<geometry>
+					<mesh>
+						<uri>model://abu2021-field-assembly_v1/meshes/abu2021-bot2_v1.stl</uri>
+					</mesh>
+				</geometry>
+			</collision>
+			<visual name="abu2021-bot2_v1:2_visual">
+				<geometry>
+					<mesh>
+						<uri>model://abu2021-field-assembly_v1/meshes/abu2021-bot2_v1.stl</uri>
+					</mesh>
+				</geometry>
+			</visual>
+		</link>
+		<link name="abu2021-bot3_v1:1">
+			<pose>5.97399999961257 -5.977999999672173 0.05 0.0 -0.0 0.0</pose>
+			<inertial>
+				<mass>696.9561699277069</mass>
+				<pose>-5.494271704264975e-12 0.0 0.42919144707033463 -0.0 -0.0 -0.0</pose>
+				<inertia>
+					<ixx>36.47006958960295</ixx>
+					<ixy>0.0</ixy>
+					<ixz>-8.966773748397827e-10</ixz>
+					<iyy>99.42483564834595</iyy>
+					<iyz>0.0</iyz>
+					<izz>73.41693162136077</izz>
+				</inertia>
+			</inertial>
+			<collision name="abu2021-bot3_v1:1_collision">
+				<geometry>
+					<mesh>
+						<uri>model://abu2021-field-assembly_v1/meshes/abu2021-bot3_v1.stl</uri>
+					</mesh>
+				</geometry>
+			</collision>
+			<visual name="abu2021-bot3_v1:1_visual">
+				<geometry>
+					<mesh>
+						<uri>model://abu2021-field-assembly_v1/meshes/abu2021-bot3_v1.stl</uri>
+					</mesh>
+				</geometry>
+			</visual>
+		</link>
+	</model>
+</sdf>
