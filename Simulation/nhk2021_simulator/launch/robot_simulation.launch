@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+<launch>
+
+ <param name="robot_description"
+     command="$(find xacro)/xacro '$(find nhk2021_simulator)/urdf/robot.urdf.xacro'" />
+
+ <include file="$(find gazebo_ros)/launch/empty_world.launch">
+   <arg name="world_name" value="$(find nhk2021_simulator)/worlds/abu2021-field-assembly_v1.world"/>
+ </include>
+
+ <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model"
+     args="-param robot_description -urdf -model TR" />
+
+
+ <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+ <node name="rviz" pkg="rviz" type="rviz" args="-f odometry" />
+
+</launch>
