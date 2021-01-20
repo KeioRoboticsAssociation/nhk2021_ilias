@@ -1,0 +1,43 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "",
+        "limitSymbolsToIncludedHeaders": true
+      },
+      "includePath": [
+        "/home/decwest/catkin_ws/devel/include/**",
+        "/opt/ros/melodic/include/**",
+        "/home/decwest/catkin_ws/src/nhk2020/TryRobot/rplidar_tr/navigation/amcl/include/**",
+        "/home/decwest/catkin_ws/src/nhk2020/TryRobot/rplidar_tr/navigation/base_local_planner/include/**",
+        "/home/decwest/catkin_ws/src/nhk2020/TryRobot/rplidar_tr/navigation/carrot_planner/include/**",
+        "/home/decwest/catkin_ws/src/nhk2020/TryRobot/rplidar_tr/navigation/clear_costmap_recovery/include/**",
+        "/home/decwest/catkin_ws/src/nhk2020/TryRobot/rplidar_tr/navigation/costmap_2d/include/**",
+        "/home/decwest/catkin_ws/src/nhk2020/TryRobot/rplidar_tr/navigation/dwa_local_planner/include/**",
+        "/home/decwest/catkin_ws/src/nhk2020/TryRobot/rplidar_tr/navigation/global_planner/include/**",
+        "/home/decwest/catkin_ws/src/motor_controller/handcontroller_motor_interface/include/**",
+        "/home/decwest/catkin_ws/src/nhk2020/TryRobot/rplidar_tr/laser_filters/include/**",
+        "/home/decwest/catkin_ws/src/nhk2020/TryRobot/rplidar_tr/navigation/map_server/include/**",
+        "/home/decwest/catkin_ws/src/mcl_3dl/include/**",
+        "/home/decwest/catkin_ws/src/nhk2020/TryRobot/rplidar_tr/navigation/move_base/include/**",
+        "/home/decwest/catkin_ws/src/nhk2020/TryRobot/rplidar_tr/navigation/move_slow_and_clear/include/**",
+        "/home/decwest/catkin_ws/src/nhk2020/TryRobot/rplidar_tr/navigation/nav_core/include/**",
+        "/home/decwest/catkin_ws/src/nhk2020/TryRobot/rplidar_tr/navigation/navfn/include/**",
+        "/home/decwest/catkin_ws/src/nhk2020/TryRobot/rplidar_tr/navigation/rotate_recovery/include/**",
+        "/home/decwest/catkin_ws/src/nhk2020/TryRobot/rplidar_tr/geometry2/tf2/include/**",
+        "/home/decwest/catkin_ws/src/nhk2020/TryRobot/rplidar_tr/geometry2/tf2_bullet/include/**",
+        "/home/decwest/catkin_ws/src/nhk2020/TryRobot/rplidar_tr/geometry2/tf2_eigen/include/**",
+        "/home/decwest/catkin_ws/src/nhk2020/TryRobot/rplidar_tr/geometry2/tf2_geometry_msgs/include/**",
+        "/home/decwest/catkin_ws/src/nhk2020/TryRobot/rplidar_tr/geometry2/tf2_kdl/include/**",
+        "/home/decwest/catkin_ws/src/nhk2020/TryRobot/rplidar_tr/geometry2/tf2_msgs/include/**",
+        "/home/decwest/catkin_ws/src/nhk2020/TryRobot/rplidar_tr/geometry2/tf2_ros/include/**",
+        "/home/decwest/catkin_ws/src/nhk2020/TryRobot/rplidar_tr/geometry2/tf2_sensor_msgs/include/**",
+        "/home/decwest/catkin_ws/src/nhk2020/TryRobot/rplidar_tr/navigation/voxel_grid/include/**",
+        "/home/decwest/catkin_ws/src/nhk2021/TR/wheelctrl_4ws/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ROS"
+    }
+  ],
+  "version": 4
+}
