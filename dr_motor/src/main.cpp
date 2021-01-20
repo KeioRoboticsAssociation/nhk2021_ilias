@@ -1,14 +1,16 @@
 #include <mbed.h>
+#include "motordriver.h"
+#include "PID.h"
+#include "controller.h"
+#include "main.h"
+#include "mbedserial.h"
 
 Serial pc(USBTX, USBRX, 115200);
-InterruptIn switch1(USER_BUTTON);
-DigitalOut led(LED1);
+InterruptIn switch1(USER_BUTTON); //青ボタン
+CAN can1(PA_11, PA_12, 500000);
+Mbedserial Ms(pc);
+Controller controller(can1, 0x334);
 
 int main() {
-  while(1) {
-    led = true;
-    wait_ms(1000);
-    led = false;
-    wait_ms(1000);
-  }
+  while(switch1);
 }
