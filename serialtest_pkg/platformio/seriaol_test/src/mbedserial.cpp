@@ -14,11 +14,13 @@ Mbedserial::Mbedserial(Serial &pc) : rospc(pc)
     floatarraysize = 0;
     intarraysize = 0;
     chararraysize = 0;
+    lost_time_threshold = 2000;
     for (int i = 0; i < 3; i++)
     {
         pfunccb[i] = _nullfunc;
     }
     rospc.attach(callback(this, &Mbedserial::rcv_callback), Serial::RxIrq);
+    last_rcv_time = std::chrono::system_clock::now();
 }
 
 /**********************receive**********************/
@@ -69,10 +71,24 @@ void Mbedserial::rcv_callback()
         delete[] msg_buf;
         bufsize = 0;
         msg_buf = new char[256];
+        last_rcv_time = std::chrono::system_clock::now();
     }
     else
     {
         bufsize++;
+    }
+}
+
+bool Mbedserial::isRecieved() {
+    auto current_time = std::chrono::system_clock::now();
+    const auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(
+                                 current_time - last_rcv_time)
+                                 .count();
+
+    if (elapsed < lost_time_threshold) {
+        return true;
+    } else {
+        return false;
     }
 }
 

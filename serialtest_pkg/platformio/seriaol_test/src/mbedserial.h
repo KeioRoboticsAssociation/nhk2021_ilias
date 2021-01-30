@@ -7,6 +7,7 @@
 #include <mbed.h>
 #include <stdio.h>
 #include <string.h>
+#include <chrono>
 
 // mbedserial class
 class Mbedserial
@@ -15,6 +16,8 @@ private:
     char *msg_buf;
     int bufsize;
     char endmsg;
+    int lost_time_threshold;
+    std::chrono::system_clock::time_point last_rcv_time;
     Serial &rospc;
     void rcv_callback();
     void (*pfunccb[3])();
@@ -33,6 +36,7 @@ public:
     void float_attach(void (*pfunc)()) { pfunccb[0] = pfunc; };
     void int_attach(void (*pfunc)()) { pfunccb[1] = pfunc; };
     void char_attach(void (*pfunc)()) { pfunccb[2] = pfunc; };
+    bool isRecieved();
 };
 
 #endif
