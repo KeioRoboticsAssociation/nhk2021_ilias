@@ -102,8 +102,11 @@ void Path_Planner::update(){
             ROS_INFO("pursuit path %d", path_mode - 1);
             //pure_pursuit
             // return [velx,vely,theta,ref_t](4*1)
+            // forwardflag = 1 when move forward ,0 when move backward
             control = path[path_mode - 1].pure_pursuit(position[0], position[1], forwardflag);
             control[3][1] -= body_theta;
+            // control[4][1]で追従時に参照した点番号がわかり、遷移先の検討に使える
+            // pure_pursuitの4つ目の引数は開始時の点番号、底周辺から線形探索が始まる
         }
 
         geometry_msgs::Twist cmd_vel;
@@ -113,7 +116,7 @@ void Path_Planner::update(){
 
         cmd_pub.publish(cmd_vel);
 
-        //transit path
+        //pathを遷移させる
         //publish path(nav_msgs/Path)(for visualization)
 
         ros::spinOnce();
