@@ -1,0 +1,20 @@
+<launch>
+
+  <!--frequency [Hz]-->
+
+  <arg name="control_frequency" default="30" />
+  <arg name="zone" default="blue" />
+  <arg name="use_odom_tf" default="false" />
+  <arg name="csv_path" default="$(find pkg_manager_tr)/config/waypoints" />
+
+
+  <!--path_planning_node-->
+
+  <node pkg="bezier_path_planning_pursuit" name="path_planning_pursuit" type="path_planning_pursuit" output="screen">
+    <param name= "control_frequency" value="$(arg control_frequency)" />
+    <param name = "zone" value = "$(arg zone)" />
+    <param name = "use_odom_tf" value = "$(arg use_odom_tf)" />
+    <param name = "data_path" value = "$(arg csv_path)" />
+  </node>
+
+</launch>
