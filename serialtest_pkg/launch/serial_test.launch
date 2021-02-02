@@ -4,11 +4,17 @@
   <!-- wheelctrl_4ws-->
   <node pkg="wheelctrl_4ws" name="wheelctrl_4ws" type="wheelctrl_4ws" output="screen" respawn="true"/>
 
+  <!--imu sensor-->
+  <node pkg="bno055_usb_stick" name="bno055" type="bno055_usb_stick_node" output="screen" respawn="true">
+      <param name = "~port" value = "/dev/ttyACM0"/>
+      <param name = "~publish_tf" value = "true"/>
+  </node>
+
   <!--select mbed device-->
   <arg name="RF" default="true"/>
   <arg name="LF" default="false"/>
   <arg name="LB" default="false"/>
-  <arg name="RB" default="false"/>
+  <arg name="RB" default="false"/>2
 
   <!--mbed serial-->
   <!--wheel-->
