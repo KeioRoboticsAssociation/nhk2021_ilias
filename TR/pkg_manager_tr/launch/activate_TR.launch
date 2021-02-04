@@ -6,6 +6,9 @@
   <arg name="zone" default="blue" />
   <arg name="use_odom_tf" default="false" />
   <arg name="csv_path" default="$(find pkg_manager_tr)/config/waypoints" />
+  <arg name="max_accel" default="2.5" />
+  <arg name="max_vel" default="1.0" />
+  <arg name="corner_speed_rate" default="0.8" />
 
 
   <!--path_planning_node-->
@@ -15,6 +18,20 @@
     <param name = "zone" value = "$(arg zone)" />
     <param name = "use_odom_tf" value = "$(arg use_odom_tf)" />
     <param name = "data_path" value = "$(arg csv_path)" />
+    <param name = "max_accel" value = "$(arg max_accel)" />
+    <param name = "max_vel" value = "$(arg max_vel)" />
+    <param name = "corner_speed_rate" value = "$(arg corner_speed_rate)" />
   </node>
+
+  <node pkg="wheelctrl_4ws" type="wheelctrl_4ws" name="wheelctrl_4ws" output="screen">
+    <param name="control_frequency" value="$(arg control_frequency)"/>
+    <param name="lost_time_threshold" value="500"/>
+    <param name="body_width" value="0.440"/>
+  </node>
+
+    <node pkg="bno055_usb_stick" type="bno055_usb_stick_node" name="bno055" output="screen">
+    <param name="publish_tf" value="true"/>
+  </node>
+
 
 </launch>

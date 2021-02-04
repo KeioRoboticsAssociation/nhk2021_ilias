@@ -48,7 +48,7 @@ void Path_Planner::geometry_quat_to_rpy(double &roll, double &pitch, double &yaw
 
 void Path_Planner::bnoCallback(const geometry_msgs::PoseStamped::ConstPtr &msg)
 {
-    ROS_INFO("Received pose");
+    //ROS_INFO("Received pose bezier");
     double roll, pitch, yaw;
     geometry_quat_to_rpy(roll, pitch, yaw, msg->pose.orientation);
     body_theta = yaw;
