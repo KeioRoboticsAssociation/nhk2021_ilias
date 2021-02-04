@@ -7,11 +7,12 @@ Path::Path(std::string filename)
     set_point_csv(filename);
 }
 
-Path::Path(std::string filename, float accel, float vel, float init_vel)
+void Path::load_config(std::string filename, float accel, float vel, float init_vel, float speed_rate)
 {
     max_accel = accel;
     max_vel = vel;
     max_initial_speed = init_vel;
+    corner_speed_rate = speed_rate;
     set_point_csv(filename);
 }
 
@@ -126,13 +127,14 @@ void Path::set_vel()
         {
             float res = abs((((6 - 6 * t) * p_3_x + 3 * (6 * t - 4) * p_2_x - 3 * (6 * t - 2) * p_1_x + 6 * t * p0_x) * ((-3 + 6 * t - 3 * t * t) * p_3_y + 3 * (1 - 4 * t + 3 * t * t) * p_2_y + 3 * (2 * t - 3 * t * t) * p_1_y + 3 * t * t * p0_y) - ((-3 + 6 * t - 3 * t * t) * p_3_x + 3 * (1 - 4 * t + 3 * t * t) * p_2_x + 3 * (2 * t - 3 * t * t) * p_1_x + 3 * t * t * p0_x) * ((6 - 6 * t) * p_3_y + 3 * (6 * t - 4) * p_2_y - 3 * (6 * t - 2) * p_1_y + 6 * t * p0_y)) / pow(sqrt((pow(((-3 + 6 * t - 3 * t * t) * p_3_y + 3 * (1 - 4 * t + 3 * t * t) * p_2_y + 3 * (2 * t - 3 * t * t) * p_1_y + 3 * t * t * p0_y), 2) + pow(((-3 + 6 * t - 3 * t * t) * p_3_x + 3 * (1 - 4 * t + 3 * t * t) * p_2_x + 3 * (2 * t - 3 * t * t) * p_1_x + 3 * t * t * p0_x), 2))), 3));
             if (k < res)
-                k = res;
+                k = res; // k: curvature
         }
         float v;
-        if (k < 1e-8)
-            v = max_vel;
-        else
-            v = min(max_vel, sqrt(max_accel / (k * 1000)));
+        if (k < 1e-8) v = max_vel;
+        else{
+            float limit_vel = sqrt(gravitational_acceleration / k) * corner_speed_rate; 
+            v = min(max_vel, limit_vel);
+        }
         point[p][4] = v;
     }
     point[pnum][4] = max_initial_speed;

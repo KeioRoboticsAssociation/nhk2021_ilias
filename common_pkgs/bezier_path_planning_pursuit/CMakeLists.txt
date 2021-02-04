@@ -14,18 +14,35 @@ find_package(catkin REQUIRED COMPONENTS
   tf
   nav_msgs
   geometry_msgs
+  message_generation
+  actionlib
+  actionlib_msgs
+)
+
+find_package(Boost REQUIRED COMPONENTS system)
+
+add_action_files(
+  DIRECTORY action
+  FILES PursuitPath.action
+)
+
+generate_messages(
+  DEPENDENCIES
+  std_msgs
+  actionlib_msgs
 )
 
 catkin_package(
 #  INCLUDE_DIRS include
-#  LIBRARIES bezier_path_planning_pursuit
-#  CATKIN_DEPENDS roscpp rospy std_msgs
-#  DEPENDS system_lib
+  LIBRARIES bezier_path_planning_pursuit
+  CATKIN_DEPENDS roscpp rospy std_msgs actionlib actionlib_msgs
+  DEPENDS Boost
 )
 
 include_directories(
 # include
   ${catkin_INCLUDE_DIRS}
+  ${Boost_INCLUDE_DIRS}
 )
 
 add_subdirectory(src/Matrix)

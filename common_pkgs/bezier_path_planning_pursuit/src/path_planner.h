@@ -7,7 +7,12 @@
 #include <geometry_msgs/Pose.h>
 #include <tf/transform_broadcaster.h>
 
+#include <actionlib/server/simple_action_server.h>          // action Library Header File
+#include <bezier_path_planning_pursuit/PursuitPathAction.h> // PursuitPathAction Action File Header
+
 #include "path_planning.h"
+
+using namespace bezier_path_planning_pursuit;
 
 #define LINE_NUM 1
 /*
@@ -44,22 +49,31 @@ F2: create csv Blue -> Red
 class Path_Planner
 {
 public:
-    Path_Planner(ros::NodeHandle &nh, const int &loop_rate, const std::string &zonename, const bool &use_odom_tf, const std::string &data_path);
+    Path_Planner(ros::NodeHandle &nh, const int &loop_rate, const std::string &zonename, const bool &use_odom_tf, const std::string &data_path, const float &max_accel, const float &max_vel, const float &corner_speed_rate);
     ~Path_Planner(){};
 
 private:
     //Handlers
     ros::NodeHandle &nh_;
 
+    actionlib::SimpleActionServer<PursuitPathAction> as_; // Action server declaration, NodeHandle instance must be created before this line. Otherwise strange error occurs.
+
     ros::Publisher cmd_pub;
     ros::Subscriber bno_sub;
     ros::Subscriber odom_sub;
+
+    PursuitPathFeedback feedback_;
+    PursuitPathResult result_;
 
     //Configurations
     int loop_rate_;
     std::string zonename_;
     bool use_odom_tf_;
     std::string data_path_;
+
+    float max_accel_;
+    float max_vel_;
+    float corner_speed_rate_;
 
     Path path[LINE_NUM];
 
@@ -70,13 +84,16 @@ private:
     float position[2] = {0}; // [x,y]
 
     int path_mode = 1; // 0:none, 1:path1, 2:path2, ...LINE_NUM
-    bool forwardflag = true;
+    int forwardflag = 1;
 
     //Methods
     void odomCallback(const nav_msgs::Odometry &msg);
     void bnoCallback(const geometry_msgs::PoseStamped::ConstPtr &pose);
     void geometry_quat_to_rpy(double &roll, double &pitch, double &yaw, geometry_msgs::Quaternion geometry_quat);
 
-    void change_RB(std::string zone);
+    void setup(std::string zone, float accel, float max_vel, float init_vel);
+    void executeCB(const PursuitPathGoalConstPtr &goal);
+    bool reachedGoal();
+    void publishMsg(const float &vx, const float &vy, const float &omega);
     void update();
 };
