@@ -1,6 +1,7 @@
 // ex1.cpp
 
 #include "path_planning.h"
+#include <ros/ros.h>
 
 Path::Path(std::string filename)
 {
@@ -84,7 +85,6 @@ void Path::set_point_csv(std::string filename)
         count++;
     }
     infile.close();
-
     // create path
     bezier();
     set_vel();

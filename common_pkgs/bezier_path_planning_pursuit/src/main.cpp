@@ -34,8 +34,8 @@ Path_Planner::Path_Planner(ros::NodeHandle &nh, const int &loop_rate, const std:
 
 void Path_Planner::odomCallback(const nav_msgs::Odometry &msg)
 {
-    position[0] = msg.pose.pose.position.x;
-    position[1] = msg.pose.pose.position.y;
+    position[0] = msg.pose.pose.position.x * 1000.0f; // m -> mm
+    position[1] = msg.pose.pose.position.y * 1000.0f;
 }
 
 
@@ -94,12 +94,12 @@ void Path_Planner::publishMsg(const float &vx, const float &vy, const float &ome
 bool Path_Planner::reachedGoal(){
     if (forwardflag)
     {
-        if (control[4][1] >= path[path_mode - 1].pnum - 0.35) // if the reference point almost reached goal
+        if (control[4][1] >= path[path_mode - 1].pnum - 0.05) // if the reference point almost reached goal
             return true;
     }
     else
     {
-        if (control[4][1] <= 1.35) // if the reference point almost reached goal
+        if (control[4][1] <= 1.05) // if the reference point almost reached goal
             return true;
     }
     return false;
@@ -171,6 +171,7 @@ void Path_Planner::executeCB(const PursuitPathGoalConstPtr &goal) // if use acti
             control[3][1] -= body_theta;
 
             if(reachedGoal()){
+                publishMsg(0,0,0);
                 break;
             }
             // control[4][1]で追従時に参照した点番号がわかり、遷移先の検討に使える

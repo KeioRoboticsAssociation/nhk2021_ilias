@@ -6,8 +6,8 @@
   <arg name="zone" default="blue" />
   <arg name="use_odom_tf" default="false" />
   <arg name="csv_path" default="$(find pkg_manager_tr)/config/waypoints" />
-  <arg name="max_accel" default="2.5" />
-  <arg name="max_vel" default="1.0" />
+  <arg name="max_accel" default="3.0" />
+  <arg name="max_vel" default="1.5" />
   <arg name="corner_speed_rate" default="0.8" />
 
 
@@ -21,6 +21,8 @@
     <param name = "max_accel" value = "$(arg max_accel)" />
     <param name = "max_vel" value = "$(arg max_vel)" />
     <param name = "corner_speed_rate" value = "$(arg corner_speed_rate)" />
+    <remap from="cmd_vel" to="/Sample_sp1/diff_drive_controller/cmd_vel" />
+    <remap from="odom" to="/Sample_sp1/diff_drive_controller/odom" />
   </node>
 
   <node pkg="wheelctrl_4ws" type="wheelctrl_4ws" name="wheelctrl_4ws" output="screen">
