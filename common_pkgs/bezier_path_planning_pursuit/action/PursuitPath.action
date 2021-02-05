@@ -1,0 +1,9 @@
+#goal definition
+int32 pathmode
+int32 direction
+---
+#result definition
+bool result
+---
+#feedback
+float32 reference_point
