@@ -76,8 +76,8 @@ void Path_Planner::setPoseTopic(const int &path_num)
     for (float t = 1; t <= path[path_num].pnum; t += 0.1)
     {
         Matrix pose_unit(path[path_num].path_func(t));
-        float x = pose_unit[1][1];
-        float y = pose_unit[2][1];
+        float x = pose_unit[1][1] / 1000; // mm -> m
+        float y = pose_unit[2][1] / 1000;
         float theta = pose_unit[3][1];
 
         geometry_msgs::PoseStamped temp_pose;
