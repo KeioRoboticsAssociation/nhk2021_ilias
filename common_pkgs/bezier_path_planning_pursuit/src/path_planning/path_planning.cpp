@@ -130,7 +130,7 @@ void Path::set_vel()
                 k = res; // k: curvature
         }
         float v;
-        if (k < 1e-8) v = max_vel;
+        if (k < 1e-2) v = max_vel;
         else{
             float limit_vel = sqrt(gravitational_acceleration / k) * corner_speed_rate; 
             v = min(max_vel, limit_vel);

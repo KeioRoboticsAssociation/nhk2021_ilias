@@ -1,18 +1,31 @@
 <?xml version="1.0" ?>
 <launch>
 
- <param name="robot_description"
-     command="$(find xacro)/xacro '$(find nhk2021_simulator)/urdf/robot.urdf.xacro'" />
+  <arg name="model" default="$(find nhk2021_simulator)/urdf/robot.urdf.xacro"/>
+  <param name="robot_description" command="$(find xacro)/xacro $(arg model) --inorder"/>
+  <arg name="rvizconfig" default="$(find nhk2021_simulator)/config/simulation.rviz" />
 
- <include file="$(find gazebo_ros)/launch/empty_world.launch">
-   <arg name="world_name" value="$(find nhk2021_simulator)/worlds/abu2021-field-assembly_v1.world"/>
- </include>
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(find nhk2021_simulator)/worlds/nhk2021.world"/> <!-- Note: the world_name is with respect to GAZEBO_RESOURCE_PATH environmental variable -->
+    <arg name="paused" value="false"/>
+    <arg name="use_sim_time" value="true"/>
+    <arg name="gui" value="true"/>
+    <arg name="headless" value="false"/>
+    <arg name="debug" value="false"/>
+  </include>
 
- <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model"
-     args="-param robot_description -urdf -model TR" />
+<node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model"
+     args="-param robot_description -x 0.5 -y 0.5 -z 0.5 -R 0 -P 0 -Y 0 -urdf -model simple_diff_drive" />
 
 
- <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
- <node name="rviz" pkg="rviz" type="rviz" args="-f odometry" />
+  <param name="/simple_diff_drive/diff_drive_controller/enable_odom_tf" value="true" />
+  <rosparam command="load" file="$(find nhk2021_simulator)/config/diff_drive_controller.yaml" ns="/simple_diff_drive" />
+  <rosparam command="load"  file="$(find nhk2021_simulator)/config/joint_state_controller.yaml" ns="/simple_diff_drive"/>
+  <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" ns="/simple_diff_drive" 
+      args="diff_drive_controller joint_state_controller" />
+
+
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" output="screen" ns="/simple_diff_drive"/>
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig) -f odom" required="true" />
 
 </launch>

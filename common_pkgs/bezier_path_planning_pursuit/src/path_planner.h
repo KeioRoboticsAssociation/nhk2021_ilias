@@ -19,7 +19,7 @@
 
 using namespace bezier_path_planning_pursuit;
 
-#define LINE_NUM 1
+#define LINE_NUM 2
 /*
 +++++ KEY +++++
 0: start
