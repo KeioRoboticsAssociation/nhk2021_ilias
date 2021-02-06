@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<robot name="Sample_sp1" xmlns:xacro="http://ros.org/wiki/xacro">
+<robot name="simple_diff_drive" xmlns:xacro="http://ros.org/wiki/xacro">
 
  <xacro:include filename="$(find nhk2021_simulator)/urdf/body.urdf.xacro" />
  <xacro:include filename="$(find nhk2021_simulator)/urdf/wheel.urdf.xacro" />
