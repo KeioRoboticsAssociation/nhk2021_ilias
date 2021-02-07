@@ -8,10 +8,12 @@ Path::Path(std::string filename)
     set_point_csv(filename);
 }
 
-void Path::load_config(std::string filename, float accel, float vel, float init_vel, float speed_rate)
+void Path::load_config(std::string filename, float accel, float vel, float acc_lim_theta_, float max_vel_theta_, float init_vel, float speed_rate)
 {
     max_accel = accel;
     max_vel = vel;
+    acc_lim_theta = acc_lim_theta_;
+    max_vel_theta = max_vel_theta_;
     max_initial_speed = init_vel;
     corner_speed_rate = speed_rate;
     set_point_csv(filename);
@@ -553,8 +555,9 @@ float Path::linear_search(float min, float max, float a, float b, float converge
     return (t_ft[1][0] + t_ft[2][0]) / 2.0f;
 }
 
-Matrix Path::pure_pursuit(float posx, float posy, bool foward, float reset_t)
+Matrix Path::pure_pursuit(float posx, float posy, float body_theta, float control_frequency, bool foward, float reset_t)
 {
+    using namespace std;
     position[0] = posx;
     position[1] = posy;
 
@@ -581,22 +584,67 @@ Matrix Path::pure_pursuit(float posx, float posy, bool foward, float reset_t)
 
     Matrix ref(path_func(ref_t));
     Matrix aim(path_func(aim_t));
-    float direction[2] = {aim[1][1] - posx, aim[2][1] - posy};
-    float norm = sqrt(direction[0] * direction[0] + direction[1] * direction[1]);
+    Matrix direction(2, 1);
+    direction[1][1] = aim[1][1] - posx;
+    direction[2][1] = aim[2][1] - posy;
+    //float direction[2] = {aim[1][1] - posx, aim[2][1] - posy};
+    //float norm = sqrt(direction[0] * direction[0] + direction[1] * direction[1]);
+    float norm = sqrt(direction[1][1] * direction[1][1] + direction[2][1] * direction[2][1]);
     if (norm > 1e-5)
     {
-        direction[0] *= ref[4][1] / norm;
-        direction[1] *= ref[4][1] / norm;
+        direction[1][1] *= ref[4][1] / norm;
+        direction[2][1] *= ref[4][1] / norm;
     }
     else
     {
-        direction[0] = 0;
-        direction[1] = 0;
+        direction[1][1] = 0;
+        direction[2][1] = 0;
     }
-    Matrix ans(4, 1);
-    ans[1][1] = direction[0];
-    ans[2][1] = direction[1];
-    ans[3][1] = ref[3][1];
+
+    Matrix Rotation_Matrix(2, 2);
+    Rotation_Matrix[1][1] = cos(body_theta);
+    Rotation_Matrix[1][2] = sin(body_theta);
+    Rotation_Matrix[2][1] = -1*sin(body_theta);
+    Rotation_Matrix[2][2] = cos(body_theta);
+
+    // calc vx, vy
+    direction = Rotation_Matrix * direction;
+
+    // calc omega
+    float omega = (ref[3][1] - body_theta) * control_frequency;
+
+    // acc limit
+    if (omega - old_omega >= 0){
+        if ((omega - old_omega) * control_frequency > acc_lim_theta)
+        {
+            omega = old_omega + acc_lim_theta * control_frequency;
+        }
+    }
+    else{
+        if ((omega - old_omega) * control_frequency < -1 * acc_lim_theta)
+        {
+            omega = old_omega - acc_lim_theta * control_frequency;
+        }
+    }
+     // max_vel limit
+    if(omega >= 0){
+        if (omega > max_vel_theta){
+            omega = max_vel_theta;
+        }
+    }
+    else{
+        if (omega < -1 * max_vel_theta)
+        {
+            omega = -1 * max_vel_theta;
+        }
+    }
+    old_omega = omega;
+
+    Matrix ans(5, 1);
+    ans[1][1] = direction[1][1];
+    ans[2][1] = direction[2][1];
+    ans[3][1] = omega;
     ans[4][1] = ref_t;
+    ans[5][1] = ref[3][1];
     return ans;
 }

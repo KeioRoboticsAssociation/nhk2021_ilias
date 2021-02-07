@@ -57,9 +57,13 @@ float32 reference_point
 
 - **data_path** : csvファイルの格納されているディレクトリ (default : "`$(find pkg_manager_tr)/config/waypoints`")
 
-- **max_accel** : maximum value of accelaration (default : 2.5 [m/s^2])
+- **acc_lim_xy** : maximum value of xy accelaration (default : 2.5 [m/s^2])
 
-- **max_vel** : maximum value of velocity (default : 1.5 [m/s])
+- **max_vel_xy** : maximum value of xy velocity (default : 1.5 [m/s])
+
+- **acc_lim_theta** : maximum value of theta accelaration (default : 3.2 [rad/s^2])
+
+- **max_vel_theta** : maximum value of theta velocity (default : 1.57 [rad/s])
 
 - **initial_vel** : 初速度 (default : `max_accel / control_frequency` [m/s])
 
@@ -71,17 +75,32 @@ float32 reference_point
 
 - **global_frame_id** :  Pathをどのフレームに描画するか (default : "odom")
 
-- **goal_tolerance** :  (default : 0.05)
+- **xy_goal_tolerance** :  (default : 0.05)
 
-  ゴールの精度。0.0とするとゴール座標と一致するまで進むが、多少余裕を持たせるとよいと思う。
+  xy方向のゴールの精度。0.0とするとゴール座標と一致するまで進むが、多少余裕を持たせるとよいと思う。
 
   単位は無次元(厳密には、この数字の単位はwaypointの番号と同次元であり、waypointの間隔により長さは変化する)
+  
+- **yaw_goal_tolerance** :  (default : 0.01 [rad])
+
+  yaw方向のゴールの精度。
+
+- **angle_source** : (default : "pose")
+
+  ロボットの車体角度の取得源を"**pose**", "**imu**"の2択から選択する。
+
+  **実機**の場合はpose (bno055のposeトピックより取得)
+
+  **シミュレーション**の場合は**imu** (imuのgazeboプラグインが出すimuトピックより取得)
+
+  pose, imu以外の文字列を入れると強制終了するようにしている。
 
 
 
 ## Subscribed Topics
 
-- **/pose** (type : `geometry_msgs::PoseStamped`)
+- **/pose** (type : `geometry_msgs::PoseStamped`) (**angle_source = "pose" の場合**)
+- **/imu** (type : `sensor_msgs::Imu`) (**angle_source = "imu" の場合**)
 - **/odom** (type : `nav_msgs::Odometry`) (**use_odom_tf = false の場合**)
 
 

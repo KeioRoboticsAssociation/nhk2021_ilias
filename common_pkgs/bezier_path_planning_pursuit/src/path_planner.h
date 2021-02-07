@@ -13,6 +13,7 @@
 #include <geometry_msgs/Twist.h>
 #include <geometry_msgs/PoseStamped.h>
 #include <geometry_msgs/Pose.h>
+#include <sensor_msgs/Imu.h>
 
 #include <actionlib/server/simple_action_server.h>          // action Library Header File
 #include <bezier_path_planning_pursuit/PursuitPathAction.h> // PursuitPathAction Action File Header
@@ -24,7 +25,7 @@ using namespace bezier_path_planning_pursuit;
 class Path_Planner
 {
 public:
-    Path_Planner(ros::NodeHandle &nh, const int &loop_rate, const std::string &zonename, const bool &use_odom_tf, const std::string &data_path, const float &max_accel, const float &max_vel, const float &corner_speed_rate, const std::string &global_frame_id, const float &initial_vel, const float &goal_tolerance);
+    Path_Planner(ros::NodeHandle &nh, const int &loop_rate, const std::string &zonename, const bool &use_odom_tf, const std::string &data_path, const float &max_accel, const float &max_vel, const float &corner_speed_rate, const std::string &global_frame_id, const float &initial_vel, const float &xy_goal_tolerance, const float &yaw_goal_tolerance, const std::string &angle_source, const float &max_vel_theta, const float &acc_lim_theta);
     ~Path_Planner(){};
 
 private:
@@ -47,12 +48,16 @@ private:
     bool use_odom_tf_;
     std::string data_path_;
     std::string global_frame_id_;
+    std::string angle_source_;
 
     float max_accel_;
     float max_vel_;
+    float max_vel_theta_;
+    float acc_lim_theta_;
     float initial_vel_;
     float corner_speed_rate_;
-    float goal_tolerance_;
+    float xy_goal_tolerance_;
+    float yaw_goal_tolerance_;
 
     Path path[LINE_NUM];
     nav_msgs::Path path_ros[LINE_NUM];
@@ -69,11 +74,12 @@ private:
     //Methods
     void odomCallback(const nav_msgs::Odometry &msg);
     void bnoCallback(const geometry_msgs::PoseStamped::ConstPtr &pose);
+    void imuCallback(const sensor_msgs::Imu::ConstPtr &imu);
     void geometry_quat_to_rpy(double &roll, double &pitch, double &yaw, geometry_msgs::Quaternion geometry_quat);
     geometry_msgs::Quaternion rpy_to_geometry_quat(double roll, double pitch, double yaw);
     void setPoseTopic(const int &path_num);
 
-    void setup(std::string zone, float accel, float max_vel, float init_vel, float corner_speed_rate);
+    void setup(std::string zone, float accel, float max_vel, float acc_lim_theta, float max_vel_theta, float init_vel, float corner_speed_rate);
     void executeCB(const PursuitPathGoalConstPtr &goal);
     bool reachedGoal();
     void publishMsg(const float &vx, const float &vy, const float &omega);

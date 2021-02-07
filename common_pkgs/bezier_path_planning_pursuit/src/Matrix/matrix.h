@@ -3,6 +3,8 @@
 #ifndef MATRIX_H
 #define MATRIX_H
 
+#include <ros/ros.h>
+
 class Matrix
 {
 
