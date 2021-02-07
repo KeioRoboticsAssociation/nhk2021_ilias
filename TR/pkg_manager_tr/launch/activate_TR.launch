@@ -8,8 +8,10 @@
   <arg name="csv_path" default="$(find pkg_manager_tr)/config/waypoints" />
   <arg name="max_accel" default="2.5" />
   <arg name="max_vel" default="1.5" />
+  <arg name="initial_vel" default="0.2" />
   <arg name="corner_speed_rate" default="0.8" />
   <arg name="global_frame_id" default="odom" />
+  <arg name="goal_tolerance" default="0.05" />
 
 
   <!--path_planning_node-->
@@ -21,8 +23,10 @@
     <param name = "data_path" value = "$(arg csv_path)" />
     <param name = "max_accel" value = "$(arg max_accel)" />
     <param name = "max_vel" value = "$(arg max_vel)" />
+    <param name = "initial_vel" value = "$(arg initial_vel)" />
     <param name = "corner_speed_rate" value = "$(arg corner_speed_rate)" />
     <param name = "global_frame_id" value = "$(arg global_frame_id)" />
+    <param name = "goal_tolerance" value = "$(arg goal_tolerance)" />
     <!--
     <remap from="cmd_vel" to="/simple_diff_drive/diff_drive_controller/cmd_vel" />
     <remap from="odom" to="/simple_diff_drive/diff_drive_controller/odom" />

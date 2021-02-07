@@ -6,9 +6,11 @@ using namespace bezier_path_planning_pursuit;
 
 Path_Planner::Path_Planner(ros::NodeHandle &nh, const int &loop_rate, const std::string &zonename,
                            const bool &use_odom_tf, const std::string &data_path, const float &max_accel,
-                           const float &max_vel, const float &corner_speed_rate, const std::string &global_frame_id)
+                           const float &max_vel, const float &corner_speed_rate, const std::string &global_frame_id,
+                           const float &initial_vel, const float &goal_tolerance)
     : nh_(nh), loop_rate_(loop_rate), zonename_(zonename), use_odom_tf_(use_odom_tf),
-      data_path_(data_path), max_accel_(max_accel), max_vel_(max_vel), corner_speed_rate_(corner_speed_rate), global_frame_id_(global_frame_id),
+      data_path_(data_path), max_accel_(max_accel), max_vel_(max_vel), corner_speed_rate_(corner_speed_rate),
+      global_frame_id_(global_frame_id), initial_vel_(initial_vel), goal_tolerance_(goal_tolerance),
       as_(nh, node_name, boost::bind(&Path_Planner::executeCB, this, _1), false)
 { //constructer, define pubsub
     ROS_INFO("Creating path_planning_pursuit");
@@ -17,8 +19,10 @@ Path_Planner::Path_Planner(ros::NodeHandle &nh, const int &loop_rate, const std:
     ROS_INFO_STREAM("loop_rate [Hz]: " << loop_rate_);
     ROS_INFO_STREAM("max_accel [m/s^2]: " << max_accel_);
     ROS_INFO_STREAM("max_vel [m/s]: " << max_vel_);
+    ROS_INFO_STREAM("initial_vel [m/s]: " << initial_vel_);
     ROS_INFO_STREAM("corner_speed_rate: " << corner_speed_rate_);
     ROS_INFO_STREAM("global_frame_id: " << global_frame_id_);
+    ROS_INFO_STREAM("goal_tolerance: " << goal_tolerance_);
 
     cmd_pub = nh_.advertise<geometry_msgs::Twist>("cmd_vel", 1);
     path_pub = nh_.advertise<nav_msgs::Path>("path", 1);
@@ -28,7 +32,7 @@ Path_Planner::Path_Planner(ros::NodeHandle &nh, const int &loop_rate, const std:
     }
 
     control.change_size(4,1);
-    setup(zonename_, max_accel_, max_vel_, corner_speed_rate_);
+    setup(zonename_, max_accel_, max_vel_, initial_vel_, corner_speed_rate_);
 
     as_.start();
     //update();
@@ -95,7 +99,7 @@ void Path_Planner::setPoseTopic(const int &path_num)
     }
 }
 
-void Path_Planner::setup(std::string zone, float max_accel, float max_vel, float corner_speed_rate)
+void Path_Planner::setup(std::string zone, float max_accel, float max_vel, float init_vel, float corner_speed_rate)
 {
     using namespace std;
     for (int i = 0; i < LINE_NUM; i++)
@@ -118,7 +122,6 @@ void Path_Planner::setup(std::string zone, float max_accel, float max_vel, float
             cerr << "err change_RB / filename" << endl;
             exit(1);
         }
-        float init_vel = max_accel / loop_rate_;
         path[i].load_config(ss.str(), max_accel, max_vel, init_vel, corner_speed_rate);
         setPoseTopic(i);
     }
@@ -136,12 +139,12 @@ void Path_Planner::publishMsg(const float &vx, const float &vy, const float &ome
 bool Path_Planner::reachedGoal(){
     if (forwardflag)
     {
-        if (control[4][1] >= path[path_mode - 1].pnum - 0.05) // if the reference point almost reached goal
+        if (control[4][1] >= path[path_mode - 1].pnum - goal_tolerance_) // if the reference point almost reached goal
             return true;
     }
     else
     {
-        if (control[4][1] <= 1.05) // if the reference point almost reached goal
+        if (control[4][1] <= 1.00 + goal_tolerance_) // if the reference point almost reached goal
             return true;
     }
     return false;
@@ -232,7 +235,6 @@ void Path_Planner::executeCB(const PursuitPathGoalConstPtr &goal) // if use acti
     }
 
     // If the action target value is reached,
-    // transmit current Fibonacci sequence as the result value.
     if (success)
     {
         result_.result = true;
@@ -308,8 +310,9 @@ int main(int argc, char **argv)
     std::string data_path = "";
     bool use_odom_tf = false;
     float max_accel = 2.5;
-    float max_vel = 1.0;
+    float max_vel = 1.5;
     float corner_speed_rate = 0.8;
+    float goal_tolerance = 0.05;
     std::string global_frame_id = "odom";
 
     arg_n.getParam("control_frequency", looprate);
@@ -318,10 +321,15 @@ int main(int argc, char **argv)
     arg_n.getParam("data_path", data_path);
     arg_n.getParam("max_accel", max_accel);
     arg_n.getParam("max_vel", max_vel);
+
+    float initial_vel = max_accel / looprate;
+
+    arg_n.getParam("initial_vel", initial_vel);
     arg_n.getParam("corner_speed_rate", corner_speed_rate);
     arg_n.getParam("global_frame_id", global_frame_id);
+    arg_n.getParam("goal_tolerance", goal_tolerance);
 
-    Path_Planner planner(nh, looprate, zonename, use_odom_tf, data_path, max_accel, max_vel, corner_speed_rate, global_frame_id);
+    Path_Planner planner(nh, looprate, zonename, use_odom_tf, data_path, max_accel, max_vel, corner_speed_rate, global_frame_id, initial_vel, goal_tolerance);
     ros::spin(); // Wait to receive action goal
     return 0;
 }
