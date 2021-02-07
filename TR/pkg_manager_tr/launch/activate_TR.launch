@@ -41,7 +41,7 @@
     -->
   </node>
 
-  <node pkg="wheelctrl_4ws" type="wheelctrl_4ws" name="wheelctrl_4ws" output="screen">
+  <node pkg="swerve_wheelctrl" type="swerve_wheelctrl" name="swerve_wheelctrl" output="screen">
     <param name="control_frequency" value="$(arg control_frequency)"/>
     <param name="lost_time_threshold" value="500"/>
     <param name="body_width" value="0.440"/>
