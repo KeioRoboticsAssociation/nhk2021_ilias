@@ -235,7 +235,7 @@ void Path_Planner::executeCB(const PursuitPathGoalConstPtr &goal) // if use acti
             //pure_pursuit
             // return [velx,vely,theta,ref_t](4*1)
             // forwardflag = 1 when move forward ,0 when move backward
-            control = path[path_mode - 1].pure_pursuit(position[0], position[1], body_theta, loop_rate_, forwardflag);
+            control = path[path_mode - 1].pure_pursuit(position[0], position[1], body_theta, (float)loop_rate_, forwardflag);
             //control[3][1] -= body_theta;
 
             if(reachedGoal()){
@@ -300,7 +300,7 @@ void Path_Planner::update(){ // if use topic communication
             //pure_pursuit
             // return [velx,vely,theta,ref_t](4*1)
             // forwardflag = 1 when move forward ,0 when move backward
-            control = path[path_mode - 1].pure_pursuit(position[0], position[1], body_theta, loop_rate_, forwardflag);
+            control = path[path_mode - 1].pure_pursuit(position[0], position[1], body_theta, (float)loop_rate_, forwardflag);
             //control[3][1] -= body_theta;
             // control[4][1]で追従時に参照した点番号がわかり、遷移先の検討に使える
             // pure_pursuitの4つ目の引数は開始時の点番号、底周辺から線形探索が始まる
