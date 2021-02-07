@@ -88,7 +88,7 @@ void Path_Planner::imuCallback(const sensor_msgs::Imu::ConstPtr &imu)
     double roll, pitch, yaw;
     geometry_quat_to_rpy(roll, pitch, yaw, imu->orientation);
     body_theta = yaw;
-    ROS_INFO("%f", body_theta*180.0/PI);
+    //ROS_INFO("%f", body_theta*180.0/PI);
 }
 
 void Path_Planner::setPoseTopic(const int &path_num)
