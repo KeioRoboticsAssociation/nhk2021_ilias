@@ -9,7 +9,7 @@
     </include>
     <include>
       <uri>model://abu2021-field-assembly_v1</uri>
-      <pose>0 0 0 0 0 0</pose>
+      <pose>0 0 0 0 0 1.57079632</pose>
     </include>
   </world>
 </sdf>

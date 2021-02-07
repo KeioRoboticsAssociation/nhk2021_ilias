@@ -1,0 +1,11 @@
+<?xml version="1.0" ?>
+<robot name="simple_mecanum" xmlns:xacro="http://ros.org/wiki/xacro">
+
+ <xacro:include filename="$(find nexus_4wd_mecanum_description)/urdf/nexus_4wd_mecanum.xacro" />
+
+ <xacro:include filename="$(find nhk2021_simulator)/urdf/lidar.urdf.xacro" />
+ <xacro:include filename="$(find nhk2021_simulator)/urdf/imu.urdf.xacro" />
+
+ <xacro:laser_macro prefix="rplidar" parent="base_footprint" xyz="0.23 0 0.04" />
+ <xacro:imu_macro prefix="imu" parent="base_footprint" xyz="0.0 0 0.10" />
+</robot>

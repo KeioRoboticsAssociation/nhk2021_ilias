@@ -17,6 +17,7 @@ find_package(catkin REQUIRED COMPONENTS
   message_generation
   actionlib
   actionlib_msgs
+  sensor_msgs
 )
 
 find_package(Boost REQUIRED COMPONENTS system)
