@@ -91,6 +91,7 @@ private:
     void setPoseTopic(const int &path_num);
 
     void setup(float accel, float max_vel, float acc_lim_theta, float max_vel_theta, float init_vel, float corner_speed_rate);
+    void init_variables();
     void executeCB(const PursuitPathGoalConstPtr &goal);
     void AdjustVelocity(float &v, float &old_v, const float &max_v, const float &acc_lim);
     bool reachedxyGoal();

@@ -253,10 +253,21 @@ void Path_Planner::terminate(const float &target_angle){
     }
 }
 
-    void Path_Planner::executeCB(const PursuitPathGoalConstPtr &goal) // if use action communication
+void Path_Planner::init_variables()
+{
+    _old_omega_ = 0;
+    _omega_ = 0;
+    _old_vx_ = 0;
+    _vx_ = 0;
+    _old_vy_ = 0;
+    _vy_ = 0;
+}
+
+void Path_Planner::executeCB(const PursuitPathGoalConstPtr &goal) // if use action communication
 {
     ros::Rate r(loop_rate_);
 
+    init_variables();
     bool success = true; // Used as a variable to store the success or failure of an action
 
     forwardflag = goal->direction;
@@ -289,7 +300,10 @@ void Path_Planner::terminate(const float &target_angle){
         {
             // Notify action cancellation
             ROS_INFO("%s: Preempted", node_name.c_str());
-            publishMsg(0,0,0);
+            _old_vx_ = control[1][1];    // for terminate usage
+            _old_vy_ = control[2][1];    // for terminate usage
+            _old_omega_ = control[3][1]; // for terminate usage
+            terminate(control[5][1]);
             // Action cancellation and consider action as failure and save to variable
             as_.setPreempted();
             success = false;
@@ -300,7 +314,10 @@ void Path_Planner::terminate(const float &target_angle){
         {
             ROS_WARN("no paths are selected, aborting %s", node_name.c_str());
 
-            publishMsg(0,0,0);
+            _old_vx_ = control[1][1];    // for terminate usage
+            _old_vy_ = control[2][1];    // for terminate usage
+            _old_omega_ = control[3][1]; // for terminate usage
+            terminate(control[5][1]);
 
             as_.setPreempted();
             success = false;
@@ -310,9 +327,9 @@ void Path_Planner::terminate(const float &target_angle){
         {
             if (reachedxyGoal())
             {
-                _old_vx_ = control[1][1]; // for terminate usage only
-                _old_vy_ = control[2][1]; // for terminate usage only
-                _old_omega_ = control[3][1]; // for terminate usage only
+                _old_vx_ = control[1][1]; // for terminate usage
+                _old_vy_ = control[2][1]; // for terminate usage
+                _old_omega_ = control[3][1]; // for terminate usage
                 terminate(control[5][1]);
                 break;
             }
@@ -326,7 +343,13 @@ void Path_Planner::terminate(const float &target_angle){
             // pure_pursuitの4つ目の引数は開始時の点番号、点周辺から線形探索が始まる
         }
 
-        publishMsg(control[1][1], control[2][1], control[3][1]);
+        _vx_ = control[1][1]; // for recovery usage
+        _vy_ = control[2][1]; // for recovery usage
+        _omega_ = control[3][1]; // for recovery usage
+        AdjustVelocity(_vx_, _old_vx_, max_vel_, max_accel_);
+        AdjustVelocity(_vy_, _old_vy_, max_vel_, max_accel_);
+        AdjustVelocity(_omega_, _old_omega_, max_vel_theta_, acc_lim_theta_);
+        publishMsg(_vx_, _vy_, _omega_);
         path_pub.publish(path_ros[path_mode-1]);
         feedback_.reference_point = control[4][1];
         as_.publishFeedback(feedback_);
