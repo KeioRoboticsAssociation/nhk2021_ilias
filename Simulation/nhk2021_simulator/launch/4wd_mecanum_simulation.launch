@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <launch>
 
-  <arg name="rvizconfig" default="$(find nhk2021_simulator)/config/simulation.rviz" />
+  <arg name="rvizconfig" default="$(find nhk2021_simulator)/config/localization.rviz" />
 
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
     <arg name="world_name" value="$(find nhk2021_simulator)/worlds/nhk2021.world"/> <!-- Note: the world_name is with respect to GAZEBO_RESOURCE_PATH environmental variable -->
@@ -24,8 +24,8 @@
 
   <node name="odom_tf_publisher" pkg="nhk2021_simulator" type="odom_tf_publisher" >
     <param name = "base_frame_id" value = "base_footprint" />
+    <remap from="odom" to="odom_filtered" />
   </node>
-
 
   <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig) -f odom" required="true" />
 

@@ -611,19 +611,19 @@ Matrix Path::pure_pursuit(float posx, float posy, float body_theta, float contro
     direction = Rotation_Matrix * direction;
 
     // calc omega
-    float omega = (ref[3][1] - body_theta) * control_frequency;
+    float omega = ref[3][1] - body_theta;
 
     // acc limit
     if (omega - old_omega >= 0){
         if ((omega - old_omega) * control_frequency > acc_lim_theta)
         {
-            omega = old_omega + acc_lim_theta * control_frequency;
+            omega = old_omega + acc_lim_theta / control_frequency;
         }
     }
     else{
         if ((omega - old_omega) * control_frequency < -1 * acc_lim_theta)
         {
-            omega = old_omega - acc_lim_theta * control_frequency;
+            omega = old_omega - acc_lim_theta / control_frequency;
         }
     }
      // max_vel limit

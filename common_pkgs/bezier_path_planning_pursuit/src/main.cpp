@@ -4,20 +4,23 @@ std::string node_name = "path_planning_pursuit";
 
 using namespace bezier_path_planning_pursuit;
 
-Path_Planner::Path_Planner(ros::NodeHandle &nh, const int &loop_rate, const std::string &zonename,
-                           const bool &use_odom_tf, const std::string &data_path, const float &max_accel,
-                           const float &max_vel, const float &corner_speed_rate, const std::string &global_frame_id,
+Path_Planner::Path_Planner(ros::NodeHandle &nh, const int &loop_rate, const bool &use_tf,
+                           const std::string &data_path, const float &max_accel, const float &max_vel,
+                           const float &corner_speed_rate, const std::string &global_frame_id, const std::string &base_frame_id,
                            const float &initial_vel, const float &xy_goal_tolerance, const float &yaw_goal_tolerance,
-                           const std::string &angle_source, const float &max_vel_theta, const float &acc_lim_theta)
-    : nh_(nh), loop_rate_(loop_rate), zonename_(zonename), use_odom_tf_(use_odom_tf),
-      data_path_(data_path), max_accel_(max_accel), max_vel_(max_vel), corner_speed_rate_(corner_speed_rate),
-      global_frame_id_(global_frame_id), initial_vel_(initial_vel), xy_goal_tolerance_(xy_goal_tolerance), yaw_goal_tolerance_(yaw_goal_tolerance), 
-      angle_source_(angle_source), max_vel_theta_(max_vel_theta), acc_lim_theta_(acc_lim_theta),
+                           const std::string &angle_source, const float &max_vel_theta, const float &acc_lim_theta, 
+                           const float &fix_angle_gain, const int &LINE_NUMBER)
+    : nh_(nh), loop_rate_(loop_rate), use_tf_(use_tf), data_path_(data_path),
+      max_accel_(max_accel), max_vel_(max_vel), corner_speed_rate_(corner_speed_rate),
+      global_frame_id_(global_frame_id), base_frame_id_(base_frame_id), initial_vel_(initial_vel),
+      xy_goal_tolerance_(xy_goal_tolerance), yaw_goal_tolerance_(yaw_goal_tolerance),
+      angle_source_(angle_source), max_vel_theta_(max_vel_theta), acc_lim_theta_(acc_lim_theta), 
+      fix_angle_gain_(fix_angle_gain), LINE_NUM(LINE_NUMBER),
       as_(nh, node_name, boost::bind(&Path_Planner::executeCB, this, _1), false)
 { //constructer, define pubsub
     ROS_INFO("Creating path_planning_pursuit");
-    ROS_INFO_STREAM("zonename: " << zonename_);
-    ROS_INFO_STREAM("use_odom_tf: " << use_odom_tf_);
+    ROS_INFO_STREAM("number of path: " << LINE_NUM);
+    ROS_INFO_STREAM("use_tf: " << use_tf_);
     ROS_INFO_STREAM("loop_rate [Hz]: " << loop_rate_);
     ROS_INFO_STREAM("acc_lim_xy [m/s^2]: " << max_accel_);
     ROS_INFO_STREAM("max_vel_xy [m/s]: " << max_vel_);
@@ -26,39 +29,51 @@ Path_Planner::Path_Planner(ros::NodeHandle &nh, const int &loop_rate, const std:
     ROS_INFO_STREAM("initial_vel [m/s]: " << initial_vel_);
     ROS_INFO_STREAM("corner_speed_rate: " << corner_speed_rate_);
     ROS_INFO_STREAM("global_frame_id: " << global_frame_id_);
+    ROS_INFO_STREAM("base_frame_id: " << base_frame_id_);
     ROS_INFO_STREAM("xy_goal_tolerance: " << xy_goal_tolerance_);
     ROS_INFO_STREAM("yaw_goal_tolerance [rad]: " << yaw_goal_tolerance_);
+    ROS_INFO_STREAM("fix_angle_gain: " << fix_angle_gain_);
     ROS_INFO_STREAM("angle_source: " << angle_source_);
 
     cmd_pub = nh_.advertise<geometry_msgs::Twist>("cmd_vel", 1);
     path_pub = nh_.advertise<nav_msgs::Path>("path", 1);
 
-    if (angle_source_ == "pose"){
-        bno_sub = nh_.subscribe("pose", 1, &Path_Planner::bnoCallback, this);
-    }
-    else if (angle_source_ == "imu"){
-        bno_sub = nh_.subscribe("imu", 1, &Path_Planner::imuCallback, this);
-    }
-    else{
-        ROS_ERROR("Failed to define angle source. Aborting...");
-        ros::shutdown();
-    }
-
-    if(!use_odom_tf_){// don't use odom tf. instead, use odom topic for localization
+    if (!use_tf_)
+    { // don't use odom tf. instead, use odom topic for localization
         odom_sub = nh_.subscribe("odom", 1, &Path_Planner::odomCallback, this);
+        if (angle_source_ == "pose")
+        {
+            bno_sub = nh_.subscribe("pose", 1, &Path_Planner::bnoCallback, this);
+        }
+        else if (angle_source_ == "imu")
+        {
+            bno_sub = nh_.subscribe("imu", 1, &Path_Planner::imuCallback, this);
+        }
+        else if (angle_source_ == "odom");
+        else
+        {
+            ROS_ERROR("Failed to define angle source. Aborting...");
+            ros::shutdown();
+        }
     }
-
     control.change_size(5,1);
-    setup(zonename_, max_accel_, max_vel_, acc_lim_theta_, max_vel_theta_, initial_vel_, corner_speed_rate_);
+    path = new Path[LINE_NUM];
+    path_ros = new nav_msgs::Path[LINE_NUM];
+    setup(max_accel_, max_vel_, acc_lim_theta_, max_vel_theta_, initial_vel_, corner_speed_rate_);
 
     as_.start();
     //update();
 }
 
-void Path_Planner::odomCallback(const nav_msgs::Odometry &msg)
+void Path_Planner::odomCallback(const nav_msgs::Odometry::ConstPtr &msg)
 {
-    position[0] = msg.pose.pose.position.x * 1000.0f; // m -> mm
-    position[1] = msg.pose.pose.position.y * 1000.0f;
+    position[0] = msg->pose.pose.position.x * 1000.0f; // m -> mm
+    position[1] = msg->pose.pose.position.y * 1000.0f;
+    if (angle_source_ == "odom"){
+        double roll, pitch, yaw;
+        geometry_quat_to_rpy(roll, pitch, yaw, msg->pose.pose.orientation);
+        body_theta = yaw;
+    }
 }
 
 void Path_Planner::geometry_quat_to_rpy(double &roll, double &pitch, double &yaw, geometry_msgs::Quaternion geometry_quat)
@@ -122,29 +137,17 @@ void Path_Planner::setPoseTopic(const int &path_num)
     }
 }
 
-void Path_Planner::setup(std::string zone, float max_accel, float max_vel, float acc_lim_theta, float max_vel_theta, float init_vel, float corner_speed_rate)
+void Path_Planner::setup(float max_accel, float max_vel, float acc_lim_theta, float max_vel_theta, float init_vel, float corner_speed_rate)
 {
     using namespace std;
+
     for (int i = 0; i < LINE_NUM; i++)
     {
         // "data_path" has data path
         stringstream ss;
-        if (zone == "blue"){
-            ss << data_path_ + "/path_point_blue" << i + 1 << ".csv";
-            string str = "Found " + ss.str() + " successfully";
-            ROS_INFO("%s", str.c_str());
-        }
-        else if (zone == "red")
-        {
-            ss << data_path_ + "/path_point_red" << i + 1 << ".csv";
-            string str = "Found " + ss.str() + " successfully";
-            ROS_INFO("%s", str.c_str());
-        }
-        else
-        {
-            cerr << "err change_RB / filename" << endl;
-            exit(1);
-        }
+        ss << data_path_ + "/" << i + 1 << ".csv";
+        string str = "Found " + ss.str() + " successfully";
+        ROS_INFO("%s", str.c_str());
         path[i].load_config(ss.str(), max_accel, max_vel, acc_lim_theta, max_vel_theta, init_vel, corner_speed_rate);
         setPoseTopic(i);
     }
@@ -159,21 +162,98 @@ void Path_Planner::publishMsg(const float &vx, const float &vy, const float &ome
     cmd_pub.publish(cmd_vel);
 }
 
-bool Path_Planner::reachedGoal(){
-    if (forwardflag)
+void Path_Planner::AdjustVelocity(float &v, float &old_v, const float &max_v, const float &acc_lim)
+{
+    // max_acc limit
+    if (v - old_v >= 0)
     {
-        if (control[4][1] >= path[path_mode - 1].pnum - xy_goal_tolerance_ && body_theta > control[5][1] - yaw_goal_tolerance_ && body_theta < control[5][1] + yaw_goal_tolerance_) // if the reference point almost reached goal
-            return true;
+        if ((v - old_v) * (float)loop_rate_ > acc_lim)
+        {
+            v = old_v + acc_lim / (float)loop_rate_;
+        }
     }
     else
     {
-        if (control[4][1] <= 1.00 + xy_goal_tolerance_ && body_theta > control[5][1] - yaw_goal_tolerance_ && body_theta < control[5][1] + yaw_goal_tolerance_) // if the reference point almost reached goal
+        if ((v - old_v) * (float)loop_rate_ < -1 * acc_lim)
+        {
+            v = old_v - acc_lim / (float)loop_rate_;
+        }
+    }
+    // max_vel limit
+    if (v >= 0)
+    {
+        if (v > max_v)
+        {
+            v = max_v;
+        }
+    }
+    else
+    {
+        if (v < -1 * max_v)
+        {
+            v = -1 * max_v;
+        }
+    }
+
+    old_v = v;
+}
+
+bool Path_Planner::reachedxyGoal(){
+    if (forwardflag)
+    {
+        if (control[4][1] >= path[path_mode - 1].pnum - xy_goal_tolerance_){
+            return true;
+        } // if the reference point almost reached goal       
+    }
+    else
+    {
+        if (control[4][1] <= 1.00 + xy_goal_tolerance_) // if the reference point almost reached goal
             return true;
     }
     return false;
 }
 
-void Path_Planner::executeCB(const PursuitPathGoalConstPtr &goal) // if use action communication
+void Path_Planner::terminate(const float &target_angle){
+    ros::Rate loop_rate(loop_rate_);
+
+    while (nh_.ok())
+    {
+        // get_angle
+        if (use_tf_)
+        {
+            // tf_listner
+            tf::StampedTransform transform;
+            try
+            {
+                listener.lookupTransform("/" + global_frame_id_, "/" + base_frame_id_, ros::Time(0), transform);
+            }
+            catch (tf::TransformException ex)
+            {
+                ROS_ERROR("%s", ex.what());
+                ros::Duration(1.0).sleep();
+            }
+            body_theta = tf::getYaw(transform.getRotation());
+        }
+
+        double delta = target_angle - body_theta;
+        //ROS_INFO("target_angle: %lf, robot_angle %lf", target_angle * 180.0 / M_PI, body_theta * 180.0 / M_PI);
+        if (delta > -1.0 * yaw_goal_tolerance_ && delta < yaw_goal_tolerance_){
+            publishMsg(0, 0, 0);
+            break;
+        }
+        _omega_ = delta * fix_angle_gain_;
+        _vx_ = 0;
+        _vy_ = 0;
+        AdjustVelocity(_vx_, _old_vx_, max_vel_, max_accel_);
+        AdjustVelocity(_vy_, _old_vy_, max_vel_, max_accel_);
+        AdjustVelocity(_omega_, _old_omega_, max_vel_theta_, acc_lim_theta_);
+
+        publishMsg(_vx_, _vy_, _omega_);
+        loop_rate.sleep();
+    }
+}
+
+    void Path_Planner::executeCB(const PursuitPathGoalConstPtr &goal) // if use action communication
 {
     ros::Rate r(loop_rate_);
 
@@ -186,13 +266,13 @@ void Path_Planner::executeCB(const PursuitPathGoalConstPtr &goal) // if use acti
 
     while (ros::ok())
     {
-        if (use_odom_tf_)
+        if (use_tf_)
         {
             // tf_listner
             tf::StampedTransform transform;
             try
             {
-                listener.lookupTransform("/odom", "/base_link", ros::Time(0), transform);
+                listener.lookupTransform("/" + global_frame_id_, "/" + base_frame_id_, ros::Time(0), transform);
             }
             catch (tf::TransformException ex)
             {
@@ -201,7 +281,7 @@ void Path_Planner::executeCB(const PursuitPathGoalConstPtr &goal) // if use acti
             }
             position[0] = transform.getOrigin().x() * 1000.0f; // m -> mm
             position[1] = transform.getOrigin().y() * 1000.0f;
-            //body_theta = tf::getYaw(transform.getRotation());
+            body_theta = tf::getYaw(transform.getRotation());
         }
 
         // Confirm action cancellation from action client
@@ -219,11 +299,8 @@ void Path_Planner::executeCB(const PursuitPathGoalConstPtr &goal) // if use acti
         if (path_mode == 0)
         {
             ROS_WARN("no paths are selected, aborting %s", node_name.c_str());
-            control[1][1] = 0;
-            control[2][1] = 0;
-            control[3][1] = 0;
 
-            publishMsg(control[1][1], control[2][1], control[3][1]);
+            publishMsg(0,0,0);
 
             as_.setPreempted();
             success = false;
@@ -231,17 +308,20 @@ void Path_Planner::executeCB(const PursuitPathGoalConstPtr &goal) // if use acti
         }
         else
         {
-            //ROS_INFO("pursuit path %d", path_mode - 1);
+            if (reachedxyGoal())
+            {
+                _old_vx_ = control[1][1]; // for terminate usage only
+                _old_vy_ = control[2][1]; // for terminate usage only
+                _old_omega_ = control[3][1]; // for terminate usage only
+                terminate(control[5][1]);
+                break;
+            }
             //pure_pursuit
             // return [velx,vely,theta,ref_t](4*1)
             // forwardflag = 1 when move forward ,0 when move backward
             control = path[path_mode - 1].pure_pursuit(position[0], position[1], body_theta, (float)loop_rate_, forwardflag);
             //control[3][1] -= body_theta;
 
-            if(reachedGoal()){
-                publishMsg(0,0,0);
-                break;
-            }
             // control[4][1]で追従時に参照した点番号がわかり、遷移先の検討に使える
             // pure_pursuitの4つ目の引数は開始時の点番号、点周辺から線形探索が始まる
         }
@@ -250,8 +330,6 @@ void Path_Planner::executeCB(const PursuitPathGoalConstPtr &goal) // if use acti
         path_pub.publish(path_ros[path_mode-1]);
         feedback_.reference_point = control[4][1];
         as_.publishFeedback(feedback_);
-
-        //publish path(nav_msgs/Path)(for visualization)
 
         ros::spinOnce();
         r.sleep();
@@ -267,58 +345,22 @@ void Path_Planner::executeCB(const PursuitPathGoalConstPtr &goal) // if use acti
     }
 }
 
-void Path_Planner::update(){ // if use topic communication
-    ros::Rate r(loop_rate_);
+std::size_t file_count_boost(const boost::filesystem::path &root)
+{
+    namespace fs = boost::filesystem;
+    if (!fs::exists(root) || !fs::is_directory(root))
+        return 0;
 
-    while (ros::ok()){
-        if (use_odom_tf_){
-            // tf_listner
-            tf::StampedTransform transform;
-            try
-            {
-                listener.lookupTransform("/odom", "/base_link", ros::Time(0), transform);
-            }
-            catch (tf::TransformException ex)
-            {
-                ROS_ERROR("%s", ex.what());
-                ros::Duration(1.0).sleep();
-            }
-            position[0] = transform.getOrigin().x() * 1000.0f; // m -> mm
-            position[1] = transform.getOrigin().y() * 1000.0f;
-            //body_theta = tf::getYaw(transform.getRotation());
-        }
-
-        if(path_mode==0){
-            ROS_WARN("no paths are selected");
-            control[1][1] = 0;
-            control[2][1] = 0;
-            control[3][1] = 0;
-        }
-        else
-        {
-            ROS_INFO("pursuit path %d", path_mode - 1);
-            //pure_pursuit
-            // return [velx,vely,theta,ref_t](4*1)
-            // forwardflag = 1 when move forward ,0 when move backward
-            control = path[path_mode - 1].pure_pursuit(position[0], position[1], body_theta, (float)loop_rate_, forwardflag);
-            //control[3][1] -= body_theta;
-            // control[4][1]で追従時に参照した点番号がわかり、遷移先の検討に使える
-            // pure_pursuitの4つ目の引数は開始時の点番号、底周辺から線形探索が始まる
-        }
-
-        geometry_msgs::Twist cmd_vel;
-        cmd_vel.linear.x = control[1][1];
-        cmd_vel.linear.y = control[2][1];
-        cmd_vel.angular.z = control[3][1];
-
-        cmd_pub.publish(cmd_vel);
-
-        //pathを遷移させる
-        //publish path(nav_msgs/Path)(for visualization)
-
-        ros::spinOnce();
-        r.sleep();
+    std::size_t result = 0;
+    fs::directory_iterator last;
+    for (fs::directory_iterator pos(root); pos != last; ++pos)
+    {
+        ++result;
+        if (fs::is_directory(*pos))
+            result += file_count_boost(pos->path());
     }
+
+    return result;
 }
 
 int main(int argc, char **argv)
@@ -329,23 +371,23 @@ int main(int argc, char **argv)
     ros::NodeHandle arg_n("~");
 
     int looprate = 30; // Hz
-    std::string zonename = "blue";
     std::string data_path = "";
-    bool use_odom_tf = false;
+    bool use_tf = false;
     float max_accel = 2.5;
     float max_vel = 1.5;
     float corner_speed_rate = 0.8;
     float xy_goal_tolerance = 0.05;
     float yaw_goal_tolerance = 0.01;
+    float fix_angle_gain = 10.0;
     std::string global_frame_id = "odom";
+    std::string base_frame_id = "base_footprint";
     std::string angle_source = "pose";
 
     float acc_lim_theta = 3.2;
     float max_vel_theta = 1.57;
 
     arg_n.getParam("control_frequency", looprate);
-    arg_n.getParam("zone", zonename);
-    arg_n.getParam("use_odom_tf", use_odom_tf);
+    arg_n.getParam("use_tf", use_tf);
     arg_n.getParam("data_path", data_path);
     arg_n.getParam("acc_lim_xy", max_accel);
     arg_n.getParam("acc_lim_theta", acc_lim_theta);
@@ -357,11 +399,16 @@ int main(int argc, char **argv)
     arg_n.getParam("initial_vel", initial_vel);
     arg_n.getParam("corner_speed_rate", corner_speed_rate);
     arg_n.getParam("global_frame_id", global_frame_id);
+    arg_n.getParam("base_frame_id", base_frame_id);
     arg_n.getParam("xy_goal_tolerance", xy_goal_tolerance);
     arg_n.getParam("yaw_goal_tolerance", yaw_goal_tolerance);
+    arg_n.getParam("fix_angle_gain", fix_angle_gain);
     arg_n.getParam("angle_source", angle_source);
 
-    Path_Planner planner(nh, looprate, zonename, use_odom_tf, data_path, max_accel, max_vel, corner_speed_rate, global_frame_id, initial_vel, xy_goal_tolerance, yaw_goal_tolerance, angle_source, max_vel_theta, acc_lim_theta);
+    std::size_t number = file_count_boost(data_path);
+    int LINE_NUM = (int)number;
+
+    Path_Planner planner(nh, looprate, use_tf, data_path, max_accel, max_vel, corner_speed_rate, global_frame_id, base_frame_id, initial_vel, xy_goal_tolerance, yaw_goal_tolerance, angle_source, max_vel_theta, acc_lim_theta, fix_angle_gain, LINE_NUM);
     ros::spin(); // Wait to receive action goal
     return 0;
 }
