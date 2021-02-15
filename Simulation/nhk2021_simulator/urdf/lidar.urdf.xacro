@@ -31,8 +31,8 @@
             <horizontal>
               <samples>400</samples>
               <resolution>1</resolution>
-              <min_angle>${radians(-90)}</min_angle>
-              <max_angle>${radians( 90)}</max_angle>
+              <min_angle>${radians(-180)}</min_angle>
+              <max_angle>${radians(180)}</max_angle>
             </horizontal>
           </scan>
           <range>
@@ -47,7 +47,7 @@
           </noise>
         </ray>
         <plugin name="gazebo_ros_lidar_controller" filename="libgazebo_ros_laser.so">
-          <topicName>/${prefix}_link/scan</topicName>
+          <topicName>/${prefix}/scan</topicName>
           <frameName>${prefix}_link</frameName>
         </plugin>
       </sensor>

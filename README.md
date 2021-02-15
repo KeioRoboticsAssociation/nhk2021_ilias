@@ -56,7 +56,14 @@ git clone https://github.com/RBinsonB/nexus_4wd_mecanum_simulator.git
 git clone https://github.com/cra-ros-pkg/robot_localization.git
 git clone https://github.com/yoshito-n-students/bno055_usb_stick.git
 git clone https://github.com/moden3/serial_test.git
-sudo apt install -y ros-melodic-navigation
+
+sudo apt-get update
+sudo apt-get install -y ros-melodic-navigation
+sudo apt-get install -y ros-melodic-robot-localization
+sudo apt-get install -y ros-melodic-laser-filters
+sudo apt-get install -y ros-melodic-gmapping
+
+rosrun map_server map_saver _map:=nhk2021map
 cd ../
 catkin_make
 ```

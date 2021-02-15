@@ -11,6 +11,11 @@
       <uri>model://abu2021-field-assembly_v1</uri>
       <pose>0 0 0 0 0 1.57079632</pose>
     </include>
+        <gui>
+      <camera name='user_camera'>
+        <pose frame=''>5.60 5.83 16.93 0 1.57 1.57</pose>
+      </camera>
+    </gui>
   </world>
 </sdf>
 
