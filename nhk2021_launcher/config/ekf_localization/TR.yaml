@@ -11,7 +11,7 @@ publish_acceleration: false
 
 map_frame: map
 odom_frame: odom
-base_link_frame: base_footprint
+base_link_frame: base_link
 
 #odom0: wheel odometry
 odom0: odom

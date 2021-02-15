@@ -1,0 +1,40 @@
+<?xml version="1.0" ?>
+<robot name="simple_diff_drive" xmlns:xacro="http://ros.org/wiki/xacro">
+
+ <xacro:include filename="$(find nhk2021_simulator)/urdf/body.urdf.xacro" />
+ <xacro:include filename="$(find nhk2021_simulator)/urdf/wheel.urdf.xacro" />
+
+ <xacro:include filename="$(find nhk2021_simulator)/urdf/lidar.urdf.xacro" />
+ <xacro:include filename="$(find nhk2021_simulator)/urdf/imu.urdf.xacro" />
+
+  <gazebo>
+    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+      <robotNamespace>/simple_diff_drive</robotNamespace>
+      <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
+      <legacyModeNS>true</legacyModeNS>
+    </plugin>
+  </gazebo>
+
+<!--
+  <gazebo>
+    <plugin name="differential_drive_controller" filename="libgazebo_ros_diff_drive.so">
+      <leftJoint>wheel_l_joint</leftJoint>
+      <rightJoint>wheel_r_joint</rightJoint>
+      <robotBaseFrame>base_link</robotBaseFrame>
+      <wheelSeparation>0.42</wheelSeparation>
+      <wheelDiameter>0.0954</wheelDiameter>
+      <publishWheelJointState>true</publishWheelJointState>
+      <legacyMode>false</legacyMode>
+      <odometryTopic>odometry</odometryTopic>
+      <odometryFrame>odometry</odometryFrame>
+    </plugin>
+  </gazebo>
+-->
+
+
+ <xacro:wheel rl="r" parent="base_link" />
+ <xacro:wheel rl="l" parent="base_link" />
+
+ <xacro:laser_macro prefix="rplidar" parent="base_link" xyz="0.23 0 0.04" />
+ <xacro:imu_macro prefix="imu" parent="base_link" xyz="0.0 0 0.10" />
+</robot>
