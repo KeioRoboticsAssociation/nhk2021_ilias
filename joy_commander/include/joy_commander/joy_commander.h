@@ -1,5 +1,5 @@
-#ifndef JOY_COMMANDER_TR_H_
-#define JOY_COMMANDER_TR_H_
+#ifndef JOY_COMMANDER_H_
+#define JOY_COMMANDER_H_
 
 #include <ros/ros.h>
 #include <geometry_msgs/Twist.h>
@@ -15,11 +15,11 @@
 
 #define PI 3.141592f
 
-class JOYSTICK_TR
+class JOYSTICK
 {
 public:
-    JOYSTICK_TR(ros::NodeHandle &nh, const int &loop_rate);
-    ~JOYSTICK_TR(){};
+    JOYSTICK(ros::NodeHandle &nh, const int &loop_rate);
+    ~JOYSTICK(){};
 
 private:
     //Handlers

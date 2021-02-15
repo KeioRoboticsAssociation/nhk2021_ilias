@@ -43,19 +43,17 @@ float32 reference_point
 
 - **control_frequency** : publish frequency (default : 30[Hz])
 
-- **zone** : 赤陣営("red")か青陣営("blue")かを与える (default : "blue")
+- **base_frame_id** : ロボット座標系 (default : "base_footprint")
 
-- **use_odom_tf** : (default : "false")
+- **global_frame_id** : 固定座標系 (default : "map")
 
-  現在位置をodom tfから取得するかどうか
+- **use_tf** : (default : "false")
 
-  trueならばodom tfから取得する
+  現在位置をglobal_frame_id->base_frame_idの位置関係から取得するかどうか
 
-  falseならばodomトピックから取得する
+  trueにするのは、amclなどの自己位置推定ノードによってtfが補正されている場合
 
-  trueにするのは、amclなどの自己位置推定によってodom tfが補正されている場合
-
-- **data_path** : csvファイルの格納されているディレクトリ (default : "`$(find pkg_manager_tr)/config/waypoints`")
+- **data_path** : csvファイルの格納されているディレクトリ (default : "`$(find nhk2021_launcher)/config/waypoints/TR`")
 
 - **acc_lim_xy** : maximum value of xy accelaration (default : 2.5 [m/s^2])
 
@@ -65,15 +63,7 @@ float32 reference_point
 
 - **max_vel_theta** : maximum value of theta velocity (default : 1.57 [rad/s])
 
-- **initial_vel** : 初速度 (default : `max_accel / control_frequency` [m/s])
-
-- **corner_speed_rate** :  (default : 0.8)
-
-  コーナーでどのくらい攻めるか
-
-  ロボットが立方体であると仮定した場合、corner_speed_rate = 1.0のとき遠心力と重力のモーメントが釣り合うまで速度を上げることを許容する。よって1.0未満であることが望ましい。
-
-- **global_frame_id** :  Pathをどのフレームに描画するか (default : "odom")
+- **initial_vel** : 初速度 (default : 0.1 [m/s])
 
 - **xy_goal_tolerance** :  (default : 0.05)
 
@@ -87,21 +77,39 @@ float32 reference_point
 
 - **angle_source** : (default : "pose")
 
-  ロボットの車体角度の取得源を"**pose**", "**imu**"の2択から選択する。
+  ロボットの車体角度の取得源を"**pose**", "**imu**", "**odom**"の3択から選択する。
 
-  **実機**の場合はpose (bno055のposeトピックより取得)
+  poseの場合は`geometry_msgs::PoseStamped`型のtopicより
 
-  **シミュレーション**の場合は**imu** (imuのgazeboプラグインが出すimuトピックより取得)
+  imuの場合は`sensor_msgs::Imu`型のtopicより
 
-  pose, imu以外の文字列を入れると強制終了するようにしている。
+  odomの場合は`nav_msgs::Odometry`型のtopicより取得する
+
+  pose, imu, odom以外の文字列を入れると強制終了するようにしている。
+
+  
+
+### Advanced settings
+
+- **fix_angle_gain** :  (default : 3.0)
+
+  このプランナーは目的地到達後に角度調整を行う。
+
+  その際、角速度を$ω=Δθ\times fix\_angle\_gain$で定めている。
+
+- **corner_speed_rate** :  (default : 0.8)
+
+  コーナーでどのくらい攻めるか
+
+  ロボットが立方体であると仮定した場合、corner_speed_rate = 1.0のとき遠心力と重力のモーメントが釣り合うまで速度を上げることを許容する。よって1.0未満であることが望ましい。
 
 
 
 ## Subscribed Topics
 
+- **/odom** (type : `nav_msgs::Odometry`) (**use_tf = false の場合**)
 - **/pose** (type : `geometry_msgs::PoseStamped`) (**angle_source = "pose" の場合**)
 - **/imu** (type : `sensor_msgs::Imu`) (**angle_source = "imu" の場合**)
-- **/odom** (type : `nav_msgs::Odometry`) (**use_odom_tf = false の場合**)
 
 
 
@@ -116,7 +124,7 @@ float32 reference_point
 
 ### waypointを格納するcsvの記述フォーマット
 
-*path_point_blue1.csv*
+*1.csv*
 
 ```csv
 x,y,theta
@@ -131,40 +139,9 @@ x,y,theta
 
 - thetaを"-"とすると、その点は線形補間される。
 
-- csvの名前はpath_point_"zone_name""path_number".csvとする。
+- csvの名前は何でもよいが、上から読んでいくので1.csv, 2.csv...などとしていくとよい。
 
 - csvの格納されているディレクトリはpath_planning_pursuitノードを起動する際に**data_path**パラメータに指定する
-
-
-
-また、新たにパスを追加、削除した際は`bezier_path_planning_pursuit/src/path_planner.h`の`#define LINE_NUM`の値を変更すること。例えば、csvを編集してpathが5つになった場合、以下のように編集する。
-
-```cpp
-#ifndef PATH_PLANNER_H
-#define PATH_PLANNER_H
-
-#include "path_planning.h"
-
-#include <ros/ros.h>
-
-#include <tf/transform_listener.h>
-#include <tf/transform_broadcaster.h>
-#include <nav_msgs/Odometry.h>
-#include <nav_msgs/Path.h>
-#include <std_msgs/Header.h>
-#include <geometry_msgs/Twist.h>
-#include <geometry_msgs/PoseStamped.h>
-#include <geometry_msgs/Pose.h>
-
-#include <actionlib/server/simple_action_server.h>          // action Library Header File
-#include <bezier_path_planning_pursuit/PursuitPathAction.h> // PursuitPathAction Action File Header
-
-using namespace bezier_path_planning_pursuit;
-
-#define LINE_NUM 5 // <- modified
-
-class Path_Planner
-```
 
 
 

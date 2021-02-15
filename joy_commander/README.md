@@ -1,11 +1,8 @@
-# joy_commander_tr
+# joy_commander
 
 ## これは何
 
 ジョイコンでbase_linkへの速度指令値(/cmd_vel)を生成するパッケージ
-
-特定のボタンを押したら矢を発射するなどは後日追加する
-
 
 
 ## Subscribed Topics
@@ -29,11 +26,11 @@
 ## Launch
 
 ```shell
-roslaunch joy_commander_tr joy_commander_tr.launch
+roslaunch joy_commander joy_commander.launch
 ```
 
 
 
 ## 補足
 
-キーコンフィグは`./include/joy_commander_tr.h`の#defineの値を変更すれば容易に変更可能
+キーコンフィグは`./include/joy_commander/joy_commander.h`の#defineの値を変更すれば変更可能

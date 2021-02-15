@@ -3,7 +3,7 @@
   <arg name="control_frequency" default="30" />
   <arg name="use_tf" default="true" />
   <arg name="angle_source" default="imu" />
-  <arg name="csv_path" default="$(find pkg_manager_tr)/config/waypoints/TR" />
+  <arg name="csv_path" default="$(find nhk2021_launcher)/config/waypoints/TR" />
   <arg name="acc_lim_xy" default="2.5" />
   <arg name="max_vel_xy" default="1.5" />
   <arg name="acc_lim_theta" default="3.2" />
@@ -53,7 +53,7 @@
   </node>
 
   <node pkg="robot_localization" type="ekf_localization_node" name="ekf_se" clear_params="true" output="screen">
-      <rosparam command="load" file="$(find pkg_manager_tr)/config/ekf_localization/TR.yaml" />
+      <rosparam command="load" file="$(find nhk2021_launcher)/config/ekf_localization/TR.yaml" />
       <remap from="/odometry/filtered" to="odom_filtered" />
   </node>
 
@@ -67,7 +67,7 @@
 
   <!-- amcl -->
   <arg name="use_map_topic" default="true"/>
-  <node pkg="map_server" type="map_server" name="map_server" args="$(find pkg_manager_tr)/config/map/map.yaml">
+  <node pkg="map_server" type="map_server" name="map_server" args="$(find nhk2021_launcher)/config/map/map.yaml">
     <param name="frame_id" value="map"/>
   </node>
   

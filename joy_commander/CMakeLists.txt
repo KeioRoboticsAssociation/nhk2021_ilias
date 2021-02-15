@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(joy_commander_tr)
+project(joy_commander)
 
 find_package(catkin REQUIRED COMPONENTS
   roscpp
@@ -9,15 +9,15 @@ find_package(catkin REQUIRED COMPONENTS
 
 catkin_package(
 #  INCLUDE_DIRS include
-#  LIBRARIES joy_commander_tr
+#  LIBRARIES joy_commander
 #  CATKIN_DEPENDS roscpp rospy std_msgs
 #  DEPENDS system_lib
 )
 
 include_directories(
-  include/joy_commander_tr
+  include
   ${catkin_INCLUDE_DIRS}
 )
 
-add_executable(joy_commander_tr src/joy_commander_tr.cpp)
-target_link_libraries(joy_commander_tr ${catkin_LIBRARIES})
+add_executable(joy_commander src/joy_commander.cpp)
+target_link_libraries(joy_commander ${catkin_LIBRARIES})

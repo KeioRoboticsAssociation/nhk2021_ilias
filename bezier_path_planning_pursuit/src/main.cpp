@@ -408,6 +408,7 @@ int main(int argc, char **argv)
 
     float acc_lim_theta = 3.2;
     float max_vel_theta = 1.57;
+    float initial_vel = 0.1;
 
     arg_n.getParam("control_frequency", looprate);
     arg_n.getParam("use_tf", use_tf);
@@ -416,9 +417,6 @@ int main(int argc, char **argv)
     arg_n.getParam("acc_lim_theta", acc_lim_theta);
     arg_n.getParam("max_vel_xy", max_vel);
     arg_n.getParam("max_vel_theta", max_vel_theta);
-
-    float initial_vel = max_accel / looprate;
-
     arg_n.getParam("initial_vel", initial_vel);
     arg_n.getParam("corner_speed_rate", corner_speed_rate);
     arg_n.getParam("global_frame_id", global_frame_id);
