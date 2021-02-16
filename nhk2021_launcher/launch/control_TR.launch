@@ -67,7 +67,7 @@
 
   <!-- amcl -->
   <arg name="use_map_topic" default="true"/>
-  <node pkg="map_server" type="map_server" name="map_server" args="$(find nhk2021_launcher)/config/map/.old/map.yaml">
+  <node pkg="map_server" type="map_server" name="map_server" args="$(find nhk2021_launcher)/config/map/map.yaml">
     <param name="frame_id" value="map"/>
   </node>
   
