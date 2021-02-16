@@ -24,7 +24,7 @@
 
   <node name="odom_tf_publisher" pkg="nhk2021_simulator" type="odom_tf_publisher" >
     <param name = "base_frame_id" value = "base_footprint" />
-    <remap from="odom" to="odom_filtered" />
+    <!--<remap from="odom" to="odom_filtered" />-->
   </node>
 
   <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig) -f odom" required="true" />

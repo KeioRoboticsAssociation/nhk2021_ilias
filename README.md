@@ -6,6 +6,16 @@
 
 
 
+**cartographer_ros** **branch**
+
+google cartographerを用いたマッピングと自己位置推定を画策するブランチ
+
+だったがcartographerで作成したmapとamclの相性が悪そうだったのでいったん凍結
+
+使用するとしたら自己位置推定もcartographerで行う
+
+
+
 ## Git管理上の注意
 
 1. ”機能ごとに”ブランチを切ってください。名前は基本的には「featrue/機能名」としましょう

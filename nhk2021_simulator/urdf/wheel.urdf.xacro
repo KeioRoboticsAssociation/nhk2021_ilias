@@ -3,7 +3,7 @@
 
 <xacro:property name="PI" value="3.1415926535897931"/>
 <xacro:property name="wheel_radius" value="0.035"/>
-<xacro:property name="wheel_height" value="0.05"/>
+<xacro:property name="wheel_height" value="0.06"/>
 <xacro:property name="wheel_mass" value="0.50"/>
 
 <xacro:macro name="wheel" params="rl parent">
@@ -32,10 +32,10 @@
   <parent link="${parent}" />
   <child link="wheel_${rl}" />
   <xacro:if value="${rl == 'r'}">
-    <origin xyz="0 -0.22 0.035" rpy="${PI/2} 0 0" /><!--z: position from base_link - position from body-->
+    <origin xyz="0 -0.25 0.035" rpy="${PI/2} 0 0" /><!--z: position from base_link - position from body-->
   </xacro:if>
   <xacro:if value="${rl == 'l'}">
-     <origin xyz="0 0.22 0.035" rpy="${PI/2} 0 0" />
+     <origin xyz="0 0.25 0.035" rpy="${PI/2} 0 0" />
   </xacro:if>
   <axis xyz="0 0 -1" />
   <limit effort="6.0" velocity="12.0" /><!-- maximum torqe(<8.82), maximum velocity-->

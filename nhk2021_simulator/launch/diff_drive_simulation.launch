@@ -15,7 +15,7 @@
   </include>
 
 <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model"
-     args="-param robot_description -x 0.5 -y 0.5 -z 0.5 -R 0 -P 0 -Y 0 -urdf -model simple_diff_drive" />
+     args="-param robot_description -x 0.5 -y 0.5 -z 0.5 -R 0 -P 0 -Y 1.57079632 -urdf -model simple_diff_drive" />
 
 
   <param name="/simple_diff_drive/diff_drive_controller/enable_odom_tf" value="true" />
@@ -26,6 +26,6 @@
 
 
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" output="screen" ns="/simple_diff_drive"/>
-  <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig) -f odom" required="true" />
+  <!--<node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig) -f odom" required="true" />-->
 
 </launch>
