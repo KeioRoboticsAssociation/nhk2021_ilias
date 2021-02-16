@@ -3,7 +3,7 @@
   <arg name="control_frequency" default="30" />
   <arg name="use_tf" default="true" />
   <arg name="angle_source" default="imu" />
-  <arg name="csv_path" default="$(find nhk2021_launcher)/config/waypoints/TR" />
+  <arg name="csv_path" default="$(find nhk2021_launcher)/config/waypoints/DR" />
   <arg name="acc_lim_xy" default="2.5" />
   <arg name="max_vel_xy" default="1.5" />
   <arg name="acc_lim_theta" default="3.2" />
@@ -83,8 +83,8 @@
   <param name="transform_tolerance" value="0.1" />
   <param name="recovery_alpha_slow" value="0.001"/>
   <param name="recovery_alpha_fast" value="0.1"/>
-  <param name="initial_pose_x" value="0.5"/>
-  <param name="initial_pose_y" value="0.5"/>
+  <param name="initial_pose_x" value="5.450"/>
+  <param name="initial_pose_y" value="11.500"/>
   <param name="initial_pose_a" value="0.0"/>
   <param name="initial_cov_xx" value="0.04"/><!--0.2 m ^2-->
   <param name="initial_cov_yy" value="0.04"/><!--0.2 m ^2-->

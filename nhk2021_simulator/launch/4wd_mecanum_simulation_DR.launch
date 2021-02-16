@@ -1,0 +1,32 @@
+<?xml version="1.0" ?>
+<launch>
+
+  <arg name="rvizconfig" default="$(find nhk2021_simulator)/config/localization.rviz" />
+
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(find nhk2021_simulator)/worlds/nhk2021.world"/> <!-- Note: the world_name is with respect to GAZEBO_RESOURCE_PATH environmental variable -->
+    <arg name="paused" value="false"/>
+    <arg name="use_sim_time" value="true"/>
+    <arg name="gui" value="true"/>
+    <arg name="headless" value="false"/>
+    <arg name="debug" value="false"/>
+  </include>
+
+  <!-- Load robot description -->
+  <param name="robot_description" command="$(find xacro)/xacro --inorder $(find nhk2021_simulator)/urdf/mecanum_robot.urdf.xacro" />
+
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
+
+  <!-- Spawn the robot -->
+  <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model"
+        args="-urdf -model nexus_4wd_mecanum -param robot_description -x 5.450 -y 11.500 -z 0.5 -R 0 -P 0 -Y 0 " />
+
+  <node name="odom_tf_publisher" pkg="nhk2021_simulator" type="odom_tf_publisher" >
+    <param name = "base_frame_id" value = "base_footprint" />
+    <remap from="odom" to="odom_filtered" />
+  </node>
+
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig) -f odom" required="true" />
+
+</launch>
