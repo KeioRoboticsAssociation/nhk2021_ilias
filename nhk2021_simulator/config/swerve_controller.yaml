@@ -1,0 +1,34 @@
+rf_joint_velocity_controller:
+  type: velocity_controllers/JointVelocityController
+  joint: wheel_rf_joint
+  pid: {p: 10.0, i: 0.0, d: 0.0001, i_clamp: 1.0, antiwindup: true}
+lf_joint_velocity_controller:
+  type: velocity_controllers/JointVelocityController
+  joint: wheel_lf_joint
+  pid: {p: 10.0, i: 0.0, d: 0.0001, i_clamp: 1.0, antiwindup: true}
+rb_joint_velocity_controller:
+  type: velocity_controllers/JointVelocityController
+  joint: wheel_rb_joint
+  pid: {p: 10.0, i: 0.0, d: 0.0001, i_clamp: 1.0, antiwindup: true}
+lb_joint_velocity_controller:
+  type: velocity_controllers/JointVelocityController
+  joint: wheel_lb_joint
+  pid: {p: 10.0, i: 0.0, d: 0.0001, i_clamp: 1.0, antiwindup: true}
+
+rf_joint_angular_controller:
+  type: effort_controllers/JointPositionController
+  joint: wheel_rf_angular_joint
+  pid: {p: 10.0, i: 0.0, d: 0.0001, i_clamp: 1.0, antiwindup: true}
+lf_joint_angular_controller:
+  type: effort_controllers/JointPositionController
+  joint: wheel_lf_angular_joint
+  pid: {p: 10.0, i: 0.0, d: 0.0001, i_clamp: 1.0, antiwindup: true}
+rb_joint_angular_controller:
+  type: effort_controllers/JointPositionController
+  joint: wheel_rb_angular_joint
+  pid: {p: 10.0, i: 0.0, d: 0.0001, i_clamp: 1.0, antiwindup: true}
+lb_joint_angular_controller:
+  type: effort_controllers/JointPositionController
+  joint: wheel_lb_angular_joint
+  pid: {p: 10.0, i: 0.0, d: 0.0001, i_clamp: 1.0, antiwindup: true}
+  

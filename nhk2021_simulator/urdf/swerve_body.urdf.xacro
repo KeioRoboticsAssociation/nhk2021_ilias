@@ -1,0 +1,44 @@
+<?xml version="1.0" ?>
+<robot name="body" xmlns:xacro="http://ros.org/wiki/xacro">
+<link name="base_footprint" />
+<link name="base_link" />
+<joint name="base_joint" type="fixed">
+<parent link="base_footprint" />
+   <child link="base_link" />
+   <origin xyz="0 0 0.01" rpy="0 0 0" />
+</joint>
+
+<xacro:property name="b_m" value="5.58"/>
+<xacro:property name="b_m2" value="${b_m/12}"/><!--for calculation of inertia-->
+<xacro:property name="b_w" value="0.37"/>
+<xacro:property name="b_h" value="0.37"/>
+<xacro:property name="b_d" value="0.37"/>
+
+<link name="body">
+   <visual>
+　　<geometry>
+　　　<box size="${b_d} ${b_w} ${b_h}" />
+     </geometry>
+  </visual>
+   <collision>
+　　<geometry>
+　　　<box size="${b_d*0.95} ${b_w*0.95} ${b_h*0.95}" />
+     </geometry>
+  </collision>
+  <inertial>
+     <origin xyz="0 0 0" rpy="0 0 0" />
+     <mass value="${b_m}" />
+    <inertia ixx="${b_m2*(b_h*b_h+b_w*b_w)}" ixy="0"    ixz="0"
+                 iyx="0"   iyy="${b_m2*(b_h*b_h+b_d*b_d)}"  iyz="0"
+		 izx="0"   izy="0"  izz="${b_m2*(b_w*b_w+b_d*b_d)}" />
+  </inertial>
+</link>
+
+<joint name="body_joint" type="fixed">
+<parent link="base_footprint" />
+   <child link="body" />
+   <origin xyz="0 0 0.195" rpy="0 0 0" />
+</joint>
+
+</robot>
+

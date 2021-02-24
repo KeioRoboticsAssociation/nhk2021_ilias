@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <launch>
 
-  <arg name="model" default="$(find nhk2021_simulator)/urdf/robot.urdf.xacro"/>
+  <arg name="model" default="$(find nhk2021_simulator)/urdf/diff_robot.urdf.xacro"/>
   <param name="robot_description" command="$(find xacro)/xacro $(arg model) --inorder"/>
   <arg name="rvizconfig" default="$(find nhk2021_simulator)/config/simulation.rviz" />
 

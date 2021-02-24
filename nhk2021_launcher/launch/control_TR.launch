@@ -38,14 +38,27 @@
     -->
   </node>
 
-  <!--
   <node pkg="swerve_wheelctrl" type="swerve_wheelctrl" name="swerve_wheelctrl" output="screen">
     <param name="control_frequency" value="$(arg control_frequency)"/>
     <param name="lost_time_threshold" value="500"/>
     <param name="body_width" value="0.440"/>
+    <param name="gazebo_mode" value="true"/>
+    <remap from="control_RF" to="/simple_swerve/rf_joint_velocity_controller/command" />
+    <remap from="control_LF" to="/simple_swerve/lf_joint_velocity_controller/command" />
+    <remap from="control_LB" to="/simple_swerve/lb_joint_velocity_controller/command" />
+    <remap from="control_RB" to="/simple_swerve/rb_joint_velocity_controller/command" />
+    <remap from="control_RF_angle" to="/simple_swerve/rf_joint_angular_controller/command" />
+    <remap from="control_LF_angle" to="/simple_swerve/lf_joint_angular_controller/command" />
+    <remap from="control_LB_angle" to="/simple_swerve/lb_joint_angular_controller/command" />
+    <remap from="control_RB_angle" to="/simple_swerve/rb_joint_angular_controller/command" />
   </node>
-  -->
 
+  <node pkg="swerve_odom_publisher" type="swerve_odom_publisher" name="swerve_odom_publisher" output="screen">
+    <param name="control_frequency" value="$(arg control_frequency)"/>
+    <param name="base_frame_id" value="base_footprint"/>
+    <param name="body_width" value="0.440"/>
+    <param name="gazebo_mode" value="true"/>
+  </node>
 
   <!-- robot localization -->
   <node pkg="bno055_usb_stick" type="bno055_usb_stick_node" name="bno055" output="screen">
@@ -77,7 +90,7 @@
   <param name="max_particles" value="500"/>
   <param name="kld_err" value="0.01"/>
   <param name="kld_z" value="0.99"/>
-  <param name="update_min_d" value="0.44"/>
+  <param name="update_min_d" value="0.22"/>
   <param name="update_min_a" value="0.785"/>
   <param name="resample_interval" value="2"/>
   <param name="transform_tolerance" value="0.1" />

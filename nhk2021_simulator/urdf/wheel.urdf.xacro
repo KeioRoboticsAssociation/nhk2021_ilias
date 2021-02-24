@@ -51,6 +51,7 @@
     <transmission name="wheel_${rl}_trans" type="SimpleTransmission">
       <type>transmission_interface/SimpleTransmission</type>
         <actuator name="wheel_${rl}_motor">
+          <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
           <mechanicalReduction>1</mechanicalReduction>
         </actuator>
       <joint name="wheel_${rl}_joint">

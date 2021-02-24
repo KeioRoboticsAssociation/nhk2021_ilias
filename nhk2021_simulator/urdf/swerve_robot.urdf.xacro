@@ -1,0 +1,26 @@
+<?xml version="1.0" ?>
+<robot name="simple_swerve" xmlns:xacro="http://ros.org/wiki/xacro">
+
+ <xacro:include filename="$(find nhk2021_simulator)/urdf/swerve_body.urdf.xacro" />
+ <xacro:include filename="$(find nhk2021_simulator)/urdf/swerve_wheel.urdf.xacro" />
+
+ <xacro:include filename="$(find nhk2021_simulator)/urdf/lidar.urdf.xacro" />
+ <xacro:include filename="$(find nhk2021_simulator)/urdf/imu.urdf.xacro" />
+
+  <gazebo>
+    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+      <robotNamespace>/simple_swerve</robotNamespace>
+      <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
+      <legacyModeNS>true</legacyModeNS>
+    </plugin>
+  </gazebo>
+
+
+ <xacro:wheel rl="rf" parent="base_footprint" />
+ <xacro:wheel rl="lf" parent="base_footprint" />
+ <xacro:wheel rl="rb" parent="base_footprint" />
+ <xacro:wheel rl="lb" parent="base_footprint" />
+
+ <xacro:laser_macro prefix="rplidar" parent="base_footprint" xyz="0.205 0 0.04" />
+ <xacro:imu_macro prefix="imu" parent="base_footprint" xyz="0.0 0 0.10" />
+</robot>
