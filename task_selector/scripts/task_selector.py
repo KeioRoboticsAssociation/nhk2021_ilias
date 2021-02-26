@@ -12,7 +12,6 @@ class Task_Selector():
         self.pathmode_ = 0
         self.direction_ = 1
         self.send_goal = False
-        self.enable_button = True # 配列にする
         self.client = actionlib.SimpleActionClient('/bezier_path_planning_pursuit', bezier_path_planning_pursuit.msg.PursuitPathAction)
         self.joy_sub = rospy.Subscriber("joy", Joy, self.Joycallback)
 
@@ -26,32 +25,26 @@ class Task_Selector():
 
         # Sends the goal to the action server.
         self.client.send_goal(goal)
-
+        '''
         # Waits for the server to finish performing the action.
         self.client.wait_for_result()
-
+        '''
 
     def Joycallback(self, msg):
-        print("a")
-        
-        if self.push_button(msg.axes[1], self.enable_button[2]):
+        if msg.buttons[10] == 1:
+            self.client.cancel_goal()
+        elif msg.buttons[5] == 1:
             self.pathmode_ += 1
-        if self.push_button(msg.axes[1], self.enable_button[2]):
+        elif msg.buttons[4] == 1:
             self.pathmode_ -= 1
-        
-        if self.push_button(msg.axes[1], self.enable_button[2]):
-            self.direction_=1
+        elif msg.buttons[2] == 1:
+            self.direction_ = 1
             self.sendgoal()
-
-    def push_button(self, value, enable_button):
-        if value == 1 and enable_button:
-            enable_button = False
-            return True
-        else:
-            if value == 0:
-                enable_button = True
-            return False
-
+        elif msg.buttons[1] == 1:
+            self.direction_ = 0
+            self.sendgoal()
+        
+        print(self.pathmode_)
 
 if __name__ == '__main__':
     try:
@@ -61,7 +54,6 @@ if __name__ == '__main__':
         print("create task_selector")
 
         task_selector = Task_Selector()
-        task_selector.sendgoal()
         rospy.spin()
 
     except rospy.ROSInterruptException:
