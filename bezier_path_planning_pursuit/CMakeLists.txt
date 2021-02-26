@@ -36,7 +36,7 @@ generate_messages(
 catkin_package(
 #  INCLUDE_DIRS include
   LIBRARIES bezier_path_planning_pursuit
-  CATKIN_DEPENDS roscpp rospy std_msgs actionlib actionlib_msgs
+  CATKIN_DEPENDS roscpp rospy std_msgs actionlib actionlib_msgs message_runtime
   DEPENDS Boost
 )
 
@@ -49,6 +49,6 @@ include_directories(
 add_subdirectory(src/Matrix)
 add_subdirectory(src/path_planning)
 
-add_executable(path_planning_pursuit src/main.cpp)
-target_link_libraries(path_planning_pursuit ${catkin_LIBRARIES} path_planning Matrix)
-add_dependencies(path_planning_pursuit ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_executable(bezier_path_planning_pursuit src/main.cpp)
+target_link_libraries(bezier_path_planning_pursuit ${catkin_LIBRARIES} path_planning Matrix)
+add_dependencies(bezier_path_planning_pursuit ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})

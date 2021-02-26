@@ -4,6 +4,12 @@ int32 direction
 ---
 #result definition
 bool result
+float32 position_x
+float32 position_y
+float32 position_theta
 ---
 #feedback
 float32 reference_point
+float32 vx
+float32 vy
+float32 omega

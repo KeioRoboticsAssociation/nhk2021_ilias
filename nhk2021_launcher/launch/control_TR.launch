@@ -12,11 +12,11 @@
   <arg name="corner_speed_rate" default="0.8" />
   <arg name="global_frame_id" default="map" />
   <arg name="base_frame_id" default="base_footprint" />
-  <arg name="xy_goal_tolerance" default="0.05" />
+  <arg name="xy_goal_tolerance" default="0.02" />
   <arg name="yaw_goal_tolerance" default="0.01" />
   <arg name="fix_angle_gain" default="2.0" />
 
-  <node pkg="bezier_path_planning_pursuit" name="path_planning_pursuit" type="path_planning_pursuit" output="screen">
+  <node pkg="bezier_path_planning_pursuit" name="bezier_path_planning_pursuit" type="bezier_path_planning_pursuit" output="screen">
     <param name= "control_frequency" value="$(arg control_frequency)" />
     <param name = "use_tf" value = "$(arg use_tf)" />
     <param name = "data_path" value = "$(arg csv_path)" />

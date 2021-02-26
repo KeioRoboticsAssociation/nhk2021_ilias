@@ -26,6 +26,6 @@
       args="rf_joint_velocity_controller lf_joint_velocity_controller rb_joint_velocity_controller lb_joint_velocity_controller 
       rf_joint_angular_controller lf_joint_angular_controller rb_joint_angular_controller lb_joint_angular_controller joint_state_controller" />
 
-  <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig) -f odom" required="true" />
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig) -f map" required="true" />
 
 </launch>

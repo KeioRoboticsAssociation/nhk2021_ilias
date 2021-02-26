@@ -1,6 +1,6 @@
 #include "path_planner.h"
 
-std::string node_name = "path_planning_pursuit";
+std::string node_name = "bezier_path_planning_pursuit";
 
 using namespace bezier_path_planning_pursuit;
 
@@ -18,7 +18,7 @@ Path_Planner::Path_Planner(ros::NodeHandle &nh, const int &loop_rate, const bool
       fix_angle_gain_(fix_angle_gain), LINE_NUM(LINE_NUMBER),
       as_(nh, node_name, boost::bind(&Path_Planner::executeCB, this, _1), false)
 { //constructer, define pubsub
-    ROS_INFO("Creating path_planning_pursuit");
+    ROS_INFO("Creating bezier_path_planning_pursuit");
     ROS_INFO_STREAM("number of path: " << LINE_NUM);
     ROS_INFO_STREAM("use_tf: " << use_tf_);
     ROS_INFO_STREAM("loop_rate [Hz]: " << loop_rate_);
@@ -352,6 +352,9 @@ void Path_Planner::executeCB(const PursuitPathGoalConstPtr &goal) // if use acti
         publishMsg(_vx_, _vy_, _omega_);
         path_pub.publish(path_ros[path_mode-1]);
         feedback_.reference_point = control[4][1];
+        feedback_.vx = _vx_;
+        feedback_.vy = _vy_;
+        feedback_.omega = _omega_;
         as_.publishFeedback(feedback_);
 
         ros::spinOnce();
@@ -362,6 +365,9 @@ void Path_Planner::executeCB(const PursuitPathGoalConstPtr &goal) // if use acti
     if (success)
     {
         result_.result = true;
+        result_.position_x = position[0] / 1000.0;
+        result_.position_y = position[1] / 1000.0;
+        result_.position_theta = body_theta;
         ROS_INFO("%s: Succeeded", node_name.c_str());
         // set the action state to succeeded
         as_.setSucceeded(result_);
