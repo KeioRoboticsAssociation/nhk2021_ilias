@@ -99,6 +99,32 @@
             Twist.send(0.0, 0.0);
         }
 
+        canvas.ontouchstart = function (e) {
+            var touchObject = e.changedTouches[0];
+
+            var x = touchObject.pageX;
+            var y = touchObject.pageY;
+            last_X = (x - canvas.offsetLeft - 200) / 200;
+            last_Y = (y - canvas.offsetTop - 200) / 200;
+            last_enable = true;
+        }
+
+        canvas.ontouchmove = function (e) {
+            var touchObject = e.changedTouches[0];
+
+            var x = touchObject.pageX;
+            var y = touchObject.pageY;
+            last_X = (x - canvas.offsetLeft - 200) / 200;
+            last_Y = (y - canvas.offsetTop - 200) / 200;
+        }
+
+        canvas.ontouchend = function (e) {
+            last_X = 0.0
+            last_Y = 0.0
+            last_enable = false;
+            Twist.send(0.0, 0.0);
+        }
+
         function reticle() {
             var target = $("canvas");
             var context = target.getContext('2d');
