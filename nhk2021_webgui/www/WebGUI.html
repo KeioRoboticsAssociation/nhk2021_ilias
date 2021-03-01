@@ -13,9 +13,7 @@
         // Connecting to ROS
         // -----------------
 
-        var ros = new ROSLIB.Ros({
-            url: 'ws://localhost:9090'
-        });
+        var ros = new ROSLIB.Ros();
         ros.on('error', function (error) {
             document.getElementById('state').innerHTML = "<span style='color: red;'><b>Error</b></span>";
         });
