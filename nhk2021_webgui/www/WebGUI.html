@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+
+    <script type="text/javascript"
+        src="http://static.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js"></script>
+    <script type="text/javascript" src="http://static.robotwebtools.org/roslibjs/current/roslib.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/105/three.min.js"></script>
+
+    <script type="text/javascript" type="text/javascript">
+        // Connecting to ROS
+        // -----------------
+
+        var ros = new ROSLIB.Ros({
+            url: 'ws://localhost:9090'
+        });
+        ros.on('error', function (error) {
+            document.getElementById('state').innerHTML = "<span style='color: red;'><b>Error</b></span>";
+        });
+        ros.on('connection', function (error) {
+            document.getElementById('state').innerHTML = "<span style='color: green;'><b>Connect</b></span>";
+        });
+        ros.on('close', function (error) {
+            document.getElementById('state').innerHTML = "Close";
+        });
+        ros.connect('ws://' + location.hostname + ':9090');
+
+        // Subscribing to a Topic
+        // ----------------------
+
+        var CmdVellistener = new ROSLIB.Topic({
+            ros: ros,
+            name: '/cmd_vel',
+            messageType: 'geometry_msgs/Twist'
+        });
+
+        CmdVellistener.subscribe(function (message) {
+            var linearX = message.linear.x;
+            var linearY = message.linear.y;
+            var angularZ = message.angular.z;
+            document.getElementById("linearX").textContent = "linearX: " + linearX + " m/s";
+            document.getElementById("linearY").textContent = "linearY: " + linearY + " m/s";
+            document.getElementById("angularZ").textContent = "angularZ: " + angularZ + " rad/s";
+            console.log(linearX, linearY, angularZ);
+        });
+
+        var odomlistener = new ROSLIB.Topic({
+            ros: ros,
+            name: '/odom',
+            messageType: 'nav_msgs/Odometry'
+        });
+
+        odomlistener.subscribe(function (message) {
+            var odomlinearX = message.twist.twist.linear.x;
+            var odomlinearY = message.twist.twist.linear.y;
+            var odomangularZ = message.twist.twist.angular.z;
+            document.getElementById("odomlinearX").textContent = "linearX: " + odomlinearX + " m/s";
+            document.getElementById("odomlinearY").textContent = "linearY: " + odomlinearY + " m/s";
+            document.getElementById("odomangularZ").textContent = "angularZ: " + odomangularZ + " rad/s";
+            console.log(odomlinearX, odomlinearY, odomangularZ);
+        });
+
+        // tf listener
+        var tfClient = new ROSLIB.TFClient({
+            ros: ros,
+            fixedFrame: 'map',
+            angularThres: 0.01,
+            transThres: 0.01
+        });
+
+        tfClient.subscribe('base_footprint', function (tf) {
+            var mapX = tf.translation.x;
+            var mapY = tf.translation.y;
+
+            var quaternion = new THREE.Quaternion(tf.rotation.x, tf.rotation.y, tf.rotation.z, tf.rotation.w);
+            var euler = new THREE.Euler;
+            euler.setFromQuaternion(quaternion);
+            var mapAngle = euler.z * 180.0 / Math.PI;
+            document.getElementById("mapX").textContent = "X: " + mapX + " m";
+            document.getElementById("mapY").textContent = "Y: " + mapY + " m";
+            document.getElementById("mapAngle").textContent = "angularZ: " + mapAngle + " deg";
+            console.log(mapX, mapY, mapAngle);
+        });
+
+        window.onload = function () {
+        };
+        window.onunload = function () {
+            ros.close();
+        };
+
+    </script>
+</head>
+
+<body>
+    <p>status： <label id="state">Disconnect</label></p>
+    <h1>NHK2021 Web Monitor</h1>
+    <h2>cmd_vel</h2>
+    <p id="linearX">linearX: 0.0 m/s</p>
+    <p id="linearY">linearY: 0.0 m/s</p>
+    <p id="angularZ">angularZ: 0.0 rad/s</p>
+    <br>
+
+    <h2>Real Velocity</h2>
+    <p id="odomlinearX">linearX: 0.0 m/s</p>
+    <p id="odomlinearY">linearY: 0.0 m/s</p>
+    <p id="odomangularZ">angularZ: 0.0 rad/s</p>
+    <br>
+
+    <h2>Position</h2>
+    <p id="mapX">X: 0.0 m</p>
+    <p id="mapY">Y: 0.0 m</p>
+    <p id="mapAngle">Angle: 0.0 deg</p>
+</body>
+
+</html>
