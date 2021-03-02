@@ -3,6 +3,8 @@
 
 <head>
     <meta charset="utf-8" />
+    <title>NHK2021 Web Monitor</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
 
     <script type="text/javascript"
         src="http://static.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js"></script>
@@ -178,35 +180,53 @@
 </head>
 
 <body>
-    <p>status： <label id="state">Disconnect</label></p>
-    <h1>NHK2021 Web Monitor</h1>
-    <h2>cmd_vel</h2>
-    <p id="linearX">linearX: 0.0 m/s</p>
-    <p id="linearY">linearY: 0.0 m/s</p>
-    <p id="angularZ">angularZ: 0.0 rad/s</p>
-    <br>
+    <div class="header">
+        <div class="title">
+            <p>status: <label id="state">Disconnect</label></p>
+            <h1>NHK2021 Web Monitor</h1>
+        </div>
+        <img src="https://keiorogiken.files.wordpress.com/2018/12/e382abe383a9e383bc.png?w=2160" width="25%"/>
+    </div>
 
-    <h2>Real Velocity</h2>
-    <p id="odomlinearX">linearX: 0.0 m/s</p>
-    <p id="odomlinearY">linearY: 0.0 m/s</p>
-    <p id="odomangularZ">angularZ: 0.0 rad/s</p>
-    <br>
+    <div class="first_row">
+        <div class="block cmd_vel">
+            <h2>cmd_vel</h2>
+            <p id="linearX">linearX: 0.0 m/s</p>
+            <p id="linearY">linearY: 0.0 m/s</p>
+            <p id="angularZ">angularZ: 0.0 rad/s</p>
+        </div>
 
-    <h2>Position</h2>
-    <p id="mapX">X: 0.0 m</p>
-    <p id="mapY">Y: 0.0 m</p>
-    <p id="mapAngle">Angle: 0.0 deg</p>
-    <br>
+        <div class="block real_velocity">
+            <h2>Real Velocity</h2>
+            <p id="odomlinearX">linearX: 0.0 m/s</p>
+            <p id="odomlinearY">linearY: 0.0 m/s</p>
+            <p id="odomangularZ">angularZ: 0.0 rad/s</p>
+        </div>
+    </div>
 
-    <h2>JoyCon Status</h2>
-    <p id="pathmode">pathmode: 0</p>
-    <p id="direction">direction: 0</p>
-    <p id="runmode">teleop</p>
-    <br>
+    <div class="second_row">
+        <div class="block position">
+            <h2>Position</h2>
+            <p id="mapX">X: 0.0 m</p>
+            <p id="mapY">Y: 0.0 m</p>
+            <p id="mapAngle">Angle: 0.0 deg</p>
+        </div>
+    </div>
 
-    <h2>planner Status</h2>
-    <p id="status">status: </p>
-    <br>
+    <div class="third_row">
+        <div  class="block joycon_status">
+            <h2>JoyCon Status</h2>
+            <p id="pathmode">pathmode: 0</p>
+            <p id="direction">direction: 0</p>
+            <p id="runmode">teleop</p>
+        </div>
+
+        <div class="block planner_status">
+            <h2>planner Status</h2>
+            <p id="status">status: </p>
+        </div>
+    </div>
+    
 
 </body>
 

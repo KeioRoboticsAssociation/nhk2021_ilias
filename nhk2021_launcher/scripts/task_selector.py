@@ -52,7 +52,8 @@ class Task_Selector():
         elif msg.buttons[5] == 1:
             self.pathmode_ += 1
         elif msg.buttons[4] == 1:
-            self.pathmode_ -= 1
+            if self.pathmode_ > 0:
+                self.pathmode_ -= 1
         elif msg.buttons[2] == 1:
             self.direction_ = 1
             self.sendgoal()
