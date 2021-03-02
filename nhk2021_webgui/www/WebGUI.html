@@ -41,7 +41,7 @@
             document.getElementById("linearX").textContent = "linearX: " + linearX + " m/s";
             document.getElementById("linearY").textContent = "linearY: " + linearY + " m/s";
             document.getElementById("angularZ").textContent = "angularZ: " + angularZ + " rad/s";
-            console.log(linearX, linearY, angularZ);
+            //console.log(linearX, linearY, angularZ);
         });
 
         var odomlistener = new ROSLIB.Topic({
@@ -57,8 +57,94 @@
             document.getElementById("odomlinearX").textContent = "linearX: " + odomlinearX + " m/s";
             document.getElementById("odomlinearY").textContent = "linearY: " + odomlinearY + " m/s";
             document.getElementById("odomangularZ").textContent = "angularZ: " + odomangularZ + " rad/s";
-            console.log(odomlinearX, odomlinearY, odomangularZ);
+            //console.log(odomlinearX, odomlinearY, odomangularZ);
         });
+
+        var pathmodelistener = new ROSLIB.Topic({
+            ros: ros,
+            name: '/task_selector/joy_pathmode',
+            messageType: 'std_msgs/Int32'
+        });
+
+        pathmodelistener.subscribe(function (message) {
+            var pathmode = message.data;
+            document.getElementById("pathmode").textContent = "pathmode: " + pathmode;
+            //console.log(pathmode);
+        });
+
+        var directionlistener = new ROSLIB.Topic({
+            ros: ros,
+            name: '/task_selector/joy_direction',
+            messageType: 'std_msgs/Int32'
+        });
+
+        directionlistener.subscribe(function (message) {
+            var direction = message.data;
+            document.getElementById("direction").textContent = "direction: " + direction;
+            //console.log(pathmode);
+        });
+
+        var runmodelistener = new ROSLIB.Topic({
+            ros: ros,
+            name: '/task_selector/teleop_mode',
+            messageType: 'std_msgs/Bool'
+        });
+
+        runmodelistener.subscribe(function (message) {
+            var runmode = message.data;
+            if(runmode == true){
+                document.getElementById("runmode").innerHTML = "status: <span style='color: black;'><b>teleop</b></span>";
+            }
+            else{
+                document.getElementById("runmode").innerHTML = "status: <span style='color: black;'><b>autonomous</b></span>";  
+            }
+            //console.log(runmode);
+        });
+
+        var statuslistener = new ROSLIB.Topic({
+            ros: ros,
+            name: '/bezier_path_planning_pursuit/status',
+            messageType: 'actionlib_msgs/GoalStatusArray'
+        });
+
+        statuslistener.subscribe(function (message) {
+            //console.log(message);
+            var statuslist = message.status_list;
+            if(statuslist.length == 0){
+                document.getElementById("status").innerHTML = "status: <span style='color: black;'><b>initialized</b></span>";
+            }
+            else{
+                var status = statuslist.slice(-1)[0].status;
+                if(status == 1){
+                    document.getElementById("status").innerHTML = "status: <span style='color: blue;'><b>ACTIVE</b></span>";
+                }
+                if(status == 2){
+                    document.getElementById("status").innerHTML = "status: <span style='color: yellow;'><b>PREEMPTED</b></span>";
+                }
+                if(status == 3){
+                    document.getElementById("status").innerHTML = "status: <span style='color: green;'><b>SUCCEEDED</b></span>";
+                }
+                if(status == 4){
+                    document.getElementById("status").innerHTML = "status: <span style='color: red;'><b>ABORTED</b></span>";
+                }
+                if(status == 5){
+                    document.getElementById("status").innerHTML = "status: <span style='color: red;'><b>REJECTED</b></span>";
+                }
+                if(status == 6){
+                    document.getElementById("status").innerHTML = "status: <span style='color: green;'><b>PREEMPTING</b></span>";
+                }
+                if(status == 7){
+                    document.getElementById("status").innerHTML = "status: <span style='color: green;'><b>RECALLING</b></span>";
+                }
+                if(status == 8){
+                    document.getElementById("status").innerHTML = "status: <span style='color: green;'><b>RECALLED</b></span>";
+                }
+                if(status == 9){
+                    document.getElementById("status").innerHTML = "status: <span style='color: black;'><b>LOST</b></span>";
+                }
+
+            }
+        });   
 
         // tf listener
         var tfClient = new ROSLIB.TFClient({
@@ -79,7 +165,7 @@
             document.getElementById("mapX").textContent = "X: " + mapX + " m";
             document.getElementById("mapY").textContent = "Y: " + mapY + " m";
             document.getElementById("mapAngle").textContent = "angularZ: " + mapAngle + " deg";
-            console.log(mapX, mapY, mapAngle);
+            //console.log(mapX, mapY, mapAngle);
         });
 
         window.onload = function () {
@@ -110,6 +196,18 @@
     <p id="mapX">X: 0.0 m</p>
     <p id="mapY">Y: 0.0 m</p>
     <p id="mapAngle">Angle: 0.0 deg</p>
+    <br>
+
+    <h2>JoyCon Status</h2>
+    <p id="pathmode">pathmode: 0</p>
+    <p id="direction">direction: 0</p>
+    <p id="runmode">teleop</p>
+    <br>
+
+    <h2>planner Status</h2>
+    <p id="status">status: </p>
+    <br>
+
 </body>
 
 </html>

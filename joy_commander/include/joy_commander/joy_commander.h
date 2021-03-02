@@ -5,6 +5,7 @@
 #include <geometry_msgs/Twist.h>
 
 #include <sensor_msgs/Joy.h>
+#include <std_msgs/Bool.h>
 
 
 /***************** joystick number ********************/
@@ -18,7 +19,7 @@
 class JOYSTICK
 {
 public:
-    JOYSTICK(ros::NodeHandle &nh, const int &loop_rate);
+    JOYSTICK(ros::NodeHandle &nh, const int &loop_rate, const float &acc_lim_xy, const float &max_vel_xy, const float &max_vel_theta, const float &acc_lim_theta);
     ~JOYSTICK(){};
 
 private:
@@ -27,15 +28,29 @@ private:
 
     ros::Publisher cmd_pub;
     ros::Subscriber joy_sub;
+    ros::Subscriber teleopflag_sub;
 
     //Configurations
     int loop_rate_;
+    float acc_lim_xy_;
+    float max_vel_xy_;
+    float acc_lim_theta_;
+    float max_vel_theta_;
 
     //variables
     geometry_msgs::Twist cmd_vel;
+    bool teleop_flag;
+    float old_omega;
+    float omega;
+    float old_vx;
+    float vx;
+    float old_vy;
+    float vy;
 
     //Methods
+    void AdjustVelocity(float &v, float &old_v, const float &max_v, const float &acc_lim);
     void joy_callback(const sensor_msgs::Joy::ConstPtr &joy_msg);
+    void teleopflag_callback(const std_msgs::Bool::ConstPtr &joy_msg);
     void update();
 };
 
