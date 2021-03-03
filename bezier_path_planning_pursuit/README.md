@@ -2,7 +2,7 @@
 
 ## これは何
 
-経路計画、追従を行うROSパッケージ。a
+経路計画、追従を行うROSパッケージ。
 
 このROSパッケージが持つ機能は
 
@@ -24,9 +24,15 @@ int32 direction
 ---
 #result definition
 bool result
+float32 position_x
+float32 position_y
+float32 position_theta
 ---
 #feedback
 float32 reference_point
+float32 vx
+float32 vy
+float32 omega
 ```
 
 - Goal
@@ -34,8 +40,14 @@ float32 reference_point
   - direction : 進行方向 (1ならば順方向、0ならば逆方向)
 - Feedback
   - reference_point : 現在プランナーがどのwaypointを参照しているか(waypointの間も参照するためfloat値)
+  - vx : x方向の速度指令値
+  - vy : y方向の速度指令値
+  - omega : yaw方向の速度指令値
 - result
   - result : Goalにたどり着けたらTrue, そうでなければFalse (Statusで確認できるので、使うことはないだろう)
+  - position_x : 到着した点のx座標
+  - position_y : 到着した点のy座標
+  - position_theta : 到着した点でのロボット角度
 
 
 
@@ -150,6 +162,6 @@ x,y,theta
 このパッケージのノードを起動したのち、以下のコマンドを打つとaction client guiが立ち上がり、action serverとしての機能を容易に確認することができる。
 
 ```shell
-rosrun actionlib axclient.py /path_planning_pursuit
+rosrun actionlib axclient.py /bezier_path_planning_pursuit
 ```
 

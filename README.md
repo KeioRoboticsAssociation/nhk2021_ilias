@@ -1,8 +1,8 @@
-# nhk2021
+<img src="https://keiorogiken.files.wordpress.com/2018/12/e382abe383a9e383bc.png?w=2160" width="50%"/>
+
+# nhk2021_ilias
 
 **NHK Robocon 2021** project  team "**ilias**" (KeioRoboticsAssociation:robot:)
-
-書きかけです
 
 
 
@@ -15,85 +15,86 @@
 
 
 
-## 依存パッケージ
+## Install
 
-- 足回り
-
-  https://github.com/KeioRoboticsAssociation/wheelctrl.git
-
-- 自己位置推定
-
-  https://github.com/cra-ros-pkg/robot_localization.git
-
-  https://github.com/ros-planning/navigation.git
-
-  https://github.com/yoshito-n-students/bno055_usb_stick.git
-
-  https://github.com/ros-perception/laser_filters
-
-- ROS<->mbedのシリアル通信
-
-  https://github.com/moden3/serial_test.git
-
-- 4輪メカナムのシミュレーション
-
-  https://github.com/RBinsonB/nexus_4wd_mecanum_simulator.git
-
-- Joy stick
-
-  https://github.com/ros-drivers/joystick_drivers
-
-
-
-## 導入
+1. Clone this repositoty
 
 ```shell
 cd ~/catkin_ws/src
-git clone https://github.com/KeioRoboticsAssociation/nhk2021.git
+git clone https://github.com/KeioRoboticsAssociation/nhk2021_ilias.git
+```
+
+2. Resolve dependencies (from git repository)
+
+by **vcstool**
+
+```shell
+sudo apt install python-vcstool
+cd ~/catkin_ws
+vcs import src < src/nhk2021_ilias/nhk2021_launcher/nhk2021_launcher.rosinstall
+vcs import src < src/nhk2021_ilias/nhk2021_webgui/nhk2021_webgui.rosinstall
+```
+
+or
+
+by **git clone**
+
+```shell
+cd ~/catkin_ws/src
 git clone https://github.com/KeioRoboticsAssociation/wheelctrl.git
-git clone https://github.com/RBinsonB/nexus_4wd_mecanum_simulator.git
-git clone https://github.com/cra-ros-pkg/robot_localization.git
 git clone https://github.com/yoshito-n-students/bno055_usb_stick.git
 git clone https://github.com/moden3/serial_test.git
+git clone https://github.com/tork-a/roswww.git
+```
 
-sudo apt-get update
-sudo apt-get install -y ros-melodic-navigation
-sudo apt-get install -y ros-melodic-robot-localization
-sudo apt-get install -y ros-melodic-laser-filters
+3. Resolve dependencies (from apt repository)
 
-cd ../
+```shell
+cd ~/catkin_ws/src
+rosdep install -i --from-paths .
+```
+
+4. Give permission to task_selector.py (in nhk2021_launcher pkg)
+
+```shell
+cd ~/catkin_ws/src/nhk2021_ilias
+chmod +x ./nhk2021_launcher/scripts/task_selector.py
+```
+
+5. Build
+
+```shell
+cd ~/catkin_ws
 catkin_make
 ```
 
 
 
-## 起動
-
-- TRの起動
-
-  ```shell
-  roslaunch nhk2021_launcher control_TR.launch
-  ```
-
-- simulatorの起動
-
-  ```shell
-  roslaunch nhk2021_simulator 4wd_mecanum_simulation.launch
-  ```
-
-  詳しくはsimulatorのREADMEを参照
+A detail description about dependencies of this repository locates Here.
 
 
 
-## Trouble Shooting
+## 各パッケージについて
 
-- bno055が起動できない
+- bezier_path_planning_pursuit
 
-  ポートに実行権限を与える
+  経路計画、追従を担当するパッケージ
 
-  ```shell
-  sudo chmod 666 /dev/ttyACM0
-  ```
+- joy_commander
+
+  Joyコンで速度指令値を送れるパッケージ
+
+- nhk2021_launcher
+
+  ロボットを起動するlaunchファイルが入っているパッケージ
+
+- nhk2021_simulator
+
+  Gazeboによるシミュレーターを構築するためのファイルが入っているパッケージ
+
+- nhk2021_webgui
+
+  WebGUIを起動するためのファイルが入っているパッケージ
 
 
 

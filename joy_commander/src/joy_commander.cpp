@@ -13,7 +13,7 @@ JOYSTICK::JOYSTICK(ros::NodeHandle &nh, const int &loop_rate, const float &acc_l
     cmd_pub = nh_.advertise<geometry_msgs::Twist>("/cmd_vel", 1);
     joy_sub = nh_.subscribe("/joy", 1,
                                  &JOYSTICK::joy_callback, this);
-    teleopflag_sub = nh_.subscribe("/task_selector/teleop_mode", 1,
+    teleopflag_sub = nh_.subscribe("teleopflag", 1,
                                  &JOYSTICK::teleopflag_callback, this);
     teleop_flag = true;
     old_omega = 0;

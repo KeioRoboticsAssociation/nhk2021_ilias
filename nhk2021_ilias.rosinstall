@@ -1,4 +1,0 @@
-- git: {local-name: bno055_usb_stick, uri: https://github.com/yoshito-n-students/bno055_usb_stick, version: master}
-- git: {local-name: wheelctrl, uri: https://github.com/KeioRoboticsAssociation/wheelctrl, version: main}
-- git: {local-name: serial_test, uri: https://github.com/moden3/serial_test, version: master}
-- git: {local-name: roswww, uri: https://github.com/tork-a/roswww, version: develop}

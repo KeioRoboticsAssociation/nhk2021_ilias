@@ -141,6 +141,7 @@
     <param name = "max_vel_xy" value = "$(arg max_vel_xy)" />
     <param name = "acc_lim_theta" value = "$(arg acc_lim_theta)" />
     <param name = "max_vel_theta" value = "$(arg max_vel_theta)" />
+    <remap from = "teleopflag" to = "/task_selector/teleop_mode"/>
   </node>
 
   <node pkg="nhk2021_launcher" type="task_selector.py" name="task_selector"/>
