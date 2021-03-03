@@ -70,29 +70,29 @@ catkin_make
 
 
 
-A detail description about dependencies of this repository locates Here.
+A detail description about dependencies of this repository locates [Here](https://github.com/KeioRoboticsAssociation/nhk2021_ilias/blob/main/Dependencies.md).
 
 
 
 ## 各パッケージについて
 
-- bezier_path_planning_pursuit
+- [bezier_path_planning_pursuit](https://github.com/KeioRoboticsAssociation/nhk2021_ilias/blob/main/bezier_path_planning_pursuit/README.md)
 
   経路計画、追従を担当するパッケージ
 
-- joy_commander
+- [joy_commander](https://github.com/KeioRoboticsAssociation/nhk2021_ilias/blob/main/joy_commander/README.md)
 
   Joyコンで速度指令値を送れるパッケージ
 
-- nhk2021_launcher
+- [nhk2021_launcher](https://github.com/KeioRoboticsAssociation/nhk2021_ilias/blob/main/nhk2021_launcher/README.md)
 
   ロボットを起動するlaunchファイルが入っているパッケージ
 
-- nhk2021_simulator
+- [nhk2021_simulator](https://github.com/KeioRoboticsAssociation/nhk2021_ilias/blob/main/nhk2021_simulator/README.md)
 
   Gazeboによるシミュレーターを構築するためのファイルが入っているパッケージ
 
-- nhk2021_webgui
+- [nhk2021_webgui](https://github.com/KeioRoboticsAssociation/nhk2021_ilias/blob/main/nhk2021_webgui/README.md)
 
   WebGUIを起動するためのファイルが入っているパッケージ
 
