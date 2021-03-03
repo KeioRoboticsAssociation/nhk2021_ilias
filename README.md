@@ -43,6 +43,7 @@ by **git clone**
 cd ~/catkin_ws/src
 git clone https://github.com/KeioRoboticsAssociation/wheelctrl.git
 git clone https://github.com/yoshito-n-students/bno055_usb_stick.git
+git clone https://github.com/yoshito-n-students/bno055_usb_stick_msgs.git
 git clone https://github.com/moden3/serial_test.git
 git clone https://github.com/tork-a/roswww.git
 ```
@@ -51,7 +52,12 @@ git clone https://github.com/tork-a/roswww.git
 
 ```shell
 cd ~/catkin_ws/src
-rosdep install -i --from-paths .
+rosdep install -i --from-paths roswww
+rosdep install -i --from-paths nhk2021_ilias/bezier_path_planning_pursuit
+rosdep install -i --from-paths nhk2021_ilias/joy_commander
+rosdep install -i --from-paths nhk2021_ilias/nhk2021_launcher
+rosdep install -i --from-paths nhk2021_ilias/nhk2021_simulator
+rosdep install -i --from-paths nhk2021_ilias/nhk2021_webgui
 ```
 
 4. Give permission to task_selector.py (in nhk2021_launcher pkg)

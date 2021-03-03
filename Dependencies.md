@@ -66,6 +66,7 @@ vcs import src < src/nhk2021_ilias/nhk2021_webgui/nhk2021_webgui.rosinstall
 
     ```shell
     git clone https://github.com/yoshito-n-students/bno055_usb_stick.git
+    git clone https://github.com/yoshito-n-students/bno055_usb_stick_msgs.git
     ```
 
   - laser_filters
