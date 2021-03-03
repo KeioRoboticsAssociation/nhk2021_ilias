@@ -1,0 +1,33 @@
+body {
+    background: #eeeeee;
+}
+
+.header{
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.first_row{
+    display: flex;
+}
+.block {
+    flex-basis: 48%;
+    text-align: center;
+    background: #ffffff;
+    padding: 10px;
+    border: 1px solid #cccccc;
+    margin: 10px auto;
+}
+
+.second_row{
+    display: flex;
+}
+
+.position{
+    flex-basis: 90%;
+}
+
+.third_row{
+    display: flex;
+}

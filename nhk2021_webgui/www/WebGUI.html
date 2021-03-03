@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>NHK2021 Web Monitor</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+
+    <script type="text/javascript"
+        src="http://static.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js"></script>
+    <script type="text/javascript" src="http://static.robotwebtools.org/roslibjs/current/roslib.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/105/three.min.js"></script>
+
+    <script type="text/javascript" type="text/javascript">
+        // Connecting to ROS
+        // -----------------
+
+        var ros = new ROSLIB.Ros();
+        ros.on('error', function (error) {
+            document.getElementById('state').innerHTML = "<span style='color: red;'><b>Error</b></span>";
+        });
+        ros.on('connection', function (error) {
+            document.getElementById('state').innerHTML = "<span style='color: green;'><b>Connect</b></span>";
+        });
+        ros.on('close', function (error) {
+            document.getElementById('state').innerHTML = "Close";
+        });
+        ros.connect('ws://' + location.hostname + ':9090');
+
+        // Subscribing to a Topic
+        // ----------------------
+
+        var CmdVellistener = new ROSLIB.Topic({
+            ros: ros,
+            name: '/cmd_vel',
+            messageType: 'geometry_msgs/Twist'
+        });
+
+        CmdVellistener.subscribe(function (message) {
+            var linearX = message.linear.x;
+            var linearY = message.linear.y;
+            var angularZ = message.angular.z;
+            document.getElementById("linearX").textContent = "linearX: " + linearX + " m/s";
+            document.getElementById("linearY").textContent = "linearY: " + linearY + " m/s";
+            document.getElementById("angularZ").textContent = "angularZ: " + angularZ + " rad/s";
+            //console.log(linearX, linearY, angularZ);
+        });
+
+        var odomlistener = new ROSLIB.Topic({
+            ros: ros,
+            name: '/odom',
+            messageType: 'nav_msgs/Odometry'
+        });
+
+        odomlistener.subscribe(function (message) {
+            var odomlinearX = message.twist.twist.linear.x;
+            var odomlinearY = message.twist.twist.linear.y;
+            var odomangularZ = message.twist.twist.angular.z;
+            document.getElementById("odomlinearX").textContent = "linearX: " + odomlinearX + " m/s";
+            document.getElementById("odomlinearY").textContent = "linearY: " + odomlinearY + " m/s";
+            document.getElementById("odomangularZ").textContent = "angularZ: " + odomangularZ + " rad/s";
+            //console.log(odomlinearX, odomlinearY, odomangularZ);
+        });
+
+        var pathmodelistener = new ROSLIB.Topic({
+            ros: ros,
+            name: '/task_selector/joy_pathmode',
+            messageType: 'std_msgs/Int32'
+        });
+
+        pathmodelistener.subscribe(function (message) {
+            var pathmode = message.data;
+            document.getElementById("pathmode").textContent = "pathmode: " + pathmode;
+            //console.log(pathmode);
+        });
+
+        var directionlistener = new ROSLIB.Topic({
+            ros: ros,
+            name: '/task_selector/joy_direction',
+            messageType: 'std_msgs/Int32'
+        });
+
+        directionlistener.subscribe(function (message) {
+            var direction = message.data;
+            document.getElementById("direction").textContent = "direction: " + direction;
+            //console.log(pathmode);
+        });
+
+        var runmodelistener = new ROSLIB.Topic({
+            ros: ros,
+            name: '/task_selector/teleop_mode',
+            messageType: 'std_msgs/Bool'
+        });
+
+        runmodelistener.subscribe(function (message) {
+            var runmode = message.data;
+            if(runmode == true){
+                document.getElementById("runmode").innerHTML = "status: <span style='color: black;'><b>teleop</b></span>";
+            }
+            else{
+                document.getElementById("runmode").innerHTML = "status: <span style='color: black;'><b>autonomous</b></span>";  
+            }
+            //console.log(runmode);
+        });
+
+        var statuslistener = new ROSLIB.Topic({
+            ros: ros,
+            name: '/bezier_path_planning_pursuit/status',
+            messageType: 'actionlib_msgs/GoalStatusArray'
+        });
+
+        statuslistener.subscribe(function (message) {
+            //console.log(message);
+            var statuslist = message.status_list;
+            if(statuslist.length == 0){
+                document.getElementById("status").innerHTML = "status: <span style='color: black;'><b>initialized</b></span>";
+            }
+            else{
+                var status = statuslist.slice(-1)[0].status;
+                if(status == 1){
+                    document.getElementById("status").innerHTML = "status: <span style='color: blue;'><b>ACTIVE</b></span>";
+                }
+                if(status == 2){
+                    document.getElementById("status").innerHTML = "status: <span style='color: yellow;'><b>PREEMPTED</b></span>";
+                }
+                if(status == 3){
+                    document.getElementById("status").innerHTML = "status: <span style='color: green;'><b>SUCCEEDED</b></span>";
+                }
+                if(status == 4){
+                    document.getElementById("status").innerHTML = "status: <span style='color: red;'><b>ABORTED</b></span>";
+                }
+                if(status == 5){
+                    document.getElementById("status").innerHTML = "status: <span style='color: red;'><b>REJECTED</b></span>";
+                }
+                if(status == 6){
+                    document.getElementById("status").innerHTML = "status: <span style='color: green;'><b>PREEMPTING</b></span>";
+                }
+                if(status == 7){
+                    document.getElementById("status").innerHTML = "status: <span style='color: green;'><b>RECALLING</b></span>";
+                }
+                if(status == 8){
+                    document.getElementById("status").innerHTML = "status: <span style='color: green;'><b>RECALLED</b></span>";
+                }
+                if(status == 9){
+                    document.getElementById("status").innerHTML = "status: <span style='color: black;'><b>LOST</b></span>";
+                }
+
+            }
+        });   
+
+        // tf listener
+        var tfClient = new ROSLIB.TFClient({
+            ros: ros,
+            fixedFrame: 'map',
+            angularThres: 0.01,
+            transThres: 0.01
+        });
+
+        tfClient.subscribe('base_footprint', function (tf) {
+            var mapX = tf.translation.x;
+            var mapY = tf.translation.y;
+
+            var quaternion = new THREE.Quaternion(tf.rotation.x, tf.rotation.y, tf.rotation.z, tf.rotation.w);
+            var euler = new THREE.Euler;
+            euler.setFromQuaternion(quaternion);
+            var mapAngle = euler.z * 180.0 / Math.PI;
+            document.getElementById("mapX").textContent = "X: " + mapX + " m";
+            document.getElementById("mapY").textContent = "Y: " + mapY + " m";
+            document.getElementById("mapAngle").textContent = "Angle: " + mapAngle + " deg";
+            //console.log(mapX, mapY, mapAngle);
+        });
+
+        window.onload = function () {
+        };
+        window.onunload = function () {
+            ros.close();
+        };
+
+    </script>
+</head>
+
+<body>
+    <div class="header">
+        <div class="title">
+            <p>status: <label id="state">Disconnect</label></p>
+            <h1>NHK2021 Web Monitor</h1>
+        </div>
+        <img src="https://keiorogiken.files.wordpress.com/2018/12/e382abe383a9e383bc.png?w=2160" width="25%"/>
+    </div>
+
+    <div class="first_row">
+        <div class="block cmd_vel">
+            <h2>cmd_vel</h2>
+            <p id="linearX">linearX: 0.0 m/s</p>
+            <p id="linearY">linearY: 0.0 m/s</p>
+            <p id="angularZ">angularZ: 0.0 rad/s</p>
+        </div>
+
+        <div class="block real_velocity">
+            <h2>Real Velocity</h2>
+            <p id="odomlinearX">linearX: 0.0 m/s</p>
+            <p id="odomlinearY">linearY: 0.0 m/s</p>
+            <p id="odomangularZ">angularZ: 0.0 rad/s</p>
+        </div>
+    </div>
+
+    <div class="second_row">
+        <div class="block position">
+            <h2>Position</h2>
+            <p id="mapX">X: 0.0 m</p>
+            <p id="mapY">Y: 0.0 m</p>
+            <p id="mapAngle">Angle: 0.0 deg</p>
+        </div>
+    </div>
+
+    <div class="third_row">
+        <div  class="block joycon_status">
+            <h2>JoyCon Status</h2>
+            <p id="pathmode">pathmode: 0</p>
+            <p id="direction">direction: 0</p>
+            <p id="runmode">teleop</p>
+        </div>
+
+        <div class="block planner_status">
+            <h2>planner Status</h2>
+            <p id="status">status: </p>
+        </div>
+    </div>
+    
+
+</body>
+
+</html>
