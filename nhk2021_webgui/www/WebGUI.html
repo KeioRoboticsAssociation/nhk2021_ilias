@@ -40,9 +40,9 @@
             var linearX = message.linear.x;
             var linearY = message.linear.y;
             var angularZ = message.angular.z;
-            document.getElementById("linearX").textContent = "linearX: " + linearX + " m/s";
-            document.getElementById("linearY").textContent = "linearY: " + linearY + " m/s";
-            document.getElementById("angularZ").textContent = "angularZ: " + angularZ + " rad/s";
+            document.getElementById("linearX").textContent = "linearX: " + linearX.toFixed(3) + " m/s";
+            document.getElementById("linearY").textContent = "linearY: " + linearY.toFixed(3) + " m/s";
+            document.getElementById("angularZ").textContent = "angularZ: " + angularZ.toFixed(3) + " rad/s";
             //console.log(linearX, linearY, angularZ);
         });
 
@@ -56,9 +56,9 @@
             var odomlinearX = message.twist.twist.linear.x;
             var odomlinearY = message.twist.twist.linear.y;
             var odomangularZ = message.twist.twist.angular.z;
-            document.getElementById("odomlinearX").textContent = "linearX: " + odomlinearX + " m/s";
-            document.getElementById("odomlinearY").textContent = "linearY: " + odomlinearY + " m/s";
-            document.getElementById("odomangularZ").textContent = "angularZ: " + odomangularZ + " rad/s";
+            document.getElementById("odomlinearX").textContent = "linearX: " + odomlinearX.toFixed(3) + " m/s";
+            document.getElementById("odomlinearY").textContent = "linearY: " + odomlinearY.toFixed(3) + " m/s";
+            document.getElementById("odomangularZ").textContent = "angularZ: " + odomangularZ.toFixed(3) + " rad/s";
             //console.log(odomlinearX, odomlinearY, odomangularZ);
         });
 
@@ -71,18 +71,6 @@
         pathmodelistener.subscribe(function (message) {
             var pathmode = message.data;
             document.getElementById("pathmode").textContent = "pathmode: " + pathmode;
-            //console.log(pathmode);
-        });
-
-        var directionlistener = new ROSLIB.Topic({
-            ros: ros,
-            name: '/task_selector/joy_direction',
-            messageType: 'std_msgs/Int32'
-        });
-
-        directionlistener.subscribe(function (message) {
-            var direction = message.data;
-            document.getElementById("direction").textContent = "direction: " + direction;
             //console.log(pathmode);
         });
 
@@ -101,6 +89,33 @@
                 document.getElementById("runmode").innerHTML = "status: <span style='color: black;'><b>autonomous</b></span>";  
             }
             //console.log(runmode);
+        });
+
+        
+        var feedbacklistener = new ROSLIB.Topic({
+            ros: ros,
+            name: '/bezier_path_planning_pursuit/feedback',
+            messageType: 'bezier_path_planning_pursuit/PursuitPathActionFeedback'
+        });
+
+        feedbacklistener.subscribe(function (message) {
+            var progress = message.feedback.progress;
+            document.getElementById("progress").textContent = "progress: " + progress.toFixed(3) + " %";
+            //console.log(pathmode);
+        });
+
+        var goallistener = new ROSLIB.Topic({
+                ros: ros,
+                name: '/bezier_path_planning_pursuit/goal',
+                messageType: 'bezier_path_planning_pursuit/PursuitPathActionGoal'
+            });
+
+        goallistener.subscribe(function (message) {
+            var pathmode = message.goal.pathmode;
+            var direction = message.goal.direction;
+            document.getElementById("planner_pathmode").textContent = "pathmode: " + pathmode;
+            document.getElementById("direction").textContent = "direction: " + direction;
+            //console.log(pathmode);
         });
 
         var statuslistener = new ROSLIB.Topic({
@@ -164,9 +179,9 @@
             var euler = new THREE.Euler;
             euler.setFromQuaternion(quaternion);
             var mapAngle = euler.z * 180.0 / Math.PI;
-            document.getElementById("mapX").textContent = "X: " + mapX + " m";
-            document.getElementById("mapY").textContent = "Y: " + mapY + " m";
-            document.getElementById("mapAngle").textContent = "Angle: " + mapAngle + " deg";
+            document.getElementById("mapX").textContent = "X: " + mapX.toFixed(3) + " m";
+            document.getElementById("mapY").textContent = "Y: " + mapY.toFixed(3) + " m";
+            document.getElementById("mapAngle").textContent = "Angle: " + mapAngle.toFixed(3) + " deg";
             //console.log(mapX, mapY, mapAngle);
         });
 
@@ -217,13 +232,15 @@
         <div  class="block joycon_status">
             <h2>JoyCon Status</h2>
             <p id="pathmode">pathmode: 0</p>
-            <p id="direction">direction: 0</p>
             <p id="runmode">teleop</p>
         </div>
 
         <div class="block planner_status">
             <h2>planner Status</h2>
             <p id="status">status: </p>
+            <p id="planner_pathmode">pathmode: 0</p>
+            <p id="direction">direction: 0</p>
+            <p id="progress">progress: 0.0 %</p>
         </div>
     </div>
     

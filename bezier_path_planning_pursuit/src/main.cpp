@@ -352,6 +352,12 @@ void Path_Planner::executeCB(const PursuitPathGoalConstPtr &goal) // if use acti
         publishMsg(_vx_, _vy_, _omega_);
         path_pub.publish(path_ros[path_mode-1]);
         feedback_.reference_point = control[4][1];
+        if (forwardflag){
+            feedback_.progress = (control[4][1] - 1) / (path[path_mode - 1].pnum - 1) * 100.0;
+        }
+        else{
+            feedback_.progress = (path[path_mode - 1].pnum - control[4][1]) / (path[path_mode - 1].pnum - 1) * 100.0;
+        }
         feedback_.vx = _vx_;
         feedback_.vy = _vy_;
         feedback_.omega = _omega_;
