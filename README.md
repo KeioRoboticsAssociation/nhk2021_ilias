@@ -1,5 +1,7 @@
 <img src="https://keiorogiken.files.wordpress.com/2018/12/e382abe383a9e383bc.png?w=2160" width="50%"/>
 
+[![ROS: Melodic](https://img.shields.io/badge/ROS-Melodic-deepgreen.svg)](http://wiki.ros.org/melodic)  [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+
 # nhk2021_ilias
 
 **NHK Robocon 2021** project  team "**ilias**" (KeioRoboticsAssociation:robot:)
