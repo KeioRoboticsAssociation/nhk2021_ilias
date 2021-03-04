@@ -4,7 +4,7 @@
 
 下図のようにトピックをブラウザで可視化する
 
-
+![](https://i.imgur.com/xCHDBmp.png)
 
 
 
