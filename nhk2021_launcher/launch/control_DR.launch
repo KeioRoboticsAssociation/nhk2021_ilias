@@ -1,4 +1,6 @@
 <launch>
+  <arg name="joy" default="false"/>
+
   <!--path_planning_node-->
   <arg name="control_frequency" default="30" />
   <arg name="use_tf" default="true" />
@@ -12,7 +14,7 @@
   <arg name="corner_speed_rate" default="0.8" />
   <arg name="global_frame_id" default="map" />
   <arg name="base_frame_id" default="base_footprint" />
-  <arg name="xy_goal_tolerance" default="0.05" />
+  <arg name="xy_goal_tolerance" default="0.02" />
   <arg name="yaw_goal_tolerance" default="0.01" />
   <arg name="fix_angle_gain" default="2.0" />
 
@@ -38,14 +40,27 @@
     -->
   </node>
 
-  <!--
   <node pkg="swerve_wheelctrl" type="swerve_wheelctrl" name="swerve_wheelctrl" output="screen">
     <param name="control_frequency" value="$(arg control_frequency)"/>
     <param name="lost_time_threshold" value="500"/>
     <param name="body_width" value="0.440"/>
+    <param name="gazebo_mode" value="true"/>
+    <remap from="control_RF" to="/simple_swerve/rf_joint_velocity_controller/command" />
+    <remap from="control_LF" to="/simple_swerve/lf_joint_velocity_controller/command" />
+    <remap from="control_LB" to="/simple_swerve/lb_joint_velocity_controller/command" />
+    <remap from="control_RB" to="/simple_swerve/rb_joint_velocity_controller/command" />
+    <remap from="control_RF_angle" to="/simple_swerve/rf_joint_angular_controller/command" />
+    <remap from="control_LF_angle" to="/simple_swerve/lf_joint_angular_controller/command" />
+    <remap from="control_LB_angle" to="/simple_swerve/lb_joint_angular_controller/command" />
+    <remap from="control_RB_angle" to="/simple_swerve/rb_joint_angular_controller/command" />
   </node>
-  -->
 
+  <node pkg="swerve_odom_publisher" type="swerve_odom_publisher" name="swerve_odom_publisher" output="screen">
+    <param name="control_frequency" value="$(arg control_frequency)"/>
+    <param name="base_frame_id" value="base_footprint"/>
+    <param name="body_width" value="0.440"/>
+    <param name="gazebo_mode" value="true"/>
+  </node>
 
   <!-- robot localization -->
   <node pkg="bno055_usb_stick" type="bno055_usb_stick_node" name="bno055" output="screen">
@@ -77,7 +92,7 @@
   <param name="max_particles" value="500"/>
   <param name="kld_err" value="0.01"/>
   <param name="kld_z" value="0.99"/>
-  <param name="update_min_d" value="0.44"/>
+  <param name="update_min_d" value="0.22"/>
   <param name="update_min_a" value="0.785"/>
   <param name="resample_interval" value="2"/>
   <param name="transform_tolerance" value="0.1" />
@@ -119,5 +134,22 @@
   <remap from="scan" to="scan_filtered" />
   <remap from="odom" to="odom_filtered" />
  </node>
+
+ <group if="$(arg joy)">
+ <node pkg="joy" type="joy_node" name="joy_node"/>
+
+  <node pkg="joy_commander" type="joy_commander" name="joy_commander" output="screen">
+    <param name="control_frequency" value="$(arg control_frequency)"/>
+    <param name = "acc_lim_xy" value = "$(arg acc_lim_xy)" />
+    <param name = "max_vel_xy" value = "$(arg max_vel_xy)" />
+    <param name = "acc_lim_theta" value = "$(arg acc_lim_theta)" />
+    <param name = "max_vel_theta" value = "$(arg max_vel_theta)" />
+    <remap from = "teleopflag" to = "/task_selector/teleop_mode"/>
+  </node>
+
+  <node pkg="nhk2021_launcher" type="task_selector.py" name="task_selector"/>
+  </group>
+
+  <include file="$(find nhk2021_webgui)/launch/server.launch"/>
 
 </launch>

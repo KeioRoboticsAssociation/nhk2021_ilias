@@ -18,9 +18,19 @@ NHK2021の環境をgazeboで再現するパッケージ。
 
 - フィールド+簡易的な4輪ステアリングモデル
 
-  ```
-  roslaunch nhk2021_simulator swerve_simulation.launch
-  ```
+  - TRの場合
+
+    ```
+    roslaunch nhk2021_simulator swerve_simulation_TR.launch
+    ```
+
+  - DRの場合
+
+    ```
+    roslaunch nhk2021_simulator swerve_simulation_DR.launch
+    ```
+
+    
 
 - フィールド+簡易的な差動2輪モデル
 

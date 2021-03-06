@@ -1,4 +1,6 @@
 <launch>
+  <arg name="joy" default="false"/>
+
   <!--path_planning_node-->
   <arg name="control_frequency" default="30" />
   <arg name="use_tf" default="true" />
@@ -133,18 +135,20 @@
   <remap from="odom" to="odom_filtered" />
  </node>
 
- <node pkg="joy" type="joy_node" name="joy_node"/>
+ <group if="$(arg joy)">
+  <node pkg="joy" type="joy_node" name="joy_node"/>
 
-  <node pkg="joy_commander" type="joy_commander" name="joy_commander" output="screen">
-    <param name="control_frequency" value="$(arg control_frequency)"/>
-    <param name = "acc_lim_xy" value = "$(arg acc_lim_xy)" />
-    <param name = "max_vel_xy" value = "$(arg max_vel_xy)" />
-    <param name = "acc_lim_theta" value = "$(arg acc_lim_theta)" />
-    <param name = "max_vel_theta" value = "$(arg max_vel_theta)" />
-    <remap from = "teleopflag" to = "/task_selector/teleop_mode"/>
-  </node>
+    <node pkg="joy_commander" type="joy_commander" name="joy_commander" output="screen">
+      <param name="control_frequency" value="$(arg control_frequency)"/>
+      <param name = "acc_lim_xy" value = "$(arg acc_lim_xy)" />
+      <param name = "max_vel_xy" value = "$(arg max_vel_xy)" />
+      <param name = "acc_lim_theta" value = "$(arg acc_lim_theta)" />
+      <param name = "max_vel_theta" value = "$(arg max_vel_theta)" />
+      <remap from = "teleopflag" to = "/task_selector/teleop_mode"/>
+    </node>
 
-  <node pkg="nhk2021_launcher" type="task_selector.py" name="task_selector"/>
+    <node pkg="nhk2021_launcher" type="task_selector.py" name="task_selector"/>
+  </group>
 
   <include file="$(find nhk2021_webgui)/launch/server.launch"/>
 

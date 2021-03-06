@@ -106,6 +106,58 @@ A detail description about dependencies of this repository locates [Here](https:
 
 
 
+## シミュレーターの簡単な遊び方
+
+1. フィールドとロボットモデルのリスポーン
+
+- TRの場合
+
+  ```
+  roslaunch nhk2021_simulator swerve_simulation_TR.launch
+  ```
+
+- DRの場合
+
+  ```
+  roslaunch nhk2021_simulator swerve_simulation_DR.launch
+  ```
+
+2. コントローラーの起動
+
+- TR
+
+  ```shell
+  roslaunch nhk2021_launcher control_TR.launch
+  ```
+
+- DR
+
+  ```shell
+  roslaunch nhk2021_launcher control_DR.launch
+  ```
+
+3. 手動コントロールの場合
+
+   ```shell
+   rosrun teleop_twist_keyboard teleop_twist_keyboard.py
+   ```
+
+   ↑こちらのインストールは
+
+   ```shell
+   sudo apt install ros-melodic-teleop-twist-keyboard
+   ```
+
+4. 自動コントロールの場合
+
+   ```shell
+   rosrun actionlib axclient.py /bezier_path_planning_pursuit
+   ```
+
+5. WebGUIのリンクは[こちら](http://localhost:8085/nhk2021_webgui/WebGUI.html)
+
+
+
 ## Lisence
 
 The applications are licensed under GPLv3 license.
