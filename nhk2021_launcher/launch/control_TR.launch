@@ -1,5 +1,5 @@
 <launch>
-  <arg name="joy" default="false"/>
+  <arg name="joy" default="true"/>
 
   <!--path_planning_node-->
   <arg name="control_frequency" default="30" />
