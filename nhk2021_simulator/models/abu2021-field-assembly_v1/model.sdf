@@ -116,6 +116,12 @@
 						<uri>model://abu2021-field-assembly_v1/meshes/abu2021-bot2_v1.stl</uri>
 					</mesh>
 				</geometry>
+				<material>
+					<script>
+						<uri>model://abu2021-field-assembly_v1/materials/pot_texture.material</uri>
+						<name>PotTexture</name>
+					</script>
+        		</material>
 			</visual>
 		</link>
 		<link name="abu2021-bot2_v1:2">

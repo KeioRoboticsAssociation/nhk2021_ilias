@@ -94,11 +94,11 @@
     <transmission name="wheel_${rl}_trans" type="SimpleTransmission">
       <type>transmission_interface/SimpleTransmission</type>
         <actuator name="wheel_${rl}_motor">
-          <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+          <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
           <mechanicalReduction>1</mechanicalReduction>
         </actuator>
       <joint name="wheel_${rl}_joint">
-        <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
       </joint>
     </transmission>
 
