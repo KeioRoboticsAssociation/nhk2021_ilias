@@ -101,7 +101,6 @@ void Path::set_vel()
         waypoint_num_sum += waypoint_num[p - 1];
     }
 
-    cout << waypoint_num_sum << endl;
     target_vel = new float[waypoint_num_sum + 1];
 
     int init_index = 0;
@@ -124,7 +123,7 @@ void Path::set_vel()
             float t = (float)i * t_unit;
             float k = abs((((6 - 6 * t) * p0_x + 3 * (6 * t - 4) * p1_x - 3 * (6 * t - 2) * p2_x + 6 * t * p3_x) * ((-3 + 6 * t - 3 * t * t) * p0_y + 3 * (1 - 4 * t + 3 * t * t) * p1_y + 3 * (2 * t - 3 * t * t) * p2_y + 3 * t * t * p3_y) - ((-3 + 6 * t - 3 * t * t) * p0_x + 3 * (1 - 4 * t + 3 * t * t) * p1_x + 3 * (2 * t - 3 * t * t) * p2_x + 3 * t * t * p3_x) * ((6 - 6 * t) * p0_y + 3 * (6 * t - 4) * p1_y - 3 * (6 * t - 2) * p2_y + 6 * t * p3_y)) / pow(sqrt((pow(((-3 + 6 * t - 3 * t * t) * p0_y + 3 * (1 - 4 * t + 3 * t * t) * p1_y + 3 * (2 * t - 3 * t * t) * p2_y + 3 * t * t * p3_y), 2) + pow(((-3 + 6 * t - 3 * t * t) * p0_x + 3 * (1 - 4 * t + 3 * t * t) * p1_x + 3 * (2 * t - 3 * t * t) * p2_x + 3 * t * t * p3_x), 2))), 3));
 
-/*
+            /*
             for (int i = 0; i < waypoint_num_sum; i++)
             {
                // writing_file << target_vel[i] << std::endl;
@@ -145,8 +144,7 @@ void Path::set_vel()
     target_vel[waypoint_num_sum] = max_initial_speed;
     target_vel[0] = max_initial_speed;
 
-    //
-
+    /*
     std::string filename = "test.csv";
 
     std::ofstream writing_file;
@@ -158,6 +156,7 @@ void Path::set_vel()
     {
         writing_file << target_vel[i] << std::endl;
     }
+    */
 
     bool *checked;
     checked = new bool[waypoint_num_sum + 1];
@@ -206,7 +205,7 @@ void Path::set_vel()
 
         checked[index] = true;
     }
-
+    /*
     std::string filename2 = "test2.csv";
 
     std::ofstream writing_file2;
@@ -217,6 +216,7 @@ void Path::set_vel()
     {
         writing_file2 << target_vel[i] << std::endl;
     }
+    */
 
     delete[] checked;
 }
