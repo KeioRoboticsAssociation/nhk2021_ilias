@@ -12,8 +12,6 @@ void Path::load_config(std::string filename, float accel, float vel, float acc_l
 {
     max_accel = accel;
     max_vel = vel;
-    acc_lim_theta = acc_lim_theta_;
-    max_vel_theta = max_vel_theta_;
     max_initial_speed = init_vel;
     corner_speed_rate = speed_rate;
     set_point_csv(filename);
@@ -602,7 +600,7 @@ void Path::listen_goal_position(float &x, float &y, const bool &forward)
     }
 }
 
-Matrix Path::pure_pursuit(float posx, float posy, float body_theta, float control_frequency, bool foward, float reset_t)
+Matrix Path::pure_pursuit(float posx, float posy, float body_theta, bool foward, float reset_t)
 {
     using namespace std;
     position[0] = posx;
@@ -610,7 +608,7 @@ Matrix Path::pure_pursuit(float posx, float posy, float body_theta, float contro
 
     if (reset_t > 0)
         ref_t = reset_t;
-    ref_t = linear_search(1, (float)pnum, ref_t - 0.1f, ref_t + 0.1f);
+    ref_t = linear_search(1, (float)pnum, ref_t - 0.2f, ref_t + 0.2f);
     float aim_t;
     if (foward)
     {
@@ -656,36 +654,10 @@ Matrix Path::pure_pursuit(float posx, float posy, float body_theta, float contro
 
     // calc vx, vy
     direction = Rotation_Matrix * direction;
+    
 
     // calc omega
     float omega = ref[3][1] - body_theta;
-
-    // acc limit
-    if (omega - old_omega >= 0){
-        if ((omega - old_omega) * control_frequency > acc_lim_theta)
-        {
-            omega = old_omega + acc_lim_theta / control_frequency;
-        }
-    }
-    else{
-        if ((omega - old_omega) * control_frequency < -1 * acc_lim_theta)
-        {
-            omega = old_omega - acc_lim_theta / control_frequency;
-        }
-    }
-     // max_vel limit
-    if(omega >= 0){
-        if (omega > max_vel_theta){
-            omega = max_vel_theta;
-        }
-    }
-    else{
-        if (omega < -1 * max_vel_theta)
-        {
-            omega = -1 * max_vel_theta;
-        }
-    }
-    old_omega = omega;
 
     Matrix ans(5, 1);
     ans[1][1] = direction[1][1];

@@ -23,12 +23,10 @@ class Path
 {
 private:
     float max_accel = 1.2, max_vel = 1.0; // m/(s^2), m/s
-    float acc_lim_theta = 3.2, max_vel_theta = 1.57;
     float corner_speed_rate = 0.8;
     float max_initial_speed = 0.1;        // [m/s]
     float position[2] = {0, 0};           // [x,y]
     float ref_t = 1;
-    float old_omega = 0;
     float path_granularity = 0.01;
     const float gravitational_acceleration = 9.80665;
     Matrix control_point; // [ctrl_point][x,y]
@@ -59,7 +57,7 @@ public:
     void set_point_csv(std::string filename);
     void listen_goal_position(float &x, float &y, const bool &forward);
     Matrix path_func(float t);                                                    // return [x,y,theta,vel](4*1), 1<t<pnum
-    Matrix pure_pursuit(float posx, float posy, float body_theta, float control_frequency, bool foward, float reset_t = -1); // return [velx,vely,theta,ref_t](4*1)
+    Matrix pure_pursuit(float posx, float posy, float body_theta, bool foward, float reset_t = -1); // return [velx,vely,theta,ref_t](4*1)
 };
 
 #endif
