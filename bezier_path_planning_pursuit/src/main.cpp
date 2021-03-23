@@ -115,7 +115,7 @@ void Path_Planner::setPoseTopic(const int &path_num)
     path_ros[path_num].header = h;
 
     int index = 0;
-    for (float t = 1; t <= path[path_num].pnum; t += 0.1)
+    for (float t = 1.0; t <= path[path_num].pnum + 0.5; t += 0.1)
     {
         Matrix pose_unit(path[path_num].path_func(t));
         float x = pose_unit[1][1] / 1000; // mm -> m
@@ -199,16 +199,8 @@ void Path_Planner::AdjustVelocity(float &v, float &old_v, const float &max_v, co
 }
 
 bool Path_Planner::reachedxyGoal(){
-    if (forwardflag)
-    {
-        if (control[4][1] >= path[path_mode - 1].pnum - xy_goal_tolerance_){
-            return true;
-        } // if the reference point almost reached goal       
-    }
-    else
-    {
-        if (control[4][1] <= 1.00 + xy_goal_tolerance_) // if the reference point almost reached goal
-            return true;
+    if (fabs(position[0] - goal_position_x) <= xy_goal_tolerance_ * 1000.0f && fabs(position[1] - goal_position_y) <= xy_goal_tolerance_ * 1000.0f){
+        return true;
     }
     return false;
 }
@@ -272,6 +264,7 @@ void Path_Planner::executeCB(const PursuitPathGoalConstPtr &goal) // if use acti
 
     forwardflag = goal->direction;
     path_mode = goal->pathmode;
+    path[path_mode - 1].listen_goal_position(goal_position_x, goal_position_y, forwardflag);
 
     ROS_INFO("%s: Executing, pathmode: %d, direction: %d", node_name.c_str(), goal->pathmode, goal->direction);
 
@@ -336,7 +329,7 @@ void Path_Planner::executeCB(const PursuitPathGoalConstPtr &goal) // if use acti
             //pure_pursuit
             // return [velx,vely,theta,ref_t](4*1)
             // forwardflag = 1 when move forward ,0 when move backward
-            control = path[path_mode - 1].pure_pursuit(position[0], position[1], body_theta, (float)loop_rate_, forwardflag);
+            control = path[path_mode - 1].pure_pursuit(position[0], position[1], body_theta, forwardflag);
             //control[3][1] -= body_theta;
 
             // control[4][1]で追従時に参照した点番号がわかり、遷移先の検討に使える
@@ -361,6 +354,8 @@ void Path_Planner::executeCB(const PursuitPathGoalConstPtr &goal) // if use acti
         feedback_.vx = _vx_;
         feedback_.vy = _vy_;
         feedback_.omega = _omega_;
+        feedback_.goal_x = goal_position_x;
+        feedback_.goal_y = goal_position_y;
         as_.publishFeedback(feedback_);
 
         ros::spinOnce();
