@@ -63,6 +63,8 @@ private:
     float xy_goal_tolerance_;
     float yaw_goal_tolerance_;
     float fix_angle_gain_;
+    float goal_position_x;
+    float goal_position_y;
 
     Path *path;
     nav_msgs::Path *path_ros;

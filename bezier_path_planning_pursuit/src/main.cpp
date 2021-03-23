@@ -200,10 +200,14 @@ void Path_Planner::AdjustVelocity(float &v, float &old_v, const float &max_v, co
 
 bool Path_Planner::reachedxyGoal(){
     if (forwardflag)
-    {
+    {/*
         if (control[4][1] >= path[path_mode - 1].pnum - xy_goal_tolerance_){
             return true;
-        } // if the reference point almost reached goal       
+        } // if the reference point almost reached goal    
+        */
+        if (fabs(position[0] - goal_position_x) <= xy_goal_tolerance_ && fabs(position[1] - goal_position_y) <= xy_goal_tolerance_){
+            return true;
+        }
     }
     else
     {
@@ -272,6 +276,7 @@ void Path_Planner::executeCB(const PursuitPathGoalConstPtr &goal) // if use acti
 
     forwardflag = goal->direction;
     path_mode = goal->pathmode;
+    path[path_mode - 1].listen_goal_position(goal_position_x, goal_position_y, forwardflag);
 
     ROS_INFO("%s: Executing, pathmode: %d, direction: %d", node_name.c_str(), goal->pathmode, goal->direction);
 

@@ -29,9 +29,12 @@ private:
     float position[2] = {0, 0};           // [x,y]
     float ref_t = 1;
     float old_omega = 0;
+    float path_granularity = 0.01;
     const float gravitational_acceleration = 9.80665;
     Matrix control_point; // [ctrl_point][x,y]
-    Matrix point;         // [point][x,y,theta,vel,length]
+    Matrix point;         // [point][x,y,theta,length]
+    float *target_vel;
+    int *waypoint_num;
     void bezier();
     void set_vel();
     float costfunc(float t);
@@ -46,9 +49,15 @@ protected:
 public:
     int pnum = 1;
     Path(){};
+    ~Path()
+    {
+        delete[] target_vel;
+        delete[] waypoint_num;
+    };
     Path(std::string filename);
     void load_config(std::string filename, float accel, float vel, float acc_lim_theta, float max_vel_theta, float init_vel, float speed_rate);
     void set_point_csv(std::string filename);
+    void listen_goal_position(float &x, float &y, const bool &forward);
     Matrix path_func(float t);                                                    // return [x,y,theta,vel](4*1), 1<t<pnum
     Matrix pure_pursuit(float posx, float posy, float body_theta, float control_frequency, bool foward, float reset_t = -1); // return [velx,vely,theta,ref_t](4*1)
 };

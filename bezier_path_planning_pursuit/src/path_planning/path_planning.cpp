@@ -44,7 +44,7 @@ void Path::set_point_csv(std::string filename)
         cerr << "err Path::set_point_csv / csv data error" << std::endl;
         exit(1);
     }
-    point.change_size(pnum, 5);
+    point.change_size(pnum, 4);
     control_point.change_size(2 * pnum - 2, 2);
     count = 0;
     infile.close();
@@ -95,99 +95,129 @@ void Path::set_point_csv(std::string filename)
 void Path::set_vel()
 {
     using namespace std;
-    for (int p = 2; p <= pnum - 1; p++)
-    {
-        //P0
-        float p0_x = point[p][1];
-        float p0_y = point[p][2];
-        //P1
-        float p1_x = control_point[2 * p - 1][1];
-        float p1_y = control_point[2 * p - 1][2];
-        //P2
-        float p2_x = control_point[2 * p][1];
-        float p2_y = control_point[2 * p][2];
-        //P3
-        float p3_x = point[p + 1][1];
-        float p3_y = point[p + 1][2];
-        float k = -1;
-        for (float t = 0; t <= 0.5; t += 0.01f)
-        {
-            float res = abs((((6 - 6 * t) * p0_x + 3 * (6 * t - 4) * p1_x - 3 * (6 * t - 2) * p2_x + 6 * t * p3_x) * ((-3 + 6 * t - 3 * t * t) * p0_y + 3 * (1 - 4 * t + 3 * t * t) * p1_y + 3 * (2 * t - 3 * t * t) * p2_y + 3 * t * t * p3_y) - ((-3 + 6 * t - 3 * t * t) * p0_x + 3 * (1 - 4 * t + 3 * t * t) * p1_x + 3 * (2 * t - 3 * t * t) * p2_x + 3 * t * t * p3_x) * ((6 - 6 * t) * p0_y + 3 * (6 * t - 4) * p1_y - 3 * (6 * t - 2) * p2_y + 6 * t * p3_y)) / pow(sqrt((pow(((-3 + 6 * t - 3 * t * t) * p0_y + 3 * (1 - 4 * t + 3 * t * t) * p1_y + 3 * (2 * t - 3 * t * t) * p2_y + 3 * t * t * p3_y), 2) + pow(((-3 + 6 * t - 3 * t * t) * p0_x + 3 * (1 - 4 * t + 3 * t * t) * p1_x + 3 * (2 * t - 3 * t * t) * p2_x + 3 * t * t * p3_x), 2))), 3));
-            if (k < res)
-                k = res;
-        }
-        //P-3
-        float p_3_x = point[p - 1][1];
-        float p_3_y = point[p - 1][2];
-        //P-2
-        float p_2_x = control_point[2 * p - 3][1];
-        float p_2_y = control_point[2 * p - 3][2];
-        //P-1
-        float p_1_x = control_point[2 * p - 2][1];
-        float p_1_y = control_point[2 * p - 2][2];
-        for (float t = 0.5f; t <= 1; t += 0.01f)
-        {
-            float res = abs((((6 - 6 * t) * p_3_x + 3 * (6 * t - 4) * p_2_x - 3 * (6 * t - 2) * p_1_x + 6 * t * p0_x) * ((-3 + 6 * t - 3 * t * t) * p_3_y + 3 * (1 - 4 * t + 3 * t * t) * p_2_y + 3 * (2 * t - 3 * t * t) * p_1_y + 3 * t * t * p0_y) - ((-3 + 6 * t - 3 * t * t) * p_3_x + 3 * (1 - 4 * t + 3 * t * t) * p_2_x + 3 * (2 * t - 3 * t * t) * p_1_x + 3 * t * t * p0_x) * ((6 - 6 * t) * p_3_y + 3 * (6 * t - 4) * p_2_y - 3 * (6 * t - 2) * p_1_y + 6 * t * p0_y)) / pow(sqrt((pow(((-3 + 6 * t - 3 * t * t) * p_3_y + 3 * (1 - 4 * t + 3 * t * t) * p_2_y + 3 * (2 * t - 3 * t * t) * p_1_y + 3 * t * t * p0_y), 2) + pow(((-3 + 6 * t - 3 * t * t) * p_3_x + 3 * (1 - 4 * t + 3 * t * t) * p_2_x + 3 * (2 * t - 3 * t * t) * p_1_x + 3 * t * t * p0_x), 2))), 3));
-            if (k < res)
-                k = res; // k: curvature
-        }
-        float v;
-        if (k < 1e-2) v = max_vel;
-        else{
-            float limit_vel = sqrt(gravitational_acceleration / k) * corner_speed_rate; 
-            v = min(max_vel, limit_vel);
-        }
-        point[p][4] = v;
+    int waypoint_num_sum = 0;
+    waypoint_num = new int[pnum - 1];
+    for (int p = 1; p < pnum; p++){
+        float length = point[p][4];
+        waypoint_num[p - 1] = ceil(length / 1000.0f / path_granularity); // kiriage
+        waypoint_num_sum += waypoint_num[p - 1];
     }
-    point[pnum][4] = max_initial_speed;
-    point[1][4] = max_initial_speed;
+
+    cout << waypoint_num_sum << endl;
+    target_vel = new float[waypoint_num_sum + 1];
+
+    int init_index = 0;
+    for (int p = 1; p < pnum; p++){
+        //P0
+        float p0_x = point[p][1] / 1000.0f;
+        float p0_y = point[p][2] / 1000.0f;
+        //P1
+        float p1_x = control_point[2 * p - 1][1] / 1000.0f;
+        float p1_y = control_point[2 * p - 1][2] / 1000.0f;
+        //P2
+        float p2_x = control_point[2 * p][1] / 1000.0f;
+        float p2_y = control_point[2 * p][2] / 1000.0f;
+        //P3
+        float p3_x = point[p + 1][1] / 1000.0f;
+        float p3_y = point[p + 1][2] / 1000.0f;
+
+        for (int i = 0; i < waypoint_num[p - 1]; i++){
+            float t_unit = 1.0 / waypoint_num[p - 1];
+            float t = (float)i * t_unit;
+            float k = abs((((6 - 6 * t) * p0_x + 3 * (6 * t - 4) * p1_x - 3 * (6 * t - 2) * p2_x + 6 * t * p3_x) * ((-3 + 6 * t - 3 * t * t) * p0_y + 3 * (1 - 4 * t + 3 * t * t) * p1_y + 3 * (2 * t - 3 * t * t) * p2_y + 3 * t * t * p3_y) - ((-3 + 6 * t - 3 * t * t) * p0_x + 3 * (1 - 4 * t + 3 * t * t) * p1_x + 3 * (2 * t - 3 * t * t) * p2_x + 3 * t * t * p3_x) * ((6 - 6 * t) * p0_y + 3 * (6 * t - 4) * p1_y - 3 * (6 * t - 2) * p2_y + 6 * t * p3_y)) / pow(sqrt((pow(((-3 + 6 * t - 3 * t * t) * p0_y + 3 * (1 - 4 * t + 3 * t * t) * p1_y + 3 * (2 * t - 3 * t * t) * p2_y + 3 * t * t * p3_y), 2) + pow(((-3 + 6 * t - 3 * t * t) * p0_x + 3 * (1 - 4 * t + 3 * t * t) * p1_x + 3 * (2 * t - 3 * t * t) * p2_x + 3 * t * t * p3_x), 2))), 3));
+
+/*
+            for (int i = 0; i < waypoint_num_sum; i++)
+            {
+               // writing_file << target_vel[i] << std::endl;
+            }
+            */
+            float v;
+            if (k < 0.001)
+                v = max_vel;
+            else
+            {
+                float limit_vel = sqrt(gravitational_acceleration / k) * corner_speed_rate;
+                v = min(max_vel, limit_vel);
+            }
+            target_vel[init_index + i] = v;
+        }
+        init_index += waypoint_num[p - 1];
+    }
+    target_vel[waypoint_num_sum] = max_initial_speed;
+    target_vel[0] = max_initial_speed;
+
+    //
+
+    std::string filename = "test.csv";
+
+    std::ofstream writing_file;
+    writing_file.open(filename, std::ios::out);
+
+    std::cout << "writing " << filename << "..." << std::endl;
+
+    for (int i = 0; i <= waypoint_num_sum; i++)
+    {
+        writing_file << target_vel[i] << std::endl;
+    }
 
     bool *checked;
-    checked = new bool[pnum + 1];
+    checked = new bool[waypoint_num_sum + 1];
 
-    for (int i = 1; i <= pnum; i++)
+    for (int i = 0; i <= waypoint_num_sum; i++)
     {
         checked[i] = false;
     }
 
-    for (int _ = 1; _ <= pnum; _++)
+    for (int _ = 0; _ <= waypoint_num_sum; _++)
     {
         float min_v = 1000000000;
         int index = 0;
-        for (int i = 1; i <= pnum; i++)
+        for (int i = 0; i <= waypoint_num_sum; i++)
         {
-            if (point[i][4] < min_v && checked[i] == false)
+            if (target_vel[i] < min_v && checked[i] == false)
             {
-                min_v = point[i][4];
+                min_v = target_vel[i];
                 index = i;
             }
         }
 
-        if (index - 1 >= 1)
+        if (index - 1 >= 0)
         {
-            float accel = (point[index - 1][4] * point[index - 1][4] - point[index][4] * point[index][4]) / (2 * point[index - 1][5] / 1000.0f);
+            float accel = (target_vel[index - 1] * target_vel[index - 1] - target_vel[index] * target_vel[index]) / (2 * path_granularity);
             if (abs(accel) > max_accel)
             {
                 if (accel > 0)
-                    point[index - 1][4] = sqrt(point[index][4] * point[index][4] + 2 * point[index - 1][5] / 1000.0f * max_accel);
+                    target_vel[index - 1] = sqrt(target_vel[index] * target_vel[index] + 2 * path_granularity * max_accel);
                 else
-                    point[index - 1][4] = sqrt(point[index][4] * point[index][4] - 2 * point[index - 1][5] / 1000.0f * max_accel);
+                    target_vel[index - 1] = sqrt(target_vel[index] * target_vel[index] - 2 * path_granularity * max_accel);
             }
         }
 
-        if (index + 1 <= pnum)
+        if (index + 1 <= waypoint_num_sum)
         {
-            float accel = (point[index + 1][4] * point[index + 1][4] - point[index][4] * point[index][4]) / (2 * point[index][5] / 1000.0f);
+            float accel = (target_vel[index + 1] * target_vel[index + 1] - target_vel[index] * target_vel[index]) / (2 * path_granularity);
             if (abs(accel) > max_accel)
             {
                 if (accel > 0)
-                    point[index + 1][4] = sqrt(point[index][4] * point[index][4] + 2 * point[index][5] / 1000.0f * max_accel);
+                    target_vel[index + 1] = sqrt(target_vel[index] * target_vel[index] + 2 * path_granularity * max_accel);
                 else
-                    point[index + 1][4] = sqrt(point[index][4] * point[index][4] - 2 * point[index][5] / 1000.0f * max_accel);
+                    target_vel[index + 1] = sqrt(target_vel[index] * target_vel[index] - 2 * path_granularity * max_accel);
             }
         }
 
         checked[index] = true;
+    }
+
+    std::string filename2 = "test2.csv";
+
+    std::ofstream writing_file2;
+    writing_file2.open(filename2, std::ios::out);
+
+    std::cout << "writing " << filename2 << "..." << std::endl;
+    for (int i = 0; i <= waypoint_num_sum; i++)
+    {
+        writing_file2 << target_vel[i] << std::endl;
     }
 
     delete[] checked;
@@ -237,7 +267,7 @@ void Path::bezier()
                        control_point[2 * i - 1][2],
                        control_point[2 * i][2],
                        point[i + 1][2]};
-        point[i][5] = bezier_length(px, py);
+        point[i][4] = bezier_length(px, py);
     }
 }
 
@@ -260,11 +290,15 @@ Matrix Path::path_func(float t)
         ans[xy][1] = pow(1 - tt, 3) * point[Q][xy] + 3 * pow(1 - tt, 2) * tt * control_point[2 * Q - 1][xy] + 3 * (1 - tt) * pow(tt, 2) * control_point[2 * Q][xy] + pow(tt, 3) * point[Q + 1][xy];
     }
 
-    // get theta and velocity
-    for (int i = 3; i <= 4; i++)
-    {
-        ans[i][1] = point[Q][i] * (1 - tt) + point[Q + 1][i] * tt;
+    // get theta
+    ans[3][1] = point[Q][3] * (1 - tt) + point[Q + 1][3] * tt;
+    // get velocity
+    int index = 0;
+    for (int i = 0; i <= Q-2; i++){
+        index += waypoint_num[i];
     }
+    index += floor((float)waypoint_num[Q-1] * tt);
+    ans[4][1] = target_vel[index];
     return ans;
 }
 
@@ -555,6 +589,19 @@ float Path::linear_search(float min, float max, float a, float b, float converge
     return (t_ft[1][0] + t_ft[2][0]) / 2.0f;
 }
 
+void Path::listen_goal_position(float &x, float &y, const bool &forward)
+{
+    if(forward){
+        x = point[pnum][1];
+        y = point[pnum][2];
+    }
+    else
+    {
+        x = point[1][1];
+        y = point[1][2];
+    }
+}
+
 Matrix Path::pure_pursuit(float posx, float posy, float body_theta, float control_frequency, bool foward, float reset_t)
 {
     using namespace std;
@@ -563,7 +610,7 @@ Matrix Path::pure_pursuit(float posx, float posy, float body_theta, float contro
 
     if (reset_t > 0)
         ref_t = reset_t;
-    ref_t = linear_search(1, (float)pnum, ref_t - 0.5f, ref_t + 0.5f);
+    ref_t = linear_search(1, (float)pnum, ref_t - 0.1f, ref_t + 0.1f);
     float aim_t;
     if (foward)
     {
