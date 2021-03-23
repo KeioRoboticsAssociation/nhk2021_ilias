@@ -24,6 +24,7 @@ class ImageCrop:
         date_time = dt_now.isoformat().replace(':', '-')
         filename = "depth_image.png"
         filepath = "../data/" + date_time + "_" + filename
+        #frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         cv2.imwrite(filepath, frame)
         print("create "+ filepath)
         #cv2.waitKey(1)
