@@ -6,36 +6,41 @@ echo "#############################################"
 
 ## Resolve dependencies (from git repository)
 echo "1/4 Resolve dependencies (from git repository)"
-sudo apt install python-vcstool
-cd ~/catkin_ws
-dir_path="~/catkin_ws/nhk2021_ilias/*"
-dirs=`find $dir_path -maxdepth 1 -type f -name *.rosinstall`
+sudo apt-get update
+sudo apt-get install python-vcstool
+dir_path=`pwd`
+dirs=`find $dir_path -maxdepth 2 -type f -name *.rosinstall`
+echo $dirs
 for dir in $dirs;
 do
-    vcs import src < dirs
+    echo $dir
+    vcs import ../ < $dir
 done
 
 ## Resolve dependencies (from apt repository)
 echo "2/4 Resolve dependencies (from apt repository)"
-cd ~/catkin_ws/src
-rosdep install -i --from-paths roswww
-dir_path="~/catkin_ws/nhk2021_ilias/*"
-dirs=`find $dir_path -maxdepth 0 -type d`
+rosdep install -i --from-paths -y ../roswww
+dirs=`find $dir_path -maxdepth 1 -type d`
 
 for dir in $dirs;
 do
     echo $dir
-    rosdep install -i --from-paths dir
+    rosdep install -i --from-paths -y $dir
 done
 
-## Give permission to task_selector.py (in nhk2021_launcher pkg)
+## Give permission to python scripts
 echo "3/4 Give permissions to python scripts"
-cd ~/catkin_ws/src/nhk2021_ilias
-chmod +x ./nhk2021_launcher/scripts/task_selector.py
+dirs=`find $dir_path -maxdepth 3 -type f -name *.py`
+
+for dir in $dirs;
+do
+    chmod +x $dir
+    echo $dir
+done
 
 ## Build
 echo "4/4 catkin_make"
-cd ~/catkin_ws
+cd ../../
 catkin_make
 
 echo "Installing finished successfully."
