@@ -28,6 +28,9 @@ do
     rosdep install -i --from-paths -y $dir
 done
 
+sudo apt-get install -y ros-melodic-realsense2-description
+sudo apt-get install -y ros-melodic-robot-localization
+
 ## Give permission to python scripts
 echo "3/4 Give permissions to python scripts"
 dirs=`find $dir_path -maxdepth 3 -type f -name *.py`
@@ -37,6 +40,9 @@ do
     chmod +x $dir
     echo $dir
 done
+
+## Give permission to action msg
+chmod +x ./bezier_path_planning_pursuit/action/PursuitPath.action
 
 ## Build
 echo "4/4 catkin_make"
