@@ -2,21 +2,22 @@
   <arg name="joy" default="false"/>
 
   <!--path_planning_node-->
-  <arg name="control_frequency" default="30" />
+  <arg name="control_frequency" default="100" />
   <arg name="use_tf" default="true" />
   <arg name="angle_source" default="imu" />
   <arg name="csv_path" default="$(find nhk2021_launcher)/config/waypoints/TR" />
-  <arg name="acc_lim_xy" default="2.5" />
-  <arg name="max_vel_xy" default="1.5" />
+  <arg name="acc_lim_xy" default="2.0" />
+  <arg name="max_vel_xy" default="3.0" />
   <arg name="acc_lim_theta" default="3.2" />
-  <arg name="max_vel_theta" default="1.57" />
+  <arg name="max_vel_theta" default="3.14" />
   <arg name="initial_vel" default="0.1" />
   <arg name="corner_speed_rate" default="0.8" />
   <arg name="global_frame_id" default="map" />
   <arg name="base_frame_id" default="base_footprint" />
-  <arg name="xy_goal_tolerance" default="0.02" />
+  <arg name="xy_goal_tolerance" default="0.01" />
   <arg name="yaw_goal_tolerance" default="0.01" />
   <arg name="fix_angle_gain" default="2.0" />
+  <arg name="path_granularity" default="0.01" />
 
   <node pkg="bezier_path_planning_pursuit" name="bezier_path_planning_pursuit" type="bezier_path_planning_pursuit" output="screen">
     <param name= "control_frequency" value="$(arg control_frequency)" />
@@ -34,12 +35,12 @@
     <param name = "yaw_goal_tolerance" value = "$(arg yaw_goal_tolerance)" />
     <param name = "angle_source" value = "$(arg angle_source)" />
     <param name = "fix_angle_gain" value = "$(arg fix_angle_gain)" />
+    <param name = "path_granularity" value = "$(arg path_granularity)" />
     <!--
     <remap from="cmd_vel" to="/simple_diff_drive/diff_drive_controller/cmd_vel" />
     <remap from="odom" to="/simple_diff_drive/diff_drive_controller/odom" />
     -->
   </node>
-
   <node pkg="swerve_wheelctrl" type="swerve_wheelctrl" name="swerve_wheelctrl" output="screen">
     <param name="control_frequency" value="$(arg control_frequency)"/>
     <param name="lost_time_threshold" value="500"/>
@@ -61,6 +62,7 @@
     <param name="body_width" value="0.440"/>
     <param name="gazebo_mode" value="true"/>
   </node>
+  
 
   <!-- robot localization -->
   <node pkg="bno055_usb_stick" type="bno055_usb_stick_node" name="bno055" output="screen">

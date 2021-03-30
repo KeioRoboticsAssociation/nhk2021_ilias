@@ -1,0 +1,576 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sdf version="1.6">
+	<model name="field_assem_v1">
+		<pose>0 0 0 0 0 0</pose>
+		<link name="pot1_body_v1:1">
+			<pose>-7.880812996747558 5.5981067586119675 0.03600000000000021 0.0 -0.0 0.0</pose>
+			<inertial>
+				<mass>35.24424621082115</mass>
+				<pose>0.0 0.0 0.23200000000000026 -0.0 -0.0 -0.0</pose>
+				<inertia>
+					<ixx>1.0506955939961597</ixx>
+					<ixy>0.0</ixy>
+					<ixz>0.0</ixz>
+					<iyy>1.0506955939959735</iyy>
+					<iyz>0.0</iyz>
+					<izz>0.8367336492910982</izz>
+				</inertia>
+			</inertial>
+			<collision name="pot1_body_v1:1_collision">
+				<geometry>
+					<mesh>
+						<uri>model://field_assem_v1/meshes/pot1_body_v1.stl</uri>
+					</mesh>
+				</geometry>
+			</collision>
+			<visual name="pot1_body_v1:1_visual">
+				<geometry>
+					<mesh>
+						<uri>model://field_assem_v1/meshes/pot1_body_v1.stl</uri>
+					</mesh>
+				</geometry>
+				<material>
+					<script>
+						<uri>model://field_assem_v1/materials/pot_texture_red.material</uri>
+						<name>PotTextureRed</name>
+					</script>
+        		</material>
+			</visual>
+		</link>
+		<link name="pot1_body_v1:2">
+			<pose>-7.880812996747559 6.158106758611967 0.036000000000000074 0.0 -0.0 0.0</pose>
+			<inertial>
+				<mass>35.24424621082115</mass>
+				<pose>0.0 0.0 0.2320000000000002 -0.0 -0.0 -0.0</pose>
+				<inertia>
+					<ixx>1.0506955939959735</ixx>
+					<ixy>0.0</ixy>
+					<ixz>0.0</ixz>
+					<iyy>1.0506955939959735</iyy>
+					<iyz>0.0</iyz>
+					<izz>0.8367336492910982</izz>
+				</inertia>
+			</inertial>
+			<collision name="pot1_body_v1:2_collision">
+				<geometry>
+					<mesh>
+						<uri>model://field_assem_v1/meshes/pot1_body_v1.stl</uri>
+					</mesh>
+				</geometry>
+			</collision>
+			<visual name="pot1_body_v1:2_visual">
+				<geometry>
+					<mesh>
+						<uri>model://field_assem_v1/meshes/pot1_body_v1.stl</uri>
+					</mesh>
+				</geometry>
+				<material>
+					<script>
+						<uri>model://field_assem_v1/materials/pot_texture_blue.material</uri>
+						<name>PotTextureBlue</name>
+					</script>
+        		</material>
+			</visual>
+		</link>
+		<link name="pot1_body_v1:3">
+			<pose>-3.8808129967475584 5.5981067586119675 0.03599999999999972 0.0 -0.0 0.0</pose>
+			<inertial>
+				<mass>35.24424621082115</mass>
+				<pose>0.0 0.0 0.23200000000000023 -0.0 -0.0 -0.0</pose>
+				<inertia>
+					<ixx>1.0506955939961597</ixx>
+					<ixy>0.0</ixy>
+					<ixz>0.0</ixz>
+					<iyy>1.0506955939959735</iyy>
+					<iyz>0.0</iyz>
+					<izz>0.8367336492910982</izz>
+				</inertia>
+			</inertial>
+			<collision name="pot1_body_v1:3_collision">
+				<geometry>
+					<mesh>
+						<uri>model://field_assem_v1/meshes/pot1_body_v1.stl</uri>
+					</mesh>
+				</geometry>
+			</collision>
+			<visual name="pot1_body_v1:3_visual">
+				<geometry>
+					<mesh>
+						<uri>model://field_assem_v1/meshes/pot1_body_v1.stl</uri>
+					</mesh>
+				</geometry>
+				<material>
+					<script>
+						<uri>model://field_assem_v1/materials/pot_texture_red.material</uri>
+						<name>PotTextureRed</name>
+					</script>
+        		</material>
+			</visual>
+		</link>
+		<link name="pot1_body_v1:4">
+			<pose>-3.8808129967475584 6.158106758611967 0.03599999999999971 0.0 -0.0 0.0</pose>
+			<inertial>
+				<mass>35.24424621082115</mass>
+				<pose>0.0 0.0 0.2320000000000002 -0.0 -0.0 -0.0</pose>
+				<inertia>
+					<ixx>1.0506955939959735</ixx>
+					<ixy>0.0</ixy>
+					<ixz>0.0</ixz>
+					<iyy>1.0506955939959735</iyy>
+					<iyz>0.0</iyz>
+					<izz>0.8367336492910982</izz>
+				</inertia>
+			</inertial>
+			<collision name="pot1_body_v1:4_collision">
+				<geometry>
+					<mesh>
+						<uri>model://field_assem_v1/meshes/pot1_body_v1.stl</uri>
+					</mesh>
+				</geometry>
+			</collision>
+			<visual name="pot1_body_v1:4_visual">
+				<geometry>
+					<mesh>
+						<uri>model://field_assem_v1/meshes/pot1_body_v1.stl</uri>
+					</mesh>
+				</geometry>
+				<material>
+					<script>
+						<uri>model://field_assem_v1/materials/pot_texture_blue.material</uri>
+						<name>PotTextureBlue</name>
+					</script>
+        		</material>
+			</visual>
+		</link>
+		<link name="pot23_base_top_v1:1">
+			<pose>-6.420812996747559 3.5081067586119676 0.1 0.0 -0.0 0.0</pose>
+			<inertial>
+				<mass>109.17510713039513</mass>
+				<pose>0.539999999999969 -0.1299999999999999 0.01930494514536174 -0.0 -0.0 -0.0</pose>
+				<inertia>
+					<ixx>1.0349232733963056</ixx>
+					<ixy>-3.725290298461914e-13</ixy>
+					<ixz>2.3283064365386963e-13</ixz>
+					<iyy>12.363277697830647</iyy>
+					<iyz>0.0</iyz>
+					<izz>13.353196003446728</izz>
+				</inertia>
+			</inertial>
+			<collision name="pot23_base_top_v1:1_collision">
+				<geometry>
+					<mesh>
+						<uri>model://field_assem_v1/meshes/pot23_base_top_v1.stl</uri>
+					</mesh>
+				</geometry>
+			</collision>
+			<visual name="pot23_base_top_v1:1_visual">
+				<geometry>
+					<mesh>
+						<uri>model://field_assem_v1/meshes/pot23_base_top_v1.stl</uri>
+					</mesh>
+				</geometry>
+			</visual>
+		</link>
+		<link name="pot23_base_top_v1:2">
+			<pose>-6.431691074060507 5.949052822181358 0.30000000000000054 -6.749535653827448e-19 -6.21579500510616e-18 0.10816305240932739</pose>
+			<inertial>
+				<mass>109.17510713039513</mass>
+				<pose>0.5399999999999692 -0.1300000000000005 0.01930494514536179 -0.0 6.252333153385668e-18 -0.1081630524093274</pose>
+				<inertia>
+					<ixx>1.1669404368966818</ixx>
+					<ixy>-1.215774932617694</ixy>
+					<ixz>2.3283064365386963e-13</ixz>
+					<iyy>12.231260534330458</iyy>
+					<iyz>2.3283064365386964e-14</iyz>
+					<izz>13.353196003445984</izz>
+				</inertia>
+			</inertial>
+			<collision name="pot23_base_top_v1:2_collision">
+				<geometry>
+					<mesh>
+						<uri>model://field_assem_v1/meshes/pot23_base_top_v1.stl</uri>
+					</mesh>
+				</geometry>
+			</collision>
+			<visual name="pot23_base_top_v1:2_visual">
+				<geometry>
+					<mesh>
+						<uri>model://field_assem_v1/meshes/pot23_base_top_v1.stl</uri>
+					</mesh>
+				</geometry>
+			</visual>
+		</link>
+		<link name="pot23_base_top_v1:3">
+			<pose>-6.420812996747559 8.508106758611966 0.10000000000000014 0.0 -0.0 0.0</pose>
+			<inertial>
+				<mass>109.17510713039513</mass>
+				<pose>0.539999999999969 -0.13000000000000078 0.01930494514536174 -0.0 -0.0 -0.0</pose>
+				<inertia>
+					<ixx>1.034923273397982</ixx>
+					<ixy>1.4901161193847657e-12</ixy>
+					<ixz>2.2118911147117615e-13</ixz>
+					<iyy>12.363277697830647</iyy>
+					<iyz>0.0</iyz>
+					<izz>13.353196003447474</izz>
+				</inertia>
+			</inertial>
+			<collision name="pot23_base_top_v1:3_collision">
+				<geometry>
+					<mesh>
+						<uri>model://field_assem_v1/meshes/pot23_base_top_v1.stl</uri>
+					</mesh>
+				</geometry>
+			</collision>
+			<visual name="pot23_base_top_v1:3_visual">
+				<geometry>
+					<mesh>
+						<uri>model://field_assem_v1/meshes/pot23_base_top_v1.stl</uri>
+					</mesh>
+				</geometry>
+			</visual>
+		</link>
+		<link name="pot2_body_v1:1">
+			<pose>-6.2308129967475585 3.3781067586119677 0.136 0.0 -0.0 0.0</pose>
+			<inertial>
+				<mass>39.280655951039286</mass>
+				<pose>-5.253575352526241e-12 0.0 0.24325216718436232 -0.0 -0.0 -0.0</pose>
+				<inertia>
+					<ixx>1.1357551215687767</ixx>
+					<ixy>0.0</ixy>
+					<ixz>2.441229298710823e-11</ixz>
+					<iyy>1.1357551102329047</iyy>
+					<iyz>0.0</iyz>
+					<izz>0.9239097185865045</izz>
+				</inertia>
+			</inertial>
+			<collision name="pot2_body_v1:1_collision">
+				<geometry>
+					<mesh>
+						<uri>model://field_assem_v1/meshes/pot2_body_v1.stl</uri>
+					</mesh>
+				</geometry>
+			</collision>
+			<visual name="pot2_body_v1:1_visual">
+				<geometry>
+					<mesh>
+						<uri>model://field_assem_v1/meshes/pot2_body_v1.stl</uri>
+					</mesh>
+				</geometry>
+				<material>
+					<script>
+						<uri>model://field_assem_v1/materials/pot_texture_red.material</uri>
+						<name>PotTextureRed</name>
+					</script>
+        		</material>
+			</visual>
+		</link>
+		<link name="pot2_body_v1:2">
+			<pose>-5.530812996747559 3.3781067586119677 0.136 0.0 -0.0 0.0</pose>
+			<inertial>
+				<mass>39.280655951039286</mass>
+				<pose>-5.252687174106541e-12 0.0 0.24325216718436232 -0.0 -0.0 -0.0</pose>
+				<inertia>
+					<ixx>1.1357551215687767</ixx>
+					<ixy>0.0</ixy>
+					<ixz>2.441229298710823e-11</ixz>
+					<iyy>1.1357551102329047</iyy>
+					<iyz>0.0</iyz>
+					<izz>0.9239097185865045</izz>
+				</inertia>
+			</inertial>
+			<collision name="pot2_body_v1:2_collision">
+				<geometry>
+					<mesh>
+						<uri>model://field_assem_v1/meshes/pot2_body_v1.stl</uri>
+					</mesh>
+				</geometry>
+			</collision>
+			<visual name="pot2_body_v1:2_visual">
+				<geometry>
+					<mesh>
+						<uri>model://field_assem_v1/meshes/pot2_body_v1.stl</uri>
+					</mesh>
+				</geometry>
+				<material>
+					<script>
+						<uri>model://field_assem_v1/materials/pot_texture_blue.material</uri>
+						<name>PotTextureBlue</name>
+					</script>
+        		</material>
+			</visual>
+		</link>
+		<link name="pot2_body_v1:3">
+			<pose>-6.2308129967475585 8.378106758611967 0.13600000000000015 0.0 -0.0 0.0</pose>
+			<inertial>
+				<mass>39.280655951039286</mass>
+				<pose>-5.253575352526241e-12 0.0 0.2432521671843623 -0.0 -0.0 -0.0</pose>
+				<inertia>
+					<ixx>1.1357551215693356</ixx>
+					<ixy>0.0</ixy>
+					<ixz>2.441229298710823e-11</ixz>
+					<iyy>1.1357551102329047</iyy>
+					<iyz>0.0</iyz>
+					<izz>0.9239097185865045</izz>
+				</inertia>
+			</inertial>
+			<collision name="pot2_body_v1:3_collision">
+				<geometry>
+					<mesh>
+						<uri>model://field_assem_v1/meshes/pot2_body_v1.stl</uri>
+					</mesh>
+				</geometry>
+			</collision>
+			<visual name="pot2_body_v1:3_visual">
+				<geometry>
+					<mesh>
+						<uri>model://field_assem_v1/meshes/pot2_body_v1.stl</uri>
+					</mesh>
+				</geometry>
+				<material>
+					<script>
+						<uri>model://field_assem_v1/materials/pot_texture_red.material</uri>
+						<name>PotTextureRed</name>
+					</script>
+        		</material>
+			</visual>
+		</link>
+		<link name="pot2_body_v1:4">
+			<pose>-5.530812996747559 8.378106758611967 0.13600000000000015 0.0 -0.0 0.0</pose>
+			<inertial>
+				<mass>39.280655951039286</mass>
+				<pose>-5.252687174106541e-12 0.0 0.2432521671843623 -0.0 -0.0 -0.0</pose>
+				<inertia>
+					<ixx>1.1357551215693356</ixx>
+					<ixy>0.0</ixy>
+					<ixz>2.441229298710823e-11</ixz>
+					<iyy>1.1357551102329047</iyy>
+					<iyz>0.0</iyz>
+					<izz>0.9239097185865045</izz>
+				</inertia>
+			</inertial>
+			<collision name="pot2_body_v1:4_collision">
+				<geometry>
+					<mesh>
+						<uri>model://field_assem_v1/meshes/pot2_body_v1.stl</uri>
+					</mesh>
+				</geometry>
+			</collision>
+			<visual name="pot2_body_v1:4_visual">
+				<geometry>
+					<mesh>
+						<uri>model://field_assem_v1/meshes/pot2_body_v1.stl</uri>
+					</mesh>
+				</geometry>
+				<material>
+					<script>
+						<uri>model://field_assem_v1/materials/pot_texture_blue.material</uri>
+						<name>PotTextureBlue</name>
+					</script>
+        		</material>
+			</visual>
+		</link>
+		<link name="pot3_body_v1:1">
+			<pose>-6.2287676239908505 5.840323463626151 0.33600000000000063 -7.960077311445726e-18 -7.330609293794257e-17 0.10816305240932739</pose>
+			<inertial>
+				<mass>38.77109998988285</mass>
+				<pose>-3.783445896087627e-12 7.621373856279274e-16 0.23868885407413593 4.622231866529365e-33 7.373700626300519e-17 -0.1081630524093274</pose>
+				<inertia>
+					<ixx>1.0837450550943613</ixx>
+					<ixy>7.912516593933106e-10</ixy>
+					<ixz>1.1455267667770386e-11</ixz>
+					<iyy>1.0837450478939339</iyy>
+					<iyz>1.257285475730896e-12</iyz>
+					<izz>0.9038028327528387</izz>
+				</inertia>
+			</inertial>
+			<collision name="pot3_body_v1:1_collision">
+				<geometry>
+					<mesh>
+						<uri>model://field_assem_v1/meshes/pot3_body_v1.stl</uri>
+					</mesh>
+				</geometry>
+			</collision>
+			<visual name="pot3_body_v1:1_visual">
+				<geometry>
+					<mesh>
+						<uri>model://field_assem_v1/meshes/pot3_body_v1.stl</uri>
+					</mesh>
+				</geometry>
+				<material>
+					<script>
+						<uri>model://field_assem_v1/materials/pot_texture_red.material</uri>
+						<name>PotTextureRed</name>
+					</script>
+        		</material>
+			</visual>
+		</link>
+		<link name="pot3_body_v1:2">
+			<pose>-5.532858369504272 5.9158900535977805 0.3360000000000006 -5.760644815658954e-18 -7.194623220049304e-17 0.07989829725515836</pose>
+			<inertial>
+				<mass>38.77109998988285</mass>
+				<pose>-3.785030373514374e-12 1.1553146526598238e-16 0.23868885407413604 -0.0 7.217648756028129e-17 -0.07989829725515836</pose>
+				<inertia>
+					<ixx>1.0837450551332906</ixx>
+					<ixy>5.865469574928284e-10</ixy>
+					<ixz>1.1455267667770386e-11</ixz>
+					<iyy>1.0837450478551909</iyy>
+					<iyz>9.080395102500915e-13</iyz>
+					<izz>0.9038028327528387</izz>
+				</inertia>
+			</inertial>
+			<collision name="pot3_body_v1:2_collision">
+				<geometry>
+					<mesh>
+						<uri>model://field_assem_v1/meshes/pot3_body_v1.stl</uri>
+					</mesh>
+				</geometry>
+			</collision>
+			<visual name="pot3_body_v1:2_visual">
+				<geometry>
+					<mesh>
+						<uri>model://field_assem_v1/meshes/pot3_body_v1.stl</uri>
+					</mesh>
+				</geometry>
+				<material>
+					<script>
+						<uri>model://field_assem_v1/materials/pot_texture_blue.material</uri>
+						<name>PotTextureBlue</name>
+					</script>
+        		</material>
+			</visual>
+		</link>
+		<link name="base_pack:1">
+			<pose>0.0 0.0 0.0 0.0 -0.0 0.0</pose>
+			<inertial>
+				<mass>130196.6567032946</mass>
+				<pose>-5.8808129847320565 5.878105861722441 -0.0532775767982803 -0.0 -0.0 -0.0</pose>
+				<inertia>
+					<ixx>1565372.4556409211</ixx>
+					<ixy>-1592.9275525474548</ixy>
+					<ixz>-0.0001459214687347412</ixz>
+					<iyy>1570116.1374727683</iyy>
+					<iyz>0.010892210912704467</iyz>
+					<izz>3135141.7339782305</izz>
+				</inertia>
+			</inertial>
+			<collision name="base_pack:1_collision">
+				<geometry>
+					<mesh>
+						<uri>model://field_assem_v1/meshes/base_pack.stl</uri>
+					</mesh>
+				</geometry>
+			</collision>
+			<visual name="base_pack:1_visual">
+				<geometry>
+					<mesh>
+						<uri>model://field_assem_v1/meshes/base_pack.stl</uri>
+					</mesh>
+				</geometry>
+			</visual>
+		</link>
+		<joint name="rev10" type="revolute">
+			<pose>-7.880812996747559 5.5981067586119675 0.036000000000000074 -0.0 -0.0 -0.0</pose>
+			<child>base_pack:1</child>
+			<parent>pot1_body_v1:1</parent>
+			<axis>
+				<xyz>0.0 0.0 1.0</xyz>
+			</axis>
+		</joint>
+		<joint name="rev11" type="revolute">
+			<pose>-7.880812996747559 6.158106758611967 0.036000000000000074 -0.0 -0.0 -0.0</pose>
+			<child>base_pack:1</child>
+			<parent>pot1_body_v1:2</parent>
+			<axis>
+				<xyz>0.0 0.0 1.0</xyz>
+			</axis>
+		</joint>
+		<joint name="rev12" type="revolute">
+			<pose>-3.8808129967475584 5.5981067586119675 0.03599999999999972 -0.0 -0.0 -0.0</pose>
+			<child>base_pack:1</child>
+			<parent>pot1_body_v1:3</parent>
+			<axis>
+				<xyz>0.0 0.0 1.0</xyz>
+			</axis>
+		</joint>
+		<joint name="rev13" type="revolute">
+			<pose>0.0 0.0 0.0 -0.0 -0.0 -0.0</pose>
+			<child>pot1_body_v1:4</child>
+			<parent>base_pack:1</parent>
+			<axis>
+				<xyz>0.0 0.0 1.0</xyz>
+			</axis>
+		</joint>
+		<joint name="rev14" type="revolute">
+			<pose>0.54 -0.1299999999999999 0.0 -0.0 -0.0 -0.0</pose>
+			<child>pot23_base_top_v1:1</child>
+			<parent>base_pack:1</parent>
+			<axis>
+				<xyz>0.0 0.0 1.0</xyz>
+			</axis>
+		</joint>
+		<joint name="rev15" type="revolute">
+			<pose>0.5399999999999996 -0.13000000000000025 -3.4442732662570807e-18 -0.0 6.252333153385668e-18 -0.1081630524093274</pose>
+			<child>pot23_base_top_v1:2</child>
+			<parent>base_pack:1</parent>
+			<axis>
+				<xyz>0.0 0.0 1.0</xyz>
+			</axis>
+		</joint>
+		<joint name="rev16" type="revolute">
+			<pose>0.54 -0.129999999999999 0.0 -0.0 -0.0 -0.0</pose>
+			<child>pot23_base_top_v1:3</child>
+			<parent>base_pack:1</parent>
+			<axis>
+				<xyz>0.0 0.0 1.0</xyz>
+			</axis>
+		</joint>
+		<joint name="rev17" type="revolute">
+			<pose>0.0 0.0 0.0 -0.0 -0.0 -0.0</pose>
+			<child>pot2_body_v1:1</child>
+			<parent>pot23_base_top_v1:1</parent>
+			<axis>
+				<xyz>0.0 0.0 1.0</xyz>
+			</axis>
+		</joint>
+		<joint name="rev18" type="revolute">
+			<pose>0.0 0.0 0.0 -0.0 -0.0 -0.0</pose>
+			<child>pot2_body_v1:2</child>
+			<parent>pot23_base_top_v1:1</parent>
+			<axis>
+				<xyz>0.0 0.0 1.0</xyz>
+			</axis>
+		</joint>
+		<joint name="rev19" type="revolute">
+			<pose>0.0 0.0 0.0 -0.0 -0.0 -0.0</pose>
+			<child>pot2_body_v1:3</child>
+			<parent>pot23_base_top_v1:3</parent>
+			<axis>
+				<xyz>0.0 0.0 1.0</xyz>
+			</axis>
+		</joint>
+		<joint name="rev20" type="revolute">
+			<pose>0.0 0.0 0.0 -0.0 -0.0 -0.0</pose>
+			<child>pot2_body_v1:4</child>
+			<parent>pot23_base_top_v1:3</parent>
+			<axis>
+				<xyz>0.0 0.0 1.0</xyz>
+			</axis>
+		</joint>
+		<joint name="rev21" type="revolute">
+			<pose>9.588087780447057e-17 8.829879741493968e-16 4.1053665947016107e-48 4.622231866529365e-33 7.373700626300519e-17 -0.1081630524093274</pose>
+			<child>pot3_body_v1:1</child>
+			<parent>pot23_base_top_v1:2</parent>
+			<axis>
+				<xyz>-6.252333153385669e-18 -2.3933436996283766e-35 1.0000000000000002</xyz>
+			</axis>
+		</joint>
+		<joint name="rev22" type="revolute">
+			<pose>0.0 0.0 0.0 -0.0 7.217648756028129e-17 -0.07989829725515836</pose>
+			<child>pot3_body_v1:2</child>
+			<parent>pot23_base_top_v1:2</parent>
+			<axis>
+				<xyz>-6.252333153385669e-18 -2.3933436996283766e-35 1.0000000000000002</xyz>
+			</axis>
+		</joint>
+	</model>
+</sdf>

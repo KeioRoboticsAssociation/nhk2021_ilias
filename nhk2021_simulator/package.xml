@@ -3,7 +3,7 @@
   <name>nhk2021_simulator</name>
   <version>0.0.0</version>
   <description>The nhk2021_simulator package</description>
-  <maintainer email="fumiyaonishi1016@gamil.com">Fumiya Onishi</maintainer>
+  <maintainer email="fumiyaonishi1016@gmail.com">Fumiya Onishi</maintainer>
   <license>GPLv3</license>
 
   <buildtool_depend>catkin</buildtool_depend>
@@ -22,7 +22,9 @@
   <exec_depend>ros_control</exec_depend> 
   <exec_depend>ros_controllers</exec_depend> 
   <exec_depend>robot_state_publisher</exec_depend> 
-  <exec_depend>joint_state_publisher</exec_depend> 
+  <exec_depend>joint_state_publisher</exec_depend>
+  <exec_depend>realsense2_description</exec_depend>
+  <exec_depend>realsense_gazebo_plugin</exec_depend>
 
   <exec_depend>gazebo_ros</exec_depend>
   <export>

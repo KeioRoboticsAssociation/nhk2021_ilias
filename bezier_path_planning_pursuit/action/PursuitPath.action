@@ -14,3 +14,5 @@ float32 progress
 float32 vx
 float32 vy
 float32 omega
+float32 goal_x
+float32 goal_y
