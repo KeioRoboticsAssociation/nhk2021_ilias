@@ -1,6 +1,6 @@
 - git:
     local-name: bno055_usb_stick
-    uri: https://github.com/yoshito-n-students/bno055_usb_stick.git
+    uri: https://github.com/anhquanvgu/bno055_usb_stick.git
     version: master
 - git:
     local-name: bno055_usb_stick_msgs

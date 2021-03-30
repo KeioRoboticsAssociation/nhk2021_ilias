@@ -8,12 +8,13 @@ Path::Path(std::string filename)
     set_point_csv(filename);
 }
 
-void Path::load_config(std::string filename, float accel, float vel, float acc_lim_theta_, float max_vel_theta_, float init_vel, float speed_rate)
+void Path::load_config(std::string filename, float accel, float vel, float acc_lim_theta_, float max_vel_theta_, float init_vel, float speed_rate, float path_granularity_)
 {
     max_accel = accel;
     max_vel = vel;
     max_initial_speed = init_vel;
     corner_speed_rate = speed_rate;
+    path_granularity = path_granularity_;
     set_point_csv(filename);
 }
 

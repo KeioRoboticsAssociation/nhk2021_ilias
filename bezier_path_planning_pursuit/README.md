@@ -30,6 +30,7 @@ float32 position_theta
 ---
 #feedback
 float32 reference_point
+float32 progress
 float32 vx
 float32 vy
 float32 omega
@@ -40,6 +41,7 @@ float32 omega
   - direction : 進行方向 (1ならば順方向、0ならば逆方向)
 - Feedback
   - reference_point : 現在プランナーがどのwaypointを参照しているか(waypointの間も参照するためfloat値)
+  - progress : 進捗(%)
   - vx : x方向の速度指令値
   - vy : y方向の速度指令値
   - omega : yaw方向の速度指令値
@@ -77,12 +79,10 @@ float32 omega
 
 - **initial_vel** : 初速度 (default : 0.1 [m/s])
 
-- **xy_goal_tolerance** :  (default : 0.05)
+- **xy_goal_tolerance** :  (default : 0.05 [m])
 
   xy方向のゴールの精度。0.0とするとゴール座標と一致するまで進むが、多少余裕を持たせるとよいと思う。
 
-  単位は無次元(厳密には、この数字の単位はwaypointの番号と同次元であり、waypointの間隔により長さは変化する)
-  
 - **yaw_goal_tolerance** :  (default : 0.01 [rad])
 
   yaw方向のゴールの精度。
@@ -108,6 +108,12 @@ float32 omega
   このプランナーは目的地到達後に角度調整を行う。
 
   その際、角速度を$ω=Δθ\times fix\_angle\_gain$で定めている。
+
+- **path_granularity** : (default : 0.01 [m])
+
+  ​	本プランナーはパスに一定間隔で目標速度の情報を埋め込んでおり、その間隔をいくらにするかをこのパラメータで指定する。
+
+  ​	基本変えなくてよい。
 
 - **corner_speed_rate** :  (default : 0.8)
 

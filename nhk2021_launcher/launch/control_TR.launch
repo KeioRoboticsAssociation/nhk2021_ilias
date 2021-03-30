@@ -17,6 +17,7 @@
   <arg name="xy_goal_tolerance" default="0.01" />
   <arg name="yaw_goal_tolerance" default="0.01" />
   <arg name="fix_angle_gain" default="2.0" />
+  <arg name="path_granularity" default="0.01" />
 
   <node pkg="bezier_path_planning_pursuit" name="bezier_path_planning_pursuit" type="bezier_path_planning_pursuit" output="screen">
     <param name= "control_frequency" value="$(arg control_frequency)" />
@@ -34,6 +35,7 @@
     <param name = "yaw_goal_tolerance" value = "$(arg yaw_goal_tolerance)" />
     <param name = "angle_source" value = "$(arg angle_source)" />
     <param name = "fix_angle_gain" value = "$(arg fix_angle_gain)" />
+    <param name = "path_granularity" value = "$(arg path_granularity)" />
     <!--
     <remap from="cmd_vel" to="/simple_diff_drive/diff_drive_controller/cmd_vel" />
     <remap from="odom" to="/simple_diff_drive/diff_drive_controller/odom" />

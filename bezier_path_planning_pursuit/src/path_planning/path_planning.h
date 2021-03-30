@@ -53,7 +53,7 @@ public:
         delete[] waypoint_num;
     };
     Path(std::string filename);
-    void load_config(std::string filename, float accel, float vel, float acc_lim_theta, float max_vel_theta, float init_vel, float speed_rate);
+    void load_config(std::string filename, float accel, float vel, float acc_lim_theta, float max_vel_theta, float init_vel, float speed_rate, float path_granularity_);
     void set_point_csv(std::string filename);
     void listen_goal_position(float &x, float &y, const bool &forward);
     Matrix path_func(float t);                                                    // return [x,y,theta,vel](4*1), 1<t<pnum

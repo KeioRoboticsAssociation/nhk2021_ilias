@@ -9,13 +9,13 @@ Path_Planner::Path_Planner(ros::NodeHandle &nh, const int &loop_rate, const bool
                            const float &corner_speed_rate, const std::string &global_frame_id, const std::string &base_frame_id,
                            const float &initial_vel, const float &xy_goal_tolerance, const float &yaw_goal_tolerance,
                            const std::string &angle_source, const float &max_vel_theta, const float &acc_lim_theta, 
-                           const float &fix_angle_gain, const int &LINE_NUMBER)
+                           const float &fix_angle_gain, const int &LINE_NUMBER, const float &path_granularity)
     : nh_(nh), loop_rate_(loop_rate), use_tf_(use_tf), data_path_(data_path),
       max_accel_(max_accel), max_vel_(max_vel), corner_speed_rate_(corner_speed_rate),
       global_frame_id_(global_frame_id), base_frame_id_(base_frame_id), initial_vel_(initial_vel),
       xy_goal_tolerance_(xy_goal_tolerance), yaw_goal_tolerance_(yaw_goal_tolerance),
       angle_source_(angle_source), max_vel_theta_(max_vel_theta), acc_lim_theta_(acc_lim_theta), 
-      fix_angle_gain_(fix_angle_gain), LINE_NUM(LINE_NUMBER),
+      fix_angle_gain_(fix_angle_gain), LINE_NUM(LINE_NUMBER), path_granularity_(path_granularity),
       as_(nh, node_name, boost::bind(&Path_Planner::executeCB, this, _1), false)
 { //constructer, define pubsub
     ROS_INFO("Creating bezier_path_planning_pursuit");
@@ -34,6 +34,7 @@ Path_Planner::Path_Planner(ros::NodeHandle &nh, const int &loop_rate, const bool
     ROS_INFO_STREAM("yaw_goal_tolerance [rad]: " << yaw_goal_tolerance_);
     ROS_INFO_STREAM("fix_angle_gain: " << fix_angle_gain_);
     ROS_INFO_STREAM("angle_source: " << angle_source_);
+    ROS_INFO_STREAM("path_granularity [m]: " << path_granularity_);
 
     cmd_pub = nh_.advertise<geometry_msgs::Twist>("cmd_vel", 1);
     path_pub = nh_.advertise<nav_msgs::Path>("path", 1);
@@ -59,7 +60,7 @@ Path_Planner::Path_Planner(ros::NodeHandle &nh, const int &loop_rate, const bool
     control.change_size(5,1);
     path = new Path[LINE_NUM];
     path_ros = new nav_msgs::Path[LINE_NUM];
-    setup(max_accel_, max_vel_, acc_lim_theta_, max_vel_theta_, initial_vel_, corner_speed_rate_);
+    setup(max_accel_, max_vel_, acc_lim_theta_, max_vel_theta_, initial_vel_, corner_speed_rate_, path_granularity_);
 
     as_.start();
     //update();
@@ -137,7 +138,7 @@ void Path_Planner::setPoseTopic(const int &path_num)
     }
 }
 
-void Path_Planner::setup(float max_accel, float max_vel, float acc_lim_theta, float max_vel_theta, float init_vel, float corner_speed_rate)
+void Path_Planner::setup(float max_accel, float max_vel, float acc_lim_theta, float max_vel_theta, float init_vel, float corner_speed_rate, float path_granularity)
 {
     using namespace std;
 
@@ -148,7 +149,7 @@ void Path_Planner::setup(float max_accel, float max_vel, float acc_lim_theta, fl
         ss << data_path_ + "/" << i + 1 << ".csv";
         string str = "Found " + ss.str() + " successfully";
         ROS_INFO("%s", str.c_str());
-        path[i].load_config(ss.str(), max_accel, max_vel, acc_lim_theta, max_vel_theta, init_vel, corner_speed_rate);
+        path[i].load_config(ss.str(), max_accel, max_vel, acc_lim_theta, max_vel_theta, init_vel, corner_speed_rate, path_granularity);
         setPoseTopic(i);
     }
 }
@@ -409,6 +410,7 @@ int main(int argc, char **argv)
     float xy_goal_tolerance = 0.05;
     float yaw_goal_tolerance = 0.01;
     float fix_angle_gain = 10.0;
+    float path_granularity = 0.01;
     std::string global_frame_id = "odom";
     std::string base_frame_id = "base_footprint";
     std::string angle_source = "pose";
@@ -431,12 +433,13 @@ int main(int argc, char **argv)
     arg_n.getParam("xy_goal_tolerance", xy_goal_tolerance);
     arg_n.getParam("yaw_goal_tolerance", yaw_goal_tolerance);
     arg_n.getParam("fix_angle_gain", fix_angle_gain);
+    arg_n.getParam("path_granularity", path_granularity);
     arg_n.getParam("angle_source", angle_source);
 
     std::size_t number = file_count_boost(data_path);
     int LINE_NUM = (int)number;
 
-    Path_Planner planner(nh, looprate, use_tf, data_path, max_accel, max_vel, corner_speed_rate, global_frame_id, base_frame_id, initial_vel, xy_goal_tolerance, yaw_goal_tolerance, angle_source, max_vel_theta, acc_lim_theta, fix_angle_gain, LINE_NUM);
+    Path_Planner planner(nh, looprate, use_tf, data_path, max_accel, max_vel, corner_speed_rate, global_frame_id, base_frame_id, initial_vel, xy_goal_tolerance, yaw_goal_tolerance, angle_source, max_vel_theta, acc_lim_theta, fix_angle_gain, LINE_NUM, path_granularity);
     ros::spin(); // Wait to receive action goal
     return 0;
 }

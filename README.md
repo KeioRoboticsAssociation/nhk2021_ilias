@@ -19,66 +19,16 @@
 
 ## Install
 
-1. Clone this repositoty
+Clone this repository and just run `install.sh`
 
 ```shell
 cd ~/catkin_ws/src
 git clone https://github.com/KeioRoboticsAssociation/nhk2021_ilias.git
+cd nhk2021_ilias
+source install.sh
 ```
 
-2. Resolve dependencies (from git repository)
-
-by **vcstool**
-
-```shell
-sudo apt install python-vcstool
-cd ~/catkin_ws
-vcs import src < src/nhk2021_ilias/nhk2021_launcher/nhk2021_launcher.rosinstall
-vcs import src < src/nhk2021_ilias/nhk2021_webgui/nhk2021_webgui.rosinstall
-```
-
-or
-
-by **git clone**
-
-```shell
-cd ~/catkin_ws/src
-git clone https://github.com/KeioRoboticsAssociation/wheelctrl.git
-git clone https://github.com/yoshito-n-students/bno055_usb_stick.git
-git clone https://github.com/yoshito-n-students/bno055_usb_stick_msgs.git
-git clone https://github.com/moden3/serial_test.git
-git clone https://github.com/tork-a/roswww.git
-```
-
-3. Resolve dependencies (from apt repository)
-
-```shell
-cd ~/catkin_ws/src
-rosdep install -i --from-paths roswww
-rosdep install -i --from-paths nhk2021_ilias/bezier_path_planning_pursuit
-rosdep install -i --from-paths nhk2021_ilias/joy_commander
-rosdep install -i --from-paths nhk2021_ilias/nhk2021_launcher
-rosdep install -i --from-paths nhk2021_ilias/nhk2021_simulator
-rosdep install -i --from-paths nhk2021_ilias/nhk2021_webgui
-```
-
-4. Give permission to task_selector.py (in nhk2021_launcher pkg)
-
-```shell
-cd ~/catkin_ws/src/nhk2021_ilias
-chmod +x ./nhk2021_launcher/scripts/task_selector.py
-```
-
-5. Build
-
-```shell
-cd ~/catkin_ws
-catkin_make
-```
-
-
-
-A detail description about dependencies of this repository locates [Here](https://github.com/KeioRoboticsAssociation/nhk2021_ilias/blob/main/Dependencies.md).
+[Here](https://github.com/KeioRoboticsAssociation/nhk2021_ilias/blob/main/Dependencies.md) is a detail description about installing and dependencies of this repository.
 
 
 

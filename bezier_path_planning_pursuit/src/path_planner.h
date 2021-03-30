@@ -24,7 +24,7 @@ using namespace bezier_path_planning_pursuit;
 class Path_Planner
 {
 public:
-    Path_Planner(ros::NodeHandle &nh, const int &loop_rate, const bool &use_tf, const std::string &data_path, const float &max_accel, const float &max_vel, const float &corner_speed_rate, const std::string &global_frame_id, const std::string &base_frame_id, const float &initial_vel, const float &xy_goal_tolerance, const float &yaw_goal_tolerance, const std::string &angle_source, const float &max_vel_theta, const float &acc_lim_theta, const float &fix_angle_gain, const int &LINE_NUMBER);
+    Path_Planner(ros::NodeHandle &nh, const int &loop_rate, const bool &use_tf, const std::string &data_path, const float &max_accel, const float &max_vel, const float &corner_speed_rate, const std::string &global_frame_id, const std::string &base_frame_id, const float &initial_vel, const float &xy_goal_tolerance, const float &yaw_goal_tolerance, const std::string &angle_source, const float &max_vel_theta, const float &acc_lim_theta, const float &fix_angle_gain, const int &LINE_NUMBER, const float &path_granularity);
     ~Path_Planner()
     {
         delete[] path;
@@ -65,6 +65,7 @@ private:
     float fix_angle_gain_;
     float goal_position_x;
     float goal_position_y;
+    float path_granularity_;
 
     Path *path;
     nav_msgs::Path *path_ros;
@@ -92,7 +93,7 @@ private:
     geometry_msgs::Quaternion rpy_to_geometry_quat(double roll, double pitch, double yaw);
     void setPoseTopic(const int &path_num);
 
-    void setup(float accel, float max_vel, float acc_lim_theta, float max_vel_theta, float init_vel, float corner_speed_rate);
+    void setup(float accel, float max_vel, float acc_lim_theta, float max_vel_theta, float init_vel, float corner_speed_rate, float path_granularity);
     void init_variables();
     void executeCB(const PursuitPathGoalConstPtr &goal);
     void AdjustVelocity(float &v, float &old_v, const float &max_v, const float &acc_lim);
