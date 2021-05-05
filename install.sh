@@ -30,6 +30,7 @@ done
 
 sudo apt-get install -y ros-melodic-realsense2-description
 sudo apt-get install -y ros-melodic-robot-localization
+sudo apt-get install -y ros-melodic-navigation
 
 ## Give permission to python scripts
 echo "3/4 Give permissions to python scripts"
