@@ -1,5 +1,14 @@
 <launch>
-  <arg name="joy" default="false"/>
+  <arg name="joy" default="true"/>
+
+  <!--simulation or real-->
+  <arg name="mode" default="real"/>
+
+  <!--select mbed device (only when real) -->
+  <arg name="RF" default="true"/>
+  <arg name="LF" default="true"/>
+  <arg name="LB" default="true"/>
+  <arg name="RB" default="true"/>
 
   <!--path_planning_node-->
   <arg name="control_frequency" default="100" />
@@ -7,9 +16,9 @@
   <arg name="angle_source" default="imu" />
   <arg name="csv_path" default="$(find nhk2021_launcher)/config/waypoints/TR" />
   <arg name="acc_lim_xy" default="2.0" />
-  <arg name="max_vel_xy" default="3.0" />
+  <arg name="max_vel_xy" default="1.0" /><!--3.0-->
   <arg name="acc_lim_theta" default="3.2" />
-  <arg name="max_vel_theta" default="3.14" />
+  <arg name="max_vel_theta" default="1.57" /><!--3.14-->
   <arg name="initial_vel" default="0.1" />
   <arg name="corner_speed_rate" default="0.8" />
   <arg name="global_frame_id" default="map" />
@@ -41,38 +50,99 @@
     <remap from="odom" to="/simple_diff_drive/diff_drive_controller/odom" />
     -->
   </node>
-  <node pkg="swerve_wheelctrl" type="swerve_wheelctrl" name="swerve_wheelctrl" output="screen">
-    <param name="control_frequency" value="$(arg control_frequency)"/>
-    <param name="lost_time_threshold" value="500"/>
-    <param name="body_width" value="0.440"/>
-    <param name="gazebo_mode" value="true"/>
-    <remap from="control_RF" to="/simple_swerve/rf_joint_velocity_controller/command" />
-    <remap from="control_LF" to="/simple_swerve/lf_joint_velocity_controller/command" />
-    <remap from="control_LB" to="/simple_swerve/lb_joint_velocity_controller/command" />
-    <remap from="control_RB" to="/simple_swerve/rb_joint_velocity_controller/command" />
-    <remap from="control_RF_angle" to="/simple_swerve/rf_joint_angular_controller/command" />
-    <remap from="control_LF_angle" to="/simple_swerve/lf_joint_angular_controller/command" />
-    <remap from="control_LB_angle" to="/simple_swerve/lb_joint_angular_controller/command" />
-    <remap from="control_RB_angle" to="/simple_swerve/rb_joint_angular_controller/command" />
-  </node>
 
-  <node pkg="swerve_odom_publisher" type="swerve_odom_publisher" name="swerve_odom_publisher" output="screen">
-    <param name="control_frequency" value="$(arg control_frequency)"/>
-    <param name="base_frame_id" value="base_footprint"/>
-    <param name="body_width" value="0.440"/>
-    <param name="gazebo_mode" value="true"/>
-  </node>
+  <group if="$(eval mode=='simulation')">
+    <node pkg="swerve_wheelctrl" type="swerve_wheelctrl" name="swerve_wheelctrl" output="screen">
+      <param name="control_frequency" value="$(arg control_frequency)"/>
+      <param name="lost_time_threshold" value="500"/>
+      <param name="body_width" value="0.440"/>
+      <param name="gazebo_mode" value="true"/>
+      <remap from="control_RF" to="/simple_swerve/rf_joint_velocity_controller/command" />
+      <remap from="control_LF" to="/simple_swerve/lf_joint_velocity_controller/command" />
+      <remap from="control_LB" to="/simple_swerve/lb_joint_velocity_controller/command" />
+      <remap from="control_RB" to="/simple_swerve/rb_joint_velocity_controller/command" />
+      <remap from="control_RF_angle" to="/simple_swerve/rf_joint_angular_controller/command" />
+      <remap from="control_LF_angle" to="/simple_swerve/lf_joint_angular_controller/command" />
+      <remap from="control_LB_angle" to="/simple_swerve/lb_joint_angular_controller/command" />
+      <remap from="control_RB_angle" to="/simple_swerve/rb_joint_angular_controller/command" />
+    </node>
+      
+    <node pkg="swerve_odom_publisher" type="swerve_odom_publisher" name="swerve_odom_publisher" output="screen">
+      <param name="control_frequency" value="$(arg control_frequency)"/>
+      <param name="base_frame_id" value="base_footprint"/>
+      <param name="body_width" value="0.440"/>
+      <param name="gazebo_mode" value="true"/>
+    </node>
+  </group>
+
+  <group if="$(eval mode=='real')">
+    <node pkg="swerve_wheelctrl" type="swerve_wheelctrl" name="swerve_wheelctrl" output="screen">
+      <param name="control_frequency" value="$(arg control_frequency)"/>
+      <param name="lost_time_threshold" value="500"/>
+      <param name="body_width" value="0.440"/>
+      <param name="gazebo_mode" value="false"/>
+    </node>
+
+          
+    <node pkg="swerve_odom_publisher" type="swerve_odom_publisher" name="swerve_odom_publisher" output="screen">
+      <param name="control_frequency" value="$(arg control_frequency)"/>
+      <param name="base_frame_id" value="base_footprint"/>
+      <param name="body_width" value="0.440"/>
+      <param name="gazebo_mode" value="false"/>
+    </node>
+
+    <!-- robot localization -->
+    <node pkg="bno055_usb_stick" type="bno055_usb_stick_node" name="bno055" output="screen">
+      <param name="publish_tf" value="true"/>
+    </node>
+
+    <!--static tf-->
+
+
+    <!--mbed serial-->
+    <!--wheel-->
+    <group if="$(eval RF)">
+      <node pkg="serial_test" name="mbed_RF" type="serial_test_node" output="screen" respawn="true">
+        <!--param name = "port" value = "/dev/ttyACM1"/>-->
+        <param name = "looprate" value = "30"/>
+        <param name = "port" value = "/dev/serial/by-id/usb-STMicroelectronics_STM32_STLink_066CFF303435554157045034-if02"/>
+        <remap from = "/Serial_sub_float" to = "/control_RF" />
+        <remap from = "/Serial_pub_float" to = "/data_RF" />
+      </node>
+    </group>
+
+    <group if="$(eval LF)">
+      <node pkg="serial_test" name="mbed_LF" type="serial_test_node" output="screen" respawn="true">
+        <param name = "port" value = "/dev/serial/by-id/usb-STMicroelectronics_STM32_STLink_0672FF495649657867253138-if02"/>
+        <remap from = "/Serial_sub_float" to = "/control_LF" />
+        <remap from = "/Serial_pub_float" to = "/data_LF" />
+      </node>
+    </group>
+
+    <group if="$(eval LB)">
+      <node pkg="serial_test" name="mbed_LB" type="serial_test_node" output="screen" respawn="true">
+        <param name = "port" value = "/dev/serial/by-id/usb-STMicroelectronics_STM32_STLink_0670FF495649657867072244-if02"/>
+        <remap from = "/Serial_sub_float" to = "/control_LB" />
+        <remap from = "/Serial_pub_float" to = "/data_LB" />
+      </node>
+    </group>
+
+    <group if="$(eval RB)">
+      <node pkg="serial_test" name="mbed_RB" type="serial_test_node" output="screen" respawn="true">
+        <param name = "port" value = "/dev/serial/by-id/usb-STMicroelectronics_STM32_STLink_0672FF515055657867244941-if02"/>
+        <remap from = "/Serial_sub_float" to = "/control_RB" />
+        <remap from = "/Serial_pub_float" to = "/data_RB" />
+      </node>
+    </group>
+
+  </group>
   
-
-  <!-- robot localization -->
-  <node pkg="bno055_usb_stick" type="bno055_usb_stick_node" name="bno055" output="screen">
-    <param name="publish_tf" value="true"/>
-  </node>
-
+<!--
   <node pkg="robot_localization" type="ekf_localization_node" name="ekf_se" clear_params="true" output="screen">
       <rosparam command="load" file="$(find nhk2021_launcher)/config/ekf_localization/ekf_params.yaml" />
       <remap from="/odometry/filtered" to="odom_filtered" />
   </node>
+  -->
 
   <!-- laser_filter -->
   <arg name="laser_filter_file" default="laser_filter.yaml"/>  
