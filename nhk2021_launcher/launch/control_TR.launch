@@ -93,6 +93,7 @@
 
     <!-- robot localization -->
     <node pkg="bno055_usb_stick" type="bno055_usb_stick_node" name="bno055" output="screen">
+      <param name="port" value = "ttyACM4"/>
       <param name="publish_tf" value="true"/>
     </node>
 
@@ -105,7 +106,7 @@
       <node pkg="serial_test" name="mbed_RF" type="serial_test_node" output="screen" respawn="true">
         <!--param name = "port" value = "/dev/ttyACM1"/>-->
         <param name = "looprate" value = "30"/>
-        <param name = "port" value = "/dev/serial/by-id/usb-STMicroelectronics_STM32_STLink_066CFF303435554157045034-if02"/>
+        <param name = "port" value = "/dev/serial/by-id/usb-STMicroelectronics_STM32_STLink_0673FF515055657867211816-if02"/>
         <remap from = "/Serial_sub_float" to = "/control_RF" />
         <remap from = "/Serial_pub_float" to = "/data_RF" />
       </node>
@@ -121,7 +122,7 @@
 
     <group if="$(eval LB)">
       <node pkg="serial_test" name="mbed_LB" type="serial_test_node" output="screen" respawn="true">
-        <param name = "port" value = "/dev/serial/by-id/usb-STMicroelectronics_STM32_STLink_0670FF495649657867072244-if02"/>
+        <param name = "port" value = "/dev/serial/by-id/usb-STMicroelectronics_STM32_STLink_0672FF515055657867244941-if02"/>
         <remap from = "/Serial_sub_float" to = "/control_LB" />
         <remap from = "/Serial_pub_float" to = "/data_LB" />
       </node>
@@ -129,7 +130,7 @@
 
     <group if="$(eval RB)">
       <node pkg="serial_test" name="mbed_RB" type="serial_test_node" output="screen" respawn="true">
-        <param name = "port" value = "/dev/serial/by-id/usb-STMicroelectronics_STM32_STLink_0672FF515055657867244941-if02"/>
+        <param name = "port" value = "/dev/serial/by-id/usb-STMicroelectronics_STM32_STLink_066EFF495649657867251947-if02"/>
         <remap from = "/Serial_sub_float" to = "/control_RB" />
         <remap from = "/Serial_pub_float" to = "/data_RB" />
       </node>
