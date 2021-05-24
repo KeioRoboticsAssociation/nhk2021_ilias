@@ -1,8 +1,8 @@
 <launch>
-  <arg name="joy" default="true"/>
+  <arg name="joy" default="false"/>
 
   <!--simulation or real-->
-  <arg name="mode" default="real"/>
+  <arg name="mode" default="simulation"/>
 
   <!--select mbed device (only when real) -->
   <arg name="RF" default="true"/>
@@ -16,9 +16,9 @@
   <arg name="angle_source" default="imu" />
   <arg name="csv_path" default="$(find nhk2021_launcher)/config/waypoints/TR" />
   <arg name="acc_lim_xy" default="2.0" />
-  <arg name="max_vel_xy" default="1.0" /><!--3.0-->
+  <arg name="max_vel_xy" default="3.0" /><!--3.0-->
   <arg name="acc_lim_theta" default="3.2" />
-  <arg name="max_vel_theta" default="1.57" /><!--3.14-->
+  <arg name="max_vel_theta" default="3.14" /><!--3.14-->
   <arg name="initial_vel" default="0.1" />
   <arg name="corner_speed_rate" default="0.8" />
   <arg name="global_frame_id" default="map" />
