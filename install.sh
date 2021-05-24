@@ -44,6 +44,8 @@ done
 
 ## Give permission to action msg
 chmod +x ./bezier_path_planning_pursuit/action/PursuitPath.action
+sudo apt install python-pip
+pip install pyrealsense2
 
 ## Build
 echo "4/4 catkin_make"
