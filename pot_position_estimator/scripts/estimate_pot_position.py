@@ -11,7 +11,7 @@ import cv2
 import numpy as np
 import pyrealsense2
 
-class ExtractPotRegion():
+class EstimatePotPosition():
     def __init__(self):
         self.bridge = CvBridge()
         self._intrinsics = pyrealsense2.intrinsics()
@@ -149,10 +149,10 @@ class ExtractPotRegion():
 
 if __name__ == '__main__':
     try:
-        rospy.init_node('extract_pot_region')
-        print("create extract_pot_region")
+        rospy.init_node('estimate_pot_position')
+        print("create estimate_pot_position_node")
 
-        ExtractPotRegion()
+        EstimatePotPosition()
         rospy.spin()
 
     except rospy.ROSInterruptException:
