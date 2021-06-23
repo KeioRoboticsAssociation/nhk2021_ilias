@@ -1,35 +1,34 @@
 #!/usr/bin/env python
 import rospy
-import sys
-import cv2
 from sensor_msgs.msg import Image, CameraInfo
 from cv_bridge import CvBridge, CvBridgeError
-import numpy as np
+import message_filters
+from visualization_msgs.msg import Marker
+from visualization_msgs.msg import MarkerArray
 
+import sys
+import cv2
+import numpy as np
 import pyrealsense2
 
-
-class ExtractPotRegion():
+class EstimatePotPosition():
     def __init__(self):
         self.bridge = CvBridge()
         self._intrinsics = pyrealsense2.intrinsics()
         self.rects = []
-        self.color_sub = rospy.Subscriber(
-            "/camera/color/image_raw", Image, self.color_callback, queue_size=1)
-        self.depth_sub = rospy.Subscriber(
-            "/camera/depth/image_raw", Image, self.depth_callback, queue_size=1)
+
         self.camerainfo_sub = rospy.Subscriber(
             "/camera/depth/camera_info", CameraInfo, self.camerainfo_callback, queue_size=1)
         self.color_pub = rospy.Publisher('image_with_BBox', Image, queue_size=1)
-        '''
-        r = rospy.Rate(1)
-        while not rospy.is_shutdown():
-            self.create_BBox()
-            for rect in self.rects:
-                x, y, w, h = rect
-                print(self.estimate_pot_position(x+w//2,y+h//2))
-            r.sleep()
-            '''
+        self.points_pub = rospy.Publisher("estimate_pot_points", Marker, queue_size = 1)
+
+        # https://qiita.com/nabion/items/319d4ffdc3d87bfb0076
+        self.color_sub = message_filters.Subscriber("/camera/color/image_raw", Image)
+        self.depth_sub = message_filters.Subscriber("/camera/depth/image_raw", Image)
+        fps = 10.
+        delay = 1.0 / fps * 0.5 # how long is synchronized delay accepted
+        mf = message_filters.ApproximateTimeSynchronizer([self.color_sub, self.depth_sub], 1, delay)
+        mf.registerCallback(self.image_callback)
 
     def camerainfo_callback(self, cameraInfo):
         self._intrinsics.width = cameraInfo.width
@@ -49,24 +48,24 @@ class ExtractPotRegion():
         else:
             self._intrinsics.coeffs = [i for i in cameraInfo.D]
 
-    def depth_callback(self, ros_image):
+    def image_callback(self, color, depth):
+        # get color image
         try:
-            self.depth_image = self.bridge.imgmsg_to_cv2(ros_image, 'passthrough')
-        except CvBridgeError, e:
-            rospy.logerr(e)
-        self.depth_image = np.array(self.depth_image, dtype=np.float32)
-
-    def color_callback(self, ros_image):
-        try:
-            self.color_image = self.bridge.imgmsg_to_cv2(ros_image, 'passthrough')
+            self.color_image = self.bridge.imgmsg_to_cv2(color, 'passthrough')
         except CvBridgeError, e:
             rospy.logerr(e)
 
-    
+        # get depth image
+        try:
+            self.depth_image = self.bridge.imgmsg_to_cv2(depth, 'passthrough')
+        except CvBridgeError, e:
+            rospy.logerr(e)
+        self.depth_image = np.array(self.depth_image, dtype=np.float32)        
+
+        # processing
         self.create_BBox()
-        for rect in self.rects:
-            x, y, w, h = rect
-            print(self.estimate_pot_position(x+w//2,y+h//2))
+        self.pred()
+
 
     def create_BBox(self): # creates self.rects[]
         frame = self.color_image.copy()
@@ -101,17 +100,59 @@ class ExtractPotRegion():
         pub_image = self.bridge.cv2_to_imgmsg(frame, encoding="rgb8")
         self.color_pub.publish(pub_image)
 
+    def pred(self):
+        for rect in self.rects:
+            x, y, w, h = rect
+            p_x, p_y, p_z = self.estimate_pot_position(x+w//2,y+h//2)
+            print(str(p_x) + " " + str(p_y) + " " + str(p_z))
+            self.points_pub.publish(self.set_marker(p_x, p_y, p_z))
+
     def estimate_pot_position(self, x, y):
         #print(self.depth_image[y,x])
         y, z, x = pyrealsense2.rs2_deproject_pixel_to_point(self._intrinsics, [y, x], self.depth_image[y,x])
         return [x/1000,-y/1000,-z/1000]
 
+    def set_marker(self, x, y, z):
+        marker_data = Marker()
+        marker_data.header.frame_id = "camera_link"
+        marker_data.header.stamp = rospy.Time.now()
+
+        marker_data.ns = "basic_shapes"
+        marker_data.id = 0
+
+        marker_data.action = Marker.ADD
+
+        marker_data.pose.position.x = x
+        marker_data.pose.position.y = y
+        marker_data.pose.position.z = z
+
+        marker_data.pose.orientation.x=0.0
+        marker_data.pose.orientation.y=0.0
+        marker_data.pose.orientation.z=1.0
+        marker_data.pose.orientation.w=0.0
+
+        marker_data.color.r = 1.0
+        marker_data.color.g = 0.0
+        marker_data.color.b = 0.0
+        marker_data.color.a = 1.0
+
+        marker_data.scale.x = 0.3
+        marker_data.scale.y = 0.3
+        marker_data.scale.z = 0.3
+
+        marker_data.lifetime = rospy.Duration()
+
+        marker_data.type = Marker.SPHERE
+
+        return marker_data
+
+
 if __name__ == '__main__':
     try:
-        rospy.init_node('extract_pot_region')
-        print("create extract_pot_region")
+        rospy.init_node('estimate_pot_position')
+        print("create estimate_pot_position_node")
 
-        ExtractPotRegion()
+        EstimatePotPosition()
         rospy.spin()
 
     except rospy.ROSInterruptException:
