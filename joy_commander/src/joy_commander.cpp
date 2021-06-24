@@ -11,6 +11,7 @@ JOYSTICK::JOYSTICK(ros::NodeHandle &nh, const int &loop_rate, const float &acc_l
     ROS_INFO_STREAM("max_vel_theta [rad/s]: " << max_vel_theta_);
 
     cmd_pub = nh_.advertise<geometry_msgs::Twist>("/cmd_vel", 1);
+    init_angle_pub = nh_.advertise<std_msgs::Empty>("/init_angle_flag", 1);
     joy_sub = nh_.subscribe("/joy", 1,
                                  &JOYSTICK::joy_callback, this);
     teleopflag_sub = nh_.subscribe("teleopflag", 1,
@@ -69,6 +70,10 @@ void JOYSTICK::joy_callback(const sensor_msgs::Joy::ConstPtr &joy_msg)
   AdjustVelocity(vx, old_vx, max_vel_xy_, acc_lim_xy_);
   AdjustVelocity(vy, old_vy, max_vel_xy_, acc_lim_xy_);
   AdjustVelocity(omega, old_omega, max_vel_theta_, acc_lim_theta_);
+  if (joy_msg->buttons[JOY_RESET]){
+      static std_msgs::Empty topic;
+      init_angle_pub.publish(topic);
+  }
 }
 
 void JOYSTICK::teleopflag_callback(const std_msgs::Bool::ConstPtr &joy_msg){

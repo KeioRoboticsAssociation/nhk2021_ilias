@@ -6,12 +6,13 @@
 
 #include <sensor_msgs/Joy.h>
 #include <std_msgs/Bool.h>
-
+#include <std_msgs/Empty.h>
 
 /***************** joystick number ********************/
 #define JOY_X 1
 #define JOY_Y 0
 #define JOY_OMEGA 3
+#define JOY_RESET 11
 /******************************************************/
 
 #define PI 3.141592f
@@ -27,6 +28,7 @@ private:
     ros::NodeHandle &nh_;
 
     ros::Publisher cmd_pub;
+    ros::Publisher init_angle_pub;
     ros::Subscriber joy_sub;
     ros::Subscriber teleopflag_sub;
 

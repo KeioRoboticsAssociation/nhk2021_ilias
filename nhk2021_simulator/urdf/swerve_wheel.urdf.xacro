@@ -59,7 +59,7 @@
 <joint name="wheel_${rl}_joint" type="continuous">
   <parent link="wheel_${rl}_round_table" />
   <child link="wheel_${rl}" />
-  <origin xyz="0.0 -0.05 0.0" rpy="0 0 0" /><!--z: position from base_link - position from body-->
+  <origin xyz="0.0 -0.05 0.0" rpy="0 ${PI/2} 0" /><!--z: position from base_link - position from body-->
   <axis xyz="0 0 -1" />
   <limit effort="6.0" velocity="60.0" /><!-- maximum torqe(<8.82), maximum velocity-->
   <dynamics damping="0.1"/>
