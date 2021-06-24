@@ -26,7 +26,10 @@
   <arg name="xy_goal_tolerance" default="0.01" />
   <arg name="yaw_goal_tolerance" default="0.01" />
   <arg name="fix_angle_gain" default="2.0" />
-  <arg name="path_granularity" default="0.01" />
+  <arg name="path_granularity" default="0.001" />
+
+  <!--swerve node-->
+  <arg name="initial_table_angle" default="90"/>
 
   <node pkg="bezier_path_planning_pursuit" name="bezier_path_planning_pursuit" type="bezier_path_planning_pursuit" output="screen">
     <param name= "control_frequency" value="$(arg control_frequency)" />
@@ -56,6 +59,7 @@
       <param name="control_frequency" value="$(arg control_frequency)"/>
       <param name="lost_time_threshold" value="500"/>
       <param name="body_width" value="0.440"/>
+      <param name="initial_table_angle" value="$(arg initial_table_angle)"/>
       <param name="gazebo_mode" value="true"/>
       <remap from="control_RF" to="/simple_swerve/rf_joint_velocity_controller/command" />
       <remap from="control_LF" to="/simple_swerve/lf_joint_velocity_controller/command" />
@@ -71,6 +75,7 @@
       <param name="control_frequency" value="$(arg control_frequency)"/>
       <param name="base_frame_id" value="base_footprint"/>
       <param name="body_width" value="0.440"/>
+      <param name="initial_table_angle" value="$(arg initial_table_angle)"/>
       <param name="gazebo_mode" value="true"/>
     </node>
   </group>
@@ -80,6 +85,7 @@
       <param name="control_frequency" value="$(arg control_frequency)"/>
       <param name="lost_time_threshold" value="500"/>
       <param name="body_width" value="0.440"/>
+      <param name="initial_table_angle" value="$(arg initial_table_angle)"/>
       <param name="gazebo_mode" value="false"/>
     </node>
 
@@ -88,6 +94,7 @@
       <param name="control_frequency" value="$(arg control_frequency)"/>
       <param name="base_frame_id" value="base_footprint"/>
       <param name="body_width" value="0.440"/>
+      <param name="initial_table_angle" value="$(arg initial_table_angle)"/>
       <param name="gazebo_mode" value="false"/>
     </node>
 
