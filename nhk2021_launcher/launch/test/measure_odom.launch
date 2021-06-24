@@ -1,0 +1,195 @@
+<launch>
+  <arg name="joy" default="true"/>
+
+  <!--simulation or real-->
+  <arg name="mode" default="simulation"/>
+
+  <!--select mbed device (only when real) -->
+  <arg name="RF" default="true"/>
+  <arg name="LF" default="true"/>
+  <arg name="LB" default="true"/>
+  <arg name="RB" default="true"/>
+
+  <!--path_planning_node-->
+  <arg name="control_frequency" default="30" />
+  <arg name="use_tf" default="true" />
+  <arg name="angle_source" default="imu" />
+  <arg name="csv_path" default="$(find nhk2021_launcher)/config/waypoints/TR" />
+  <arg name="acc_lim_xy" default="2.0" />
+  <arg name="max_vel_xy" default="3.0" /><!--3.0-->
+  <arg name="acc_lim_theta" default="3.2" />
+  <arg name="max_vel_theta" default="3.14" /><!--3.14-->
+  <arg name="initial_vel" default="0.5" />
+  <arg name="corner_speed_rate" default="0.8" />
+  <arg name="global_frame_id" default="map" />
+  <arg name="base_frame_id" default="base_footprint" />
+  <arg name="xy_goal_tolerance" default="0.01" />
+  <arg name="yaw_goal_tolerance" default="0.01" />
+  <arg name="fix_angle_gain" default="2.0" />
+  <arg name="path_granularity" default="0.001" />
+
+  <!--swerve node-->
+  <arg name="initial_table_angle" default="90"/>
+  <!--ekf-->
+  <arg name="use_ekf" default="false"/>
+  
+  <!-- laser_filter -->
+  <arg name="laser_filter_file" default="laser_filter.yaml"/>  
+
+  <group if="$(eval mode=='simulation')">
+    <node pkg="swerve_wheelctrl" type="swerve_wheelctrl" name="swerve_wheelctrl" output="screen">
+      <param name="control_frequency" value="$(arg control_frequency)"/>
+      <param name="lost_time_threshold" value="500"/>
+      <param name="body_width" value="0.440"/>
+      <param name="initial_table_angle" value="$(arg initial_table_angle)"/>
+      <param name="gazebo_mode" value="true"/>
+      <remap from="control_RF" to="/simple_swerve/rf_joint_velocity_controller/command" />
+      <remap from="control_LF" to="/simple_swerve/lf_joint_velocity_controller/command" />
+      <remap from="control_LB" to="/simple_swerve/lb_joint_velocity_controller/command" />
+      <remap from="control_RB" to="/simple_swerve/rb_joint_velocity_controller/command" />
+      <remap from="control_RF_angle" to="/simple_swerve/rf_joint_angular_controller/command" />
+      <remap from="control_LF_angle" to="/simple_swerve/lf_joint_angular_controller/command" />
+      <remap from="control_LB_angle" to="/simple_swerve/lb_joint_angular_controller/command" />
+      <remap from="control_RB_angle" to="/simple_swerve/rb_joint_angular_controller/command" />
+    </node>
+      
+    <node pkg="swerve_odom_publisher" type="swerve_odom_publisher" name="swerve_odom_publisher" output="screen">
+      <param name="control_frequency" value="$(arg control_frequency)"/>
+      <param name="base_frame_id" value="base_footprint"/>
+      <param name="body_width" value="0.440"/>
+      <param name="initial_table_angle" value="$(arg initial_table_angle)"/>
+      <param name="gazebo_mode" value="true"/>
+    </node>
+  </group>
+
+  <group if="$(eval mode=='real')">
+    <!-- ################ statis tf settings ################ -->
+    <param name="robot_description" textfile="$(find nhk2021_launcher)/urdf/TR.urdf" />
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+
+    <node pkg="swerve_wheelctrl" type="swerve_wheelctrl" name="swerve_wheelctrl" output="screen">
+      <param name="control_frequency" value="$(arg control_frequency)"/>
+      <param name="lost_time_threshold" value="500"/>
+      <param name="body_width" value="0.440"/>
+      <param name="initial_table_angle" value="$(arg initial_table_angle)"/>
+      <param name="gazebo_mode" value="false"/>
+    </node>
+
+    <node pkg="swerve_odom_publisher" type="swerve_odom_publisher" name="swerve_odom_publisher" output="screen">
+      <param name="control_frequency" value="$(arg control_frequency)"/>
+      <param name="base_frame_id" value="base_footprint"/>
+      <param name="body_width" value="0.440"/>
+      <param name="initial_table_angle" value="$(arg initial_table_angle)"/>
+      <param name="gazebo_mode" value="false"/>
+    </node>
+
+    <!-- sensors-->
+    <!--IMU-->
+    <node pkg="bno055_usb_stick" type="bno055_usb_stick_node" name="bno055" output="screen">
+      <param name="port" value = "ttyACM4"/>
+      <param name="publish_tf" value="true"/>
+    </node>
+
+    <!--LiDAR-->
+    <!--RPlidar-->
+    <include file="$(find rplidar_ros)/launch/rplidar_a3.launch" />
+
+    <!--mbed serial-->
+    <!--wheel-->
+    <group if="$(eval RF)">
+      <node pkg="serial_test" name="mbed_RF" type="serial_test_node" output="screen" respawn="true">
+        <!--param name = "port" value = "/dev/ttyACM1"/>-->
+        <param name = "looprate" value = "30"/>
+        <param name = "port" value = "/dev/serial/by-id/usb-STMicroelectronics_STM32_STLink_0673FF515055657867211816-if02"/>
+        <remap from = "/Serial_sub_float" to = "/control_RF" />
+        <remap from = "/Serial_pub_float" to = "/data_RF" />
+      </node>
+    </group>
+
+    <group if="$(eval LF)">
+      <node pkg="serial_test" name="mbed_LF" type="serial_test_node" output="screen" respawn="true">
+        <param name = "port" value = "/dev/serial/by-id/usb-STMicroelectronics_STM32_STLink_0672FF495649657867253138-if02"/>
+        <remap from = "/Serial_sub_float" to = "/control_LF" />
+        <remap from = "/Serial_pub_float" to = "/data_LF" />
+      </node>
+    </group>
+
+    <group if="$(eval LB)">
+      <node pkg="serial_test" name="mbed_LB" type="serial_test_node" output="screen" respawn="true">
+        <param name = "port" value = "/dev/serial/by-id/usb-STMicroelectronics_STM32_STLink_0672FF515055657867244941-if02"/>
+        <remap from = "/Serial_sub_float" to = "/control_LB" />
+        <remap from = "/Serial_pub_float" to = "/data_LB" />
+      </node>
+    </group>
+
+    <group if="$(eval RB)">
+      <node pkg="serial_test" name="mbed_RB" type="serial_test_node" output="screen" respawn="true">
+        <param name = "port" value = "/dev/serial/by-id/usb-STMicroelectronics_STM32_STLink_066EFF495649657867251947-if02"/>
+        <remap from = "/Serial_sub_float" to = "/control_RB" />
+        <remap from = "/Serial_pub_float" to = "/data_RB" />
+      </node>
+    </group>
+
+  </group>
+
+  <!-- common launcher-->
+
+  <node pkg="bezier_path_planning_pursuit" name="bezier_path_planning_pursuit" type="bezier_path_planning_pursuit" output="screen">
+    <param name= "control_frequency" value="$(arg control_frequency)" />
+    <param name = "use_tf" value = "$(arg use_tf)" />
+    <param name = "data_path" value = "$(arg csv_path)" />
+    <param name = "acc_lim_xy" value = "$(arg acc_lim_xy)" />
+    <param name = "max_vel_xy" value = "$(arg max_vel_xy)" />
+    <param name = "acc_lim_theta" value = "$(arg acc_lim_theta)" />
+    <param name = "max_vel_theta" value = "$(arg max_vel_theta)" />
+    <param name = "initial_vel" value = "$(arg initial_vel)" />
+    <param name = "corner_speed_rate" value = "$(arg corner_speed_rate)" />
+    <param name = "global_frame_id" value = "$(arg global_frame_id)" />
+    <param name = "base_frame_id" value = "$(arg base_frame_id)" />
+    <param name = "xy_goal_tolerance" value = "$(arg xy_goal_tolerance)" />
+    <param name = "yaw_goal_tolerance" value = "$(arg yaw_goal_tolerance)" />
+    <param name = "angle_source" value = "$(arg angle_source)" />
+    <param name = "fix_angle_gain" value = "$(arg fix_angle_gain)" />
+    <param name = "path_granularity" value = "$(arg path_granularity)" />
+    <!--
+    <remap from="cmd_vel" to="/simple_diff_drive/diff_drive_controller/cmd_vel" />
+    <remap from="odom" to="/simple_diff_drive/diff_drive_controller/odom" />
+    -->
+  </node>
+  
+  <group if="$(arg use_ekf)">
+    <node pkg="robot_localization" type="ekf_localization_node" name="ekf_localization" clear_params="true" output="screen">
+        <rosparam command="load" file="$(find nhk2021_launcher)/config/ekf_localization/ekf_params.yaml" />
+        <remap from="/odometry/filtered" to="odom_filtered" />
+    </node>
+  </group>
+
+  <node pkg="laser_filters" type="scan_to_scan_filter_chain" name="laser_filter">
+    <rosparam command="load" file="$(find nhk2021_launcher)/config/laser_filter/$(arg laser_filter_file)" />
+    <remap from="scan" to="/rplidar/scan" />
+  </node>
+
+  <node pkg="map_server" type="map_server" name="map_server" args="$(find nhk2021_launcher)/config/map/map.yaml">
+    <param name="frame_id" value="map"/>
+  </node>
+
+  <node pkg="tf" type="static_transform_publisher" name="map_odom_broadcaster" args="0.5 0.5 0 0 0 0 map odom 1" />
+
+ <group if="$(arg joy)">
+    <node pkg="joy" type="joy_node" name="joy_node"/>
+
+    <node pkg="joy_commander" type="joy_commander" name="joy_commander" output="screen">
+      <param name="control_frequency" value="$(arg control_frequency)"/>
+      <param name = "acc_lim_xy" value = "$(arg acc_lim_xy)" />
+      <param name = "max_vel_xy" value = "$(arg max_vel_xy)" />
+      <param name = "acc_lim_theta" value = "$(arg acc_lim_theta)" />
+      <param name = "max_vel_theta" value = "$(arg max_vel_theta)" />
+      <remap from = "teleopflag" to = "/task_selector/teleop_mode"/>
+    </node>
+
+    <node pkg="nhk2021_launcher" type="task_selector.py" name="task_selector"/>
+  </group>
+
+  <include file="$(find nhk2021_webgui)/launch/server.launch"/>
+
+</launch>
