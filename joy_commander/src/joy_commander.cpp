@@ -62,11 +62,20 @@ void JOYSTICK::AdjustVelocity(float &v, float &old_v, const float &max_v, const 
     old_v = v;
 }
 
+float JOYSTICK::roundoff(const float &value, const float &epsilon)
+{
+    float ans = value;
+    if(abs(ans) < epsilon){
+        ans = 0.0;
+    }
+    return ans;
+}
+
 void JOYSTICK::joy_callback(const sensor_msgs::Joy::ConstPtr &joy_msg)
 {
-  cmd_vel.linear.x = joy_msg->axes[JOY_X]*max_vel_xy_;
-  cmd_vel.linear.y = joy_msg->axes[JOY_Y]*max_vel_xy_;
-  cmd_vel.angular.z = joy_msg->axes[JOY_OMEGA]*max_vel_theta_;
+  cmd_vel.linear.x = roundoff(joy_msg->axes[JOY_X], 1e-4)*max_vel_xy_;
+  cmd_vel.linear.y = roundoff(joy_msg->axes[JOY_Y], 1e-4)*max_vel_xy_;
+  cmd_vel.angular.z = roundoff(joy_msg->axes[JOY_OMEGA], 1e-4)*max_vel_theta_;
   AdjustVelocity(vx, old_vx, max_vel_xy_, acc_lim_xy_);
   AdjustVelocity(vy, old_vy, max_vel_xy_, acc_lim_xy_);
   AdjustVelocity(omega, old_omega, max_vel_theta_, acc_lim_theta_);
