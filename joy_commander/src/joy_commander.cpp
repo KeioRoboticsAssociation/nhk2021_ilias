@@ -117,7 +117,7 @@ int main(int argc, char **argv)
     float acc_lim_theta = 3.2;
     float max_vel_theta = 1.57;
 
-    arg_n.getParam("controol_frequency", looprate);
+    arg_n.getParam("control_frequency", looprate);
     arg_n.getParam("acc_lim_xy", acc_lim_xy);
     arg_n.getParam("acc_lim_theta", acc_lim_theta);
     arg_n.getParam("max_vel_xy", max_vel_xy);
