@@ -8,6 +8,7 @@ import bezier_path_planning_pursuit.msg
 from sensor_msgs.msg import Joy
 from std_msgs.msg import Int32
 from std_msgs.msg import Bool
+from std_msgs.msg import Empty
 
 class Task_Selector():
     def __init__(self):
@@ -18,7 +19,7 @@ class Task_Selector():
         self.joy_sub = rospy.Subscriber("joy", Joy, self.Joycallback)
         self.pathmode_pub = rospy.Publisher('/task_selector/joy_pathmode', Int32, queue_size=1)
         self.teleopflag_pub = rospy.Publisher('/task_selector/teleop_mode', Bool, queue_size=1)
-
+        self.emergency_stop_pub = rospy.Publisher('/emergency_stop_flag', Empty, queue_size=1)
         # Waits until the action server has started up and started
         # listening for goals.
         self.client.wait_for_server()
@@ -55,6 +56,13 @@ class Task_Selector():
         elif msg.buttons[1] == 1:
             self.direction_ = 0
             self.sendgoal()
+        elif msg.buttons[9] == 1:
+            self.client.cancel_goal()
+            teleop_mode = Bool()
+            teleop_mode.data = True
+            self.teleopflag_pub.publish(teleop_mode)
+            emergency_msg = Empty()
+            self.emergency_stop_pub.publish(emergency_msg)
         
         message = Int32()
         message.data = self.pathmode_

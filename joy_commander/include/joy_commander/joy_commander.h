@@ -50,7 +50,7 @@ private:
     float vy;
 
     //Methods
-    void AdjustVelocity(float &v, float &old_v, const float &max_v, const float &acc_lim);
+    float AdjustVelocity(const float &ref, float &old_v, const float &max_v, const float &acc_lim);
     void joy_callback(const sensor_msgs::Joy::ConstPtr &joy_msg);
     void teleopflag_callback(const std_msgs::Bool::ConstPtr &joy_msg);
     float roundoff(const float &value, const float &epsilon);
