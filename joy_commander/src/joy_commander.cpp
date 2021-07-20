@@ -26,8 +26,9 @@ JOYSTICK::JOYSTICK(ros::NodeHandle &nh, const int &loop_rate, const float &acc_l
     update();
 }
 
-void JOYSTICK::AdjustVelocity(float &v, float &old_v, const float &max_v, const float &acc_lim)
+float JOYSTICK::AdjustVelocity(const float &ref, float &old_v, const float &max_v, const float &acc_lim)
 {
+    float v = ref;
     // max_acc limit
     if (v - old_v >= 0)
     {
@@ -60,16 +61,23 @@ void JOYSTICK::AdjustVelocity(float &v, float &old_v, const float &max_v, const 
     }
 
     old_v = v;
+    return v;
+}
+
+float JOYSTICK::roundoff(const float &value, const float &epsilon)
+{
+    float ans = value;
+    if(abs(ans) < epsilon){
+        ans = 0.0;
+    }
+    return ans;
 }
 
 void JOYSTICK::joy_callback(const sensor_msgs::Joy::ConstPtr &joy_msg)
 {
-  cmd_vel.linear.x = joy_msg->axes[JOY_X]*max_vel_xy_;
-  cmd_vel.linear.y = joy_msg->axes[JOY_Y]*max_vel_xy_;
-  cmd_vel.angular.z = joy_msg->axes[JOY_OMEGA]*max_vel_theta_;
-  AdjustVelocity(vx, old_vx, max_vel_xy_, acc_lim_xy_);
-  AdjustVelocity(vy, old_vy, max_vel_xy_, acc_lim_xy_);
-  AdjustVelocity(omega, old_omega, max_vel_theta_, acc_lim_theta_);
+  vx = roundoff(joy_msg->axes[JOY_X], 1e-4)*max_vel_xy_;
+  vy = roundoff(joy_msg->axes[JOY_Y], 1e-4)*max_vel_xy_;
+  omega = roundoff(joy_msg->axes[JOY_OMEGA], 1e-4)*max_vel_theta_;
   if (joy_msg->buttons[JOY_RESET]){
       static std_msgs::Empty topic;
       init_angle_pub.publish(topic);
@@ -87,6 +95,9 @@ void JOYSTICK::update()
     while (ros::ok())
     {
         if(teleop_flag){
+            cmd_vel.linear.x = AdjustVelocity(vx, old_vx, max_vel_xy_, acc_lim_xy_);
+            cmd_vel.linear.y = AdjustVelocity(vy, old_vy, max_vel_xy_, acc_lim_xy_);
+            cmd_vel.angular.z = AdjustVelocity(omega, old_omega, max_vel_theta_, acc_lim_theta_);
             cmd_pub.publish(cmd_vel);
         }
         ros::spinOnce();
@@ -108,7 +119,7 @@ int main(int argc, char **argv)
     float acc_lim_theta = 3.2;
     float max_vel_theta = 1.57;
 
-    arg_n.getParam("controol_frequency", looprate);
+    arg_n.getParam("control_frequency", looprate);
     arg_n.getParam("acc_lim_xy", acc_lim_xy);
     arg_n.getParam("acc_lim_theta", acc_lim_theta);
     arg_n.getParam("max_vel_xy", max_vel_xy);

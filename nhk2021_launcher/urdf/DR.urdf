@@ -1,0 +1,22 @@
+<robot name="DR">
+
+  <link name="bno055" />
+
+  <link name="laser" />
+
+  <link name="base_footprint" />
+
+  <joint name="imu_link_joint" type="fixed">
+    <parent link="base_footprint" />
+    <child link="bno055" />
+    <origin xyz="0.105 0.060 0.27" rpy="0 -0 0" />
+  </joint>
+
+  <joint name="laser_link_joint" type="fixed">
+    <parent link="base_footprint" />
+    <child link="laser" />
+    <origin xyz="0.085 0 0.4274" rpy="0 -0 0" />
+  </joint>
+
+
+</robot>

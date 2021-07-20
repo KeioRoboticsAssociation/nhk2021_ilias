@@ -264,115 +264,111 @@ void Path_Planner::executeCB(const PursuitPathGoalConstPtr &goal) // if use acti
     bool success = true; // Used as a variable to store the success or failure of an action
 
     forwardflag = goal->direction;
-    path_mode = goal->pathmode;
-    path[path_mode - 1].listen_goal_position(goal_position_x, goal_position_y, forwardflag);
+    path_mode = goal->pathmode;     
 
-    ROS_INFO("%s: Executing, pathmode: %d, direction: %d", node_name.c_str(), goal->pathmode, goal->direction);
-
-    while (ros::ok())
+    if (path_mode == 0)
     {
-        if (use_tf_)
+        ROS_WARN("no paths are selected, aborting %s", node_name.c_str());
+
+        as_.setPreempted();
+    }
+    else{
+        path[path_mode - 1].listen_goal_position(goal_position_x, goal_position_y, forwardflag);
+
+        ROS_INFO("%s: Executing, pathmode: %d, direction: %d", node_name.c_str(), goal->pathmode, goal->direction);
+
+        while (ros::ok())
         {
-            // tf_listner
-            tf::StampedTransform transform;
-            try
+            if (use_tf_)
             {
-                listener.lookupTransform("/" + global_frame_id_, "/" + base_frame_id_, ros::Time(0), transform);
+                // tf_listner
+                tf::StampedTransform transform;
+                try
+                {
+                    listener.lookupTransform("/" + global_frame_id_, "/" + base_frame_id_, ros::Time(0), transform);
+                }
+                catch (tf::TransformException ex)
+                {
+                    ROS_ERROR("%s", ex.what());
+                    ros::Duration(1.0).sleep();
+                }
+                position[0] = transform.getOrigin().x() * 1000.0f; // m -> mm
+                position[1] = transform.getOrigin().y() * 1000.0f;
+                body_theta = tf::getYaw(transform.getRotation());
             }
-            catch (tf::TransformException ex)
+
+            // Confirm action cancellation from action client
+            if (as_.isPreemptRequested())
             {
-                ROS_ERROR("%s", ex.what());
-                ros::Duration(1.0).sleep();
-            }
-            position[0] = transform.getOrigin().x() * 1000.0f; // m -> mm
-            position[1] = transform.getOrigin().y() * 1000.0f;
-            body_theta = tf::getYaw(transform.getRotation());
-        }
-
-        // Confirm action cancellation from action client
-        if (as_.isPreemptRequested())
-        {
-            // Notify action cancellation
-            ROS_INFO("%s: Preempted", node_name.c_str());
-            _old_vx_ = control[1][1];    // for terminate usage
-            _old_vy_ = control[2][1];    // for terminate usage
-            _old_omega_ = control[3][1]; // for terminate usage
-            terminate(control[5][1]);
-            // Action cancellation and consider action as failure and save to variable
-            as_.setPreempted();
-            success = false;
-            break;
-        }
-
-        if (path_mode == 0)
-        {
-            ROS_WARN("no paths are selected, aborting %s", node_name.c_str());
-
-            _old_vx_ = control[1][1];    // for terminate usage
-            _old_vy_ = control[2][1];    // for terminate usage
-            _old_omega_ = control[3][1]; // for terminate usage
-            terminate(control[5][1]);
-
-            as_.setPreempted();
-            success = false;
-            break;
-        }
-        else
-        {
-            if (reachedxyGoal())
-            {
-                _old_vx_ = control[1][1]; // for terminate usage
-                _old_vy_ = control[2][1]; // for terminate usage
+                // Notify action cancellation
+                ROS_INFO("%s: Preempted", node_name.c_str());
+                _old_vx_ = control[1][1];    // for terminate usage
+                _old_vy_ = control[2][1];    // for terminate usage
                 _old_omega_ = control[3][1]; // for terminate usage
                 terminate(control[5][1]);
+                // Action cancellation and consider action as failure and save to variable
+                as_.setPreempted();
+                success = false;
                 break;
             }
-            //pure_pursuit
-            // return [velx,vely,theta,ref_t](4*1)
-            // forwardflag = 1 when move forward ,0 when move backward
-            control = path[path_mode - 1].pure_pursuit(position[0], position[1], body_theta, forwardflag);
-            //control[3][1] -= body_theta;
 
-            // control[4][1]で追従時に参照した点番号がわかり、遷移先の検討に使える
-            // pure_pursuitの4つ目の引数は開始時の点番号、点周辺から線形探索が始まる
+            else
+            {
+                if (reachedxyGoal())
+                {
+                    _old_vx_ = control[1][1]; // for terminate usage
+                    _old_vy_ = control[2][1]; // for terminate usage
+                    _old_omega_ = control[3][1]; // for terminate usage
+                    terminate(control[5][1]);
+                    break;
+                }
+                //pure_pursuit
+                // return [velx,vely,theta,ref_t](4*1)
+                // forwardflag = 1 when move forward ,0 when move backward
+                control = path[path_mode - 1].pure_pursuit(position[0], position[1], body_theta, forwardflag);
+                //control[3][1] -= body_theta;
+
+                // control[4][1]で追従時に参照した点番号がわかり、遷移先の検討に使える
+                // pure_pursuitの4つ目の引数は開始時の点番号、点周辺から線形探索が始まる
+            }
+
+            _vx_ = control[1][1]; // for recovery usage
+            _vy_ = control[2][1]; // for recovery usage
+            _omega_ = control[3][1]; // for recovery usage
+            AdjustVelocity(_vx_, _old_vx_, max_vel_, max_accel_);
+            AdjustVelocity(_vy_, _old_vy_, max_vel_, max_accel_);
+            AdjustVelocity(_omega_, _old_omega_, max_vel_theta_, acc_lim_theta_);
+            publishMsg(_vx_, _vy_, _omega_);
+            path_pub.publish(path_ros[path_mode-1]);
+            feedback_.reference_point = control[4][1];
+            if (forwardflag){
+                feedback_.progress = (control[4][1] - 1) / (path[path_mode - 1].pnum - 1) * 100.0;
+            }
+            else{
+                feedback_.progress = (path[path_mode - 1].pnum - control[4][1]) / (path[path_mode - 1].pnum - 1) * 100.0;
+            }
+            feedback_.vx = _vx_;
+            feedback_.vy = _vy_;
+            feedback_.omega = _omega_;
+            feedback_.goal_x = goal_position_x;
+            feedback_.goal_y = goal_position_y;
+            as_.publishFeedback(feedback_);
+
+            ros::spinOnce();
+            r.sleep();
         }
 
-        _vx_ = control[1][1]; // for recovery usage
-        _vy_ = control[2][1]; // for recovery usage
-        _omega_ = control[3][1]; // for recovery usage
-        AdjustVelocity(_vx_, _old_vx_, max_vel_, max_accel_);
-        AdjustVelocity(_vy_, _old_vy_, max_vel_, max_accel_);
-        AdjustVelocity(_omega_, _old_omega_, max_vel_theta_, acc_lim_theta_);
-        publishMsg(_vx_, _vy_, _omega_);
-        path_pub.publish(path_ros[path_mode-1]);
-        feedback_.reference_point = control[4][1];
-        if (forwardflag){
-            feedback_.progress = (control[4][1] - 1) / (path[path_mode - 1].pnum - 1) * 100.0;
+        // If the action target value is reached,
+        if (success)
+        {
+            result_.result = true;
+            result_.position_x = position[0] / 1000.0;
+            result_.position_y = position[1] / 1000.0;
+            result_.position_theta = body_theta;
+            ROS_INFO("%s: Succeeded", node_name.c_str());
+            // set the action state to succeeded
+            as_.setSucceeded(result_);
         }
-        else{
-            feedback_.progress = (path[path_mode - 1].pnum - control[4][1]) / (path[path_mode - 1].pnum - 1) * 100.0;
-        }
-        feedback_.vx = _vx_;
-        feedback_.vy = _vy_;
-        feedback_.omega = _omega_;
-        feedback_.goal_x = goal_position_x;
-        feedback_.goal_y = goal_position_y;
-        as_.publishFeedback(feedback_);
-
-        ros::spinOnce();
-        r.sleep();
-    }
-
-    // If the action target value is reached,
-    if (success)
-    {
-        result_.result = true;
-        result_.position_x = position[0] / 1000.0;
-        result_.position_y = position[1] / 1000.0;
-        result_.position_theta = body_theta;
-        ROS_INFO("%s: Succeeded", node_name.c_str());
-        // set the action state to succeeded
-        as_.setSucceeded(result_);
     }
 }
 
