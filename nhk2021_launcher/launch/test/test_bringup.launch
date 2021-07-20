@@ -1,5 +1,6 @@
 <launch>
-  <arg name="joy" default="true"/>
+
+  <arg name="joy" default="false"/>
 
   <!--simulation or real-->
   <arg name="mode" default="real"/>
@@ -17,8 +18,8 @@
   <arg name="csv_path" default="$(find nhk2021_launcher)/config/waypoints/TR" />
   <arg name="acc_lim_xy" default="3.0" />
   <arg name="max_vel_xy" default="1.0" /><!--3.0-->
-  <arg name="acc_lim_theta" default="1.57" />
-  <arg name="max_vel_theta" default="1.57" /><!--3.14-->
+  <arg name="acc_lim_theta" default="3.2" />
+  <arg name="max_vel_theta" default="3.14" /><!--3.14-->
   <arg name="initial_vel" default="0.2" />
   <arg name="corner_speed_rate" default="0.8" />
   <arg name="global_frame_id" default="map" />
@@ -135,41 +136,9 @@
 
   </group>
 
-  <!-- common launcher-->
-
-  <node pkg="bezier_path_planning_pursuit" name="bezier_path_planning_pursuit" type="bezier_path_planning_pursuit" output="screen">
-    <param name= "control_frequency" value="$(arg control_frequency)" />
-    <param name = "use_tf" value = "$(arg use_tf)" />
-    <param name = "data_path" value = "$(arg csv_path)" />
-    <param name = "acc_lim_xy" value = "$(arg acc_lim_xy)" />
-    <param name = "max_vel_xy" value = "$(arg max_vel_xy)" />
-    <param name = "acc_lim_theta" value = "$(arg acc_lim_theta)" />
-    <param name = "max_vel_theta" value = "$(arg max_vel_theta)" />
-    <param name = "initial_vel" value = "$(arg initial_vel)" />
-    <param name = "corner_speed_rate" value = "$(arg corner_speed_rate)" />
-    <param name = "global_frame_id" value = "$(arg global_frame_id)" />
-    <param name = "base_frame_id" value = "$(arg base_frame_id)" />
-    <param name = "xy_goal_tolerance" value = "$(arg xy_goal_tolerance)" />
-    <param name = "yaw_goal_tolerance" value = "$(arg yaw_goal_tolerance)" />
-    <param name = "angle_source" value = "$(arg angle_source)" />
-    <param name = "fix_angle_gain" value = "$(arg fix_angle_gain)" />
-    <param name = "path_granularity" value = "$(arg path_granularity)" />
-    <!--
-    <remap from="cmd_vel" to="/simple_diff_drive/diff_drive_controller/cmd_vel" />
-    <remap from="odom" to="/simple_diff_drive/diff_drive_controller/odom" />
-    -->
-  </node>
-  
-  <group if="$(arg use_ekf)">
-    <node pkg="robot_localization" type="ekf_localization_node" name="ekf_localization" clear_params="true" output="screen">
-        <rosparam command="load" file="$(find nhk2021_launcher)/config/ekf_localization/ekf_params.yaml" />
-        <remap from="/odometry/filtered" to="odom_filtered" />
-    </node>
-  </group>
-
   <node pkg="laser_filters" type="scan_to_scan_filter_chain" name="laser_filter">
     <rosparam command="load" file="$(find nhk2021_launcher)/config/laser_filter/$(arg laser_filter_file)" />
-    <!-- <remap from="scan" to="/rplidar/scan" /> -->
+    <remap from="scan" to="/rplidar/scan" />
   </node>
 
   <node pkg="map_server" type="map_server" name="map_server" args="$(find nhk2021_launcher)/config/map/map.yaml">

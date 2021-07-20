@@ -2,7 +2,7 @@
   <arg name="joy" default="true"/>
 
   <!--simulation or real-->
-  <arg name="mode" default="simulation"/>
+  <arg name="mode" default="real"/>
 
   <!--select mbed device (only when real) -->
   <arg name="RF" default="true"/>
@@ -15,7 +15,7 @@
   <arg name="use_tf" default="true" />
   <arg name="angle_source" default="imu" />
   <arg name="csv_path" default="$(find nhk2021_launcher)/config/waypoints/TR" />
-  <arg name="acc_lim_xy" default="2.0" />
+  <arg name="acc_lim_xy" default="3.0" />
   <arg name="max_vel_xy" default="3.0" /><!--3.0-->
   <arg name="acc_lim_theta" default="3.2" />
   <arg name="max_vel_theta" default="3.14" /><!--3.14-->
@@ -161,7 +161,7 @@
 
   <node pkg="laser_filters" type="scan_to_scan_filter_chain" name="laser_filter">
     <rosparam command="load" file="$(find nhk2021_launcher)/config/laser_filter/$(arg laser_filter_file)" />
-    <remap from="scan" to="/rplidar/scan" />
+    <!-- <remap from="scan" to="/rplidar/scan" /> -->
   </node>
 
   <!-- amcl -->
