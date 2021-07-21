@@ -6,10 +6,11 @@
   <arg name="mode" default="real"/>
 
   <!--select mbed device (only when real) -->
-  <arg name="RF" default="true"/>
-  <arg name="LF" default="true"/>
-  <arg name="LB" default="true"/>
-  <arg name="RB" default="true"/>
+  <arg name="RF" default="false"/>
+  <arg name="LF" default="false"/>
+  <arg name="LB" default="false"/>
+  <arg name="RB" default="false"/>
+  <arg name="ArrowTable" default="true"/>
 
   <!--path_planning_node-->
   <arg name="control_frequency" default="50" />
@@ -110,7 +111,7 @@
     <group if="$(eval LF)">
       <node pkg="serial_test" name="mbed_LF" type="serial_test_node" output="screen" respawn="true">
         <param name = "port" value = "/dev/serial/by-id/usb-STMicroelectronics_STM32_STLink_0672FF495649657867253138-if02"/>
-        <param name = "looprate" value = "400"/>
+        <!-- <param name = "looprate" value = "400"/> -->
         <remap from = "/Serial_sub_float" to = "/control_LF" />
         <remap from = "/Serial_pub_float" to = "/data_LF" />
       </node>
@@ -119,7 +120,7 @@
     <group if="$(eval LB)">
       <node pkg="serial_test" name="mbed_LB" type="serial_test_node" output="screen" respawn="true">
         <param name = "port" value = "/dev/serial/by-id/usb-STMicroelectronics_STM32_STLink_0672FF515055657867244941-if02"/>
-        <param name = "looprate" value = "400"/>
+        <!-- <param name = "looprate" value = "400"/> -->
         <remap from = "/Serial_sub_float" to = "/control_LB" />
         <remap from = "/Serial_pub_float" to = "/data_LB" />
       </node>
@@ -128,12 +129,20 @@
     <group if="$(eval RB)">
       <node pkg="serial_test" name="mbed_RB" type="serial_test_node" output="screen" respawn="true">
         <param name = "port" value = "/dev/serial/by-id/usb-STMicroelectronics_STM32_STLink_066EFF495649657867251947-if02"/>
-        <param name = "looprate" value = "400"/>
+        <!-- <param name = "looprate" value = "400"/> -->
         <remap from = "/Serial_sub_float" to = "/control_RB" />
         <remap from = "/Serial_pub_float" to = "/data_RB" />
       </node>
     </group>
 
+    <group if="$(eval ArrowTable)">
+      <node pkg="serial_test" name="mbed_ArrowTable" type="serial_test_node" output="screen" respawn="true">
+        <param name = "port" value = "/dev/serial/by-id/usb-STMicroelectronics_STM32_STLink_066DFF495649657867251820-if02"/>
+        <!-- <param name = "looprate" value = "400"/> -->
+        <remap from = "/Serial_sub_float" to = "/control_ArrowTable" />
+        <remap from = "/Serial_pub_float" to = "/data_ArrowTable" />
+      </node>
+    </group>
   </group>
 
   <node pkg="laser_filters" type="scan_to_scan_filter_chain" name="laser_filter">

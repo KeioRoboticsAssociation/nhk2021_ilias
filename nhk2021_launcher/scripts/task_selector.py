@@ -56,7 +56,7 @@ class Task_Selector():
         elif msg.buttons[1] == 1:
             self.direction_ = 0
             self.sendgoal()
-        elif msg.buttons[9] == 1:
+        elif msg.buttons[8] == 1:
             self.client.cancel_goal()
             teleop_mode = Bool()
             teleop_mode.data = True
