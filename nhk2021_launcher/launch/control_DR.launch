@@ -153,6 +153,13 @@
     </group>
 
   </group>
+
+  <!-- pot tf -->
+  <node pkg="tf" type="static_transform_publisher" name="map_to_pot1" args="5.72 7.925 0 0 0 0 map pot1 1" />
+  <node pkg="tf" type="static_transform_publisher" name="map_to_pot2" args="3.5 6.35 0 0 0 0 map pot2 1" />
+  <node pkg="tf" type="static_transform_publisher" name="map_to_pot3" args="6.0 6.35 0 0 0 0 map pot3 1" />
+  <node pkg="tf" type="static_transform_publisher" name="map_to_pot4" args="8.5 6.35 0 0 0 0 map pot4 1" />
+  <node pkg="tf" type="static_transform_publisher" name="map_to_pot5" args="5.72 4.0 0 0 0 0 map pot5 1" />
   
   <node pkg="robot_localization" type="ekf_localization_node" name="ekf_localization" clear_params="true" output="screen">
       <rosparam command="load" file="$(find nhk2021_launcher)/config/ekf_localization/ekf_params.yaml" />
