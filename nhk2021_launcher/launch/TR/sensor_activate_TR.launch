@@ -1,0 +1,12 @@
+<launch>  
+    <!-- sensors-->
+    <!--IMU-->
+    <node pkg="bno055_usb_stick" type="bno055_usb_stick_node" name="bno055" output="screen">
+      <param name="port" value = "/dev/ttyACM0"/>
+      <param name="publish_tf" value="false"/>
+    </node>
+
+    <!--LiDAR-->
+    <!--RPlidar-->
+    <!-- <include file="$(find rplidar_ros)/launch/rplidar_a3.launch" /> -->
+</launch>

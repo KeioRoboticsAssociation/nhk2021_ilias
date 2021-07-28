@@ -38,7 +38,6 @@ class Task_Selector():
         # Waits for the server to finish performing the action.
         self.client.wait_for_result()
         '''
-
     def Joycallback(self, msg):
         if msg.buttons[10] == 1:
             self.client.cancel_goal()
@@ -67,6 +66,7 @@ class Task_Selector():
         message = Int32()
         message.data = self.pathmode_
         self.pathmode_pub.publish(message)
+
 
 if __name__ == '__main__':
     try:
