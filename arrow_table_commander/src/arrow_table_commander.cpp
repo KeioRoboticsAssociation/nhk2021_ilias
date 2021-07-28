@@ -9,39 +9,191 @@ Arrow_Table_Commander::Arrow_Table_Commander(ros::NodeHandle &nh, const int &loo
     ROS_INFO_STREAM("loop_rate [Hz]: " << loop_rate_);
     ROS_INFO_STREAM("base_frame_id: " << base_frame_id_);
 
-    arrow_table_command_pub = nh_.advertise<arrow_table_commander_msgs::ArrowTableCommander>("pot_position", 1);   
+    arrow_table_angle_pub = nh_.advertise<std_msgs::Float32MultiArray>("arrow_table_angle", 1);
+    thrower_flag_pub = nh_.advertise<std_msgs::Int32MultiArray>("thrower_flag", 1);
+    throwing1_power_pub = nh_.advertise<std_msgs::Float32MultiArray>("thrower1_power", 1);   
+    throwing2_power_pub = nh_.advertise<std_msgs::Float32MultiArray>("thrower2_power", 1);   
+    throwing3_power_pub = nh_.advertise<std_msgs::Float32MultiArray>("thrower3_power", 1);   
+    throwing4_power_pub = nh_.advertise<std_msgs::Float32MultiArray>("thrower4_power", 1);   
+    throwing5_power_pub = nh_.advertise<std_msgs::Float32MultiArray>("thrower5_power", 1);   
+    joy_sub = nh_.subscribe("/joy", 1, &Arrow_Table_Commander::joy_callback, this);
+
+    pot_number = 0;
+    table_angle = 0.0;
+    pot_distance = 0.0;
+    thrower_number = 1;
+    arrow_table_mode = 0;
+
     ros::Rate r(loop_rate_);
 
     while (ros::ok())
     {
-        ListenTF();
+        if (pot_number == 0){
+            pot_distance = 0.0;
+            table_angle = 0.0;
+        }
+        else if (pot_number == -1){
+            pot_distance = 0.0;
+            table_angle = M_PI;
+        }
+        else{
+            CalculateTableAngleAndDistance();
+        }
+        BroadcastThrowerTF();
         ros::spinOnce();
         r.sleep();
     }
 }
 
-void Arrow_Table_Commander::ListenTF()
+geometry_msgs::Quaternion Arrow_Table_Commander::rpy_to_geometry_quat(double roll, double pitch, double yaw){
+    tf::Quaternion quat=tf::createQuaternionFromRPY(roll,pitch,yaw);
+    geometry_msgs::Quaternion geometry_quat;
+    quaternionTFToMsg(quat, geometry_quat);
+    return geometry_quat;
+}
+
+void Arrow_Table_Commander::joy_callback(const sensor_msgs::Joy::ConstPtr &joy_msg)
 {
-    arrow_table_commander_msgs::ArrowTableCommander msg;
+  std::cout << arrow_table_mode << std::endl;
+    std::cout << thrower_number << std::endl;
+  if (joy_msg->buttons[JOY_PLUS_POT_NUMBER]){
+      if(pot_number == 5){
+          pot_number = -1;
+      }
+      else pot_number++;
+  }
+  else if (joy_msg->buttons[JOY_MINUS_POT_NUMBER]){
+      if (pot_number == -1){
+          pot_number = 5;
+      }
+      else pot_number--;
+  }
+  else if (joy_msg->buttons[JOY_RUN]){
+      if(arrow_table_mode == 0){
+          catch_arrow();
+      }
+      else if(arrow_table_mode == 1){
+          swing_arrow();
+      }
+      else{
+          throw_arrow(thrower_number);
+          thrower_number++;
+      }
+
+      if (arrow_table_mode == 6){
+          arrow_table_mode = 0;
+          thrower_number = 1;
+      }
+      else arrow_table_mode++;
+  }
+}
+
+void Arrow_Table_Commander::catch_arrow()
+{
+    std_msgs::Int32MultiArray msg;
+    msg.data.resize(1);
+    msg.data[0] = 0;
+    thrower_flag_pub.publish(msg);
+}
+
+void Arrow_Table_Commander::swing_arrow()
+{
+    std_msgs::Int32MultiArray msg;
+    msg.data.resize(1);
+    msg.data[0] = 1;
+    thrower_flag_pub.publish(msg);
+}
+
+void Arrow_Table_Commander::throw_arrow(int thrower_number)
+{
+    std_msgs::Float32MultiArray msg;
+    msg.data.resize(1);
+    msg.data[0] = CalculatePower(pot_distance);
+    switch(thrower_number){
+        case 1:
+            throwing1_power_pub.publish(msg);
+            break;
+        case 2:
+            throwing2_power_pub.publish(msg);
+            break;
+        case 3:
+            throwing3_power_pub.publish(msg);
+            break;
+        case 4:
+            throwing4_power_pub.publish(msg);
+            break;
+        case 5:
+            throwing5_power_pub.publish(msg);
+            break;
+        default:
+            ROS_ERROR("invalid thrower number");
+    }
+}
+
+float Arrow_Table_Commander::CalculatePower(float distance){
+    return distance; // TODO
+}
+
+void Arrow_Table_Commander::BroadcastThrowerTF()
+{    
+    ros::Time current_time; 
+    current_time = ros::Time::now();
+
+    //tf
+    geometry_msgs::TransformStamped pot_table_trans;
+    pot_table_trans.header.stamp = current_time;
+    pot_table_trans.header.frame_id = base_frame_id_;
+    pot_table_trans.child_frame_id = "pot_table";
+
+    pot_table_trans.transform.translation.x = 0.0;
+    pot_table_trans.transform.translation.y = 0.0;
+    pot_table_trans.transform.translation.z = 0.2;
+    pot_table_trans.transform.rotation = rpy_to_geometry_quat(0.0, 0.0, table_angle);
+    broadcaster.sendTransform(pot_table_trans);
 
     for (int i = 0; i < 5; i++){
-        // tf_listner
-        tf::StampedTransform transform;
-        try
-        {
-            listener.lookupTransform("/" + base_frame_id_, "/pot" + std::to_string(i+1), ros::Time(0), transform);
-        }
-        catch (tf::TransformException ex)
-        {
-            ROS_ERROR("%s", ex.what());
-            ros::Duration(1.0).sleep();
-        }
-        msg.pot_angle[i] = atan2(transform.getOrigin().y(),transform.getOrigin().x()); // rad
-        msg.pot_distance[i] = sqrt(transform.getOrigin().x()*transform.getOrigin().x() + transform.getOrigin().y()*transform.getOrigin().y());
+        current_time = ros::Time::now();
 
+        //tf
+        geometry_msgs::TransformStamped thrower_trans;
+        thrower_trans.header.stamp = current_time;
+        thrower_trans.header.frame_id = "pot_table";
+        thrower_trans.child_frame_id = "thrower" + std::to_string(i+1);
+
+        thrower_trans.transform.translation.x = 0.0;
+        thrower_trans.transform.translation.y = -thrower_position[i];
+        thrower_trans.transform.translation.z = 0.0;
+        thrower_trans.transform.rotation = rpy_to_geometry_quat(0.0, 0.0, 0.0);
+        broadcaster.sendTransform(thrower_trans);    
+    }
+}
+
+void Arrow_Table_Commander::CalculateTableAngleAndDistance()
+{    
+    tf::StampedTransform transform;
+    try
+    {
+        listener.lookupTransform("/" + base_frame_id_, "/pot" + std::to_string(pot_number), ros::Time(0), transform);
+    }
+    catch (tf::TransformException ex)
+    {
+        ROS_ERROR("%s", ex.what());
+        ros::Duration(1.0).sleep();
     }
 
-    arrow_table_command_pub.publish(msg);
+    pot_distance = sqrt(transform.getOrigin().x()*transform.getOrigin().x() + transform.getOrigin().y()*transform.getOrigin().y());
+    table_angle = M_PI - atan2(transform.getOrigin().x(),transform.getOrigin().y()) - acos(thrower_position[thrower_number-1] / pot_distance);
+
+    // std::cout << "x " << transform.getOrigin().x() << std::endl;
+    // std::cout << "y " << transform.getOrigin().y() << std::endl;
+    // std::cout << "atan2 " << M_PI - atan2(transform.getOrigin().x(),transform.getOrigin().y()) * 180.0 / M_PI << std::endl;
+    // std::cout << "acos " << acos(thrower_position[thrower_number-1] / pot_distance) * 180.0 / M_PI << std::endl;
+    // std::cout << "table_angle " << table_angle * 180.0 / M_PI << std::endl;
+
+    std_msgs::Float32MultiArray msg;
+    msg.data.resize(1);
+    msg.data[0] = table_angle;
+    arrow_table_angle_pub.publish(msg);
 }
 
 int main(int argc, char **argv)

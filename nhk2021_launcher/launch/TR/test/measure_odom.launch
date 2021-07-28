@@ -67,23 +67,16 @@
     <param name="robot_description" textfile="$(find nhk2021_launcher)/urdf/TR.urdf" />
     <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
 
-    <node pkg="swerve_wheelctrl" type="swerve_wheelctrl" name="swerve_wheelctrl" output="screen">
-      <param name="control_frequency" value="$(arg control_frequency)"/>
-      <param name="lost_time_threshold" value="500"/>
-      <param name="body_width" value="0.440"/>
-      <param name="initial_table_angle" value="$(arg initial_table_angle)"/>
-      <param name="gazebo_mode" value="false"/>
-    </node>
-
-    <node pkg="swerve_odom_publisher" type="swerve_odom_publisher" name="swerve_odom_publisher" output="screen">
-      <param name="control_frequency" value="$(arg control_frequency)"/>
-      <param name="base_frame_id" value="base_footprint"/>
-      <param name="body_width" value="0.440"/>
-      <param name="initial_table_angle" value="$(arg initial_table_angle)"/>
-      <param name="gazebo_mode" value="false"/>
-    </node>
-
     <include file="$(find nhk2021_launcher)/launch/TR/sensor_activate_TR.launch"/>
+
+    <include file="$(find nhk2021_launcher)/launch/TR/activate_wheel_TR.launch">
+      <arg name="control_frequency" value="$(arg control_frequency)"/>
+      <arg name="base_frame_id" value="base_footprint"/>
+      <arg name="body_width" value="0.440"/>
+      <arg name="initial_table_angle" value="$(arg initial_table_angle)"/>
+    </include>
+
+    <include file="$(find nhk2021_launcher)/launch/TR/activate_arrow_thrower.launch"/>
 
   </group>
 
