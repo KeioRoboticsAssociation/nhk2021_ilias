@@ -72,6 +72,9 @@
     <include file="$(find nhk2021_launcher)/launch/common/localization/amcl.launch">
       <arg name="use_laser_filter" value="$(arg use_laser_filter)"/> 
       <arg name="base_frame_id" value="$(arg base_frame_id)" />
+      <arg name="initial_pose_x" value="0.5"/>
+      <arg name="initial_pose_y" value="0.5"/>
+      <arg name="initial_pose_a" value="0.0"/>
     </include>
   </group>
   <group if="$(eval localization_method=='odom')">

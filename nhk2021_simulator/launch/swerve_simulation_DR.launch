@@ -15,7 +15,7 @@
   </include>
 
   <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model"
-     args="-param robot_description -x 5.450 -y 11.500 -z 0.5 -R 0 -P 0 -Y 0 -urdf -model simple_swerve" />
+     args="-param robot_description -x 5.450 -y 11.500 -z 0.5 -R 0 -P 0 -Y -1.570796 -urdf -model simple_swerve" />
 
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" output="screen" ns="/simple_swerve"/>
   <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" output="screen"/>

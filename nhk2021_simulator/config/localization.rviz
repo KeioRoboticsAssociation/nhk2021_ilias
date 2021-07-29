@@ -72,72 +72,97 @@ Visualization Manager:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-          Value: true
-        front_sensor:
+        body:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
+        camera_bottom_screw_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        camera_color_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        camera_color_optical_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        camera_depth_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        camera_depth_optical_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        camera_left_ir_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        camera_left_ir_optical_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        camera_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        camera_right_ir_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        camera_right_ir_optical_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
         imu_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-        left_sensor:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        lower_left_wheel:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        lower_left_wheel_shaft:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        lower_right_wheel:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        lower_right_wheel_shaft:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        rear_sensor:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        right_sensor:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
         rplidar_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        upper_left_wheel:
+        wheel_lb:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        upper_left_wheel_shaft:
+        wheel_lb_round_table:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        upper_right_wheel:
+        wheel_lf:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        upper_right_wheel_shaft:
+        wheel_lf_round_table:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        wheel_rb:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        wheel_rb_round_table:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        wheel_rf:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        wheel_rf_round_table:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -157,38 +182,78 @@ Visualization Manager:
           Value: true
         base_link:
           Value: false
-        front_sensor:
-          Value: false
+        bno055:
+          Value: true
+        body:
+          Value: true
+        camera_bottom_screw_frame:
+          Value: true
+        camera_color_frame:
+          Value: true
+        camera_color_optical_frame:
+          Value: true
+        camera_depth_frame:
+          Value: true
+        camera_depth_optical_frame:
+          Value: true
+        camera_left_ir_frame:
+          Value: true
+        camera_left_ir_optical_frame:
+          Value: true
+        camera_link:
+          Value: true
+        camera_right_ir_frame:
+          Value: true
+        camera_right_ir_optical_frame:
+          Value: true
         imu_link:
           Value: false
-        left_sensor:
-          Value: false
-        lower_left_wheel:
-          Value: false
-        lower_left_wheel_shaft:
-          Value: false
-        lower_right_wheel:
-          Value: false
-        lower_right_wheel_shaft:
-          Value: false
+        laser:
+          Value: true
         map:
           Value: true
         odom:
           Value: true
-        rear_sensor:
-          Value: false
-        right_sensor:
-          Value: false
+        pot1:
+          Value: true
+        pot2:
+          Value: true
+        pot3:
+          Value: true
+        pot4:
+          Value: true
+        pot5:
+          Value: true
+        pot_table:
+          Value: true
         rplidar_link:
           Value: false
-        upper_left_wheel:
-          Value: false
-        upper_left_wheel_shaft:
-          Value: false
-        upper_right_wheel:
-          Value: false
-        upper_right_wheel_shaft:
-          Value: false
+        thrower1:
+          Value: true
+        thrower2:
+          Value: true
+        thrower3:
+          Value: true
+        thrower4:
+          Value: true
+        thrower5:
+          Value: true
+        wheel_lb:
+          Value: true
+        wheel_lb_round_table:
+          Value: true
+        wheel_lf:
+          Value: true
+        wheel_lf_round_table:
+          Value: true
+        wheel_rb:
+          Value: true
+        wheel_rb_round_table:
+          Value: true
+        wheel_rf:
+          Value: true
+        wheel_rf_round_table:
+          Value: true
       Marker Scale: 0.5
       Name: TF
       Show Arrows: true
@@ -196,34 +261,66 @@ Visualization Manager:
       Show Names: true
       Tree:
         map:
-          {}
-        odom:
-          base_footprint:
-            base_link:
-              front_sensor:
+          odom:
+            base_footprint:
+              base_link:
                 {}
-              left_sensor:
+              bno055:
                 {}
-              lower_left_wheel_shaft:
-                lower_left_wheel:
-                  {}
-              lower_right_wheel_shaft:
-                lower_right_wheel:
-                  {}
-              rear_sensor:
+              body:
                 {}
-              right_sensor:
+              imu_link:
                 {}
-              upper_left_wheel_shaft:
-                upper_left_wheel:
+              laser:
+                {}
+              pot_table:
+                thrower1:
                   {}
-              upper_right_wheel_shaft:
-                upper_right_wheel:
+                thrower2:
                   {}
-            imu_link:
-              {}
-            rplidar_link:
-              {}
+                thrower3:
+                  {}
+                thrower4:
+                  {}
+                thrower5:
+                  {}
+              rplidar_link:
+                camera_bottom_screw_frame:
+                  camera_link:
+                    camera_depth_frame:
+                      camera_color_frame:
+                        camera_color_optical_frame:
+                          {}
+                      camera_depth_optical_frame:
+                        {}
+                      camera_left_ir_frame:
+                        camera_left_ir_optical_frame:
+                          {}
+                      camera_right_ir_frame:
+                        camera_right_ir_optical_frame:
+                          {}
+              wheel_lb_round_table:
+                wheel_lb:
+                  {}
+              wheel_lf_round_table:
+                wheel_lf:
+                  {}
+              wheel_rb_round_table:
+                wheel_rb:
+                  {}
+              wheel_rf_round_table:
+                wheel_rf:
+                  {}
+          pot1:
+            {}
+          pot2:
+            {}
+          pot3:
+            {}
+          pot4:
+            {}
+          pot5:
+            {}
       Update Interval: 0
       Value: true
     - Alpha: 1
@@ -261,7 +358,7 @@ Visualization Manager:
       Color: 255; 255; 255
       Color Transformer: Intensity
       Decay Time: 0
-      Enabled: true
+      Enabled: false
       Invert Rainbow: false
       Max Color: 255; 255; 255
       Max Intensity: 0
@@ -278,7 +375,7 @@ Visualization Manager:
       Unreliable: false
       Use Fixed Frame: true
       Use rainbow: true
-      Value: true
+      Value: false
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
@@ -291,7 +388,7 @@ Visualization Manager:
       Color: 255; 255; 255
       Color Transformer: Intensity
       Decay Time: 0
-      Enabled: false
+      Enabled: true
       Invert Rainbow: false
       Max Color: 255; 255; 255
       Max Intensity: 0
@@ -304,11 +401,11 @@ Visualization Manager:
       Size (Pixels): 3
       Size (m): 0.05000000074505806
       Style: Flat Squares
-      Topic: /rplidar/scan
+      Topic: /scan
       Unreliable: false
       Use Fixed Frame: true
       Use rainbow: true
-      Value: false
+      Value: true
     - Alpha: 0.699999988079071
       Class: rviz/Map
       Color Scheme: map
@@ -363,16 +460,16 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 7.421393871307373
+      Distance: 16.231929779052734
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 1.9342235326766968
-        Y: 0.6761360764503479
-        Z: 0.8283559083938599
+        X: 4.785486698150635
+        Y: 5.686244964599609
+        Z: 0.8334326148033142
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
@@ -419,5 +516,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1504
-  X: 8
-  Y: 31
+  X: 72
+  Y: 27

@@ -10,7 +10,7 @@
     <!--RPlidar-->
     <!-- <include file="$(find rplidar_ros)/launch/rplidar_a3.launch" /> -->
     <!-- sick -->
-    <include file="$(find sick_scan)/launch/sick_tim_5xx.launch.launch" />
+    <include file="$(find sick_scan)/launch/sick_tim_5xx.launch" />
 
     <!-- inverted_laser -->
     <!-- git clone https://github.com/timkambic/invert_laser.git -->
