@@ -11,16 +11,16 @@
     <node pkg="mecanum_wheelctrl" type="mecanum_wheelctrl" name="mecanum_wheelctrl" output="screen">
       <param name="control_frequency" value="$(arg control_frequency)"/>
       <param name="base_frame_id" value="$(arg base_footprint)"/>
-      <param name="body_width" value="0.440"/>
-      <param name="body_height" value="0.440"/>
+      <param name="body_width" value="0.840"/>
+      <param name="body_height" value="0.290"/>
       <param name="gazebo_mode" value="true"/>
     </node>
       
     <node pkg="mecanum_odom_publisher" type="mecanum_odom_publisher" name="mecanum_odom_publisher" output="screen">
       <param name="control_frequency" value="$(arg control_frequency)"/>
       <param name="base_frame_id" value="$(arg base_footprint)"/>
-      <param name="body_width" value="0.440"/>
-      <param name="body_height" value="0.440"/>
+      <param name="body_width" value="0.840"/>
+      <param name="body_height" value="0.290"/>
       <param name="gazebo_mode" value="true"/>
     </node>
   </group>
@@ -41,16 +41,16 @@
     <node pkg="mecanum_wheelctrl" type="mecanum_wheelctrl" name="mecanum_wheelctrl" output="screen">
       <param name="control_frequency" value="$(arg control_frequency)"/>
       <param name="base_frame_id" value="$(arg base_footprint)"/>
-      <param name="body_width" value="0.440"/>
-      <param name="body_height" value="0.440"/>
+      <param name="body_width" value="0.840"/>
+      <param name="body_height" value="0.290"/>
       <param name="gazebo_mode" value="false"/>
     </node>
 
     <node pkg="mecanum_odom_publisher" type="mecanum_odom_publisher" name="mecanum_odom_publisher" output="screen">
       <param name="control_frequency" value="$(arg control_frequency)"/>
       <param name="base_frame_id" value="$(arg base_footprint)"/>
-      <param name="body_width" value="0.440"/>
-      <param name="body_height" value="0.440"/>
+      <param name="body_width" value="0.840"/>
+      <param name="body_height" value="0.290"/>
     </node>
 
   </group>
