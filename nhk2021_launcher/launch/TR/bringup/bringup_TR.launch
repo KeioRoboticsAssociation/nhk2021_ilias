@@ -45,6 +45,9 @@
 
     <include file="$(find nhk2021_launcher)/launch/TR/bringup/activate_arrow_thrower.launch"/>
 
+    <!-- emergency stopper of arrow table and throwers -->
+    <node pkg="nhk2021_launcher" type="arrow_thrower_emergency_stopper.py" name="arrow_thrower_emergency_stopper"/>
+
     <!-- controller -->
     <node pkg="swerve_wheelctrl" type="swerve_wheelctrl" name="swerve_wheelctrl" output="screen">
       <param name="control_frequency" value="$(arg control_frequency)"/>

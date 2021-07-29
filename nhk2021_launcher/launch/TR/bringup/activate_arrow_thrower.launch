@@ -4,6 +4,7 @@
       <param name = "port" value = "/dev/serial/by-id/usb-STMicroelectronics_STM32_STLink_066DFF495649657867251820-if02"/>
       <param name = "looprate" value = "400"/>
       <remap from = "/Serial_sub_float" to = "/arrow_table_angle" />
+      <remap from = "/Serial_sub_string" to = "/arrow_thrower_emergency_stop" />
       <remap from = "/Serial_pub_float" to = "/data_arrow_table_angle" />
     </node>
 
@@ -11,32 +12,37 @@
     <node pkg="serial_test" name="mbed_thrower1" type="serial_test_node" output="screen" respawn="true">
       <param name = "port" value = "/dev/serial/by-id/usb-STMicroelectronics_STM32_STLink_066DFF495649657867251820-if02"/>
       <param name = "looprate" value = "400"/>
-      <remap from = "/Serial_sub_float" to = "/pot_distance1" />
-      <remap from = "/Serial_sub_int" to = "/thrower1_flag" />
+      <remap from = "/Serial_sub_float" to = "/thrower1_power" />
+      <remap from = "/Serial_sub_string" to = "/arrow_thrower_emergency_stop" />
+      <remap from = "/Serial_sub_int" to = "/thrower_flag" />
     </node>
     <node pkg="serial_test" name="mbed_thrower2" type="serial_test_node" output="screen" respawn="true">
       <param name = "port" value = "/dev/serial/by-id/usb-STMicroelectronics_STM32_STLink_066DFF495649657867251820-if02"/>
       <param name = "looprate" value = "400"/>
-      <remap from = "/Serial_sub_float" to = "/pot_distance2" />
-      <remap from = "/Serial_sub_int" to = "/thrower2_flag" />
+      <remap from = "/Serial_sub_float" to = "/thrower2_power" />
+      <remap from = "/Serial_sub_string" to = "/arrow_thrower_emergency_stop" />
+      <remap from = "/Serial_sub_int" to = "/thrower_flag" />
     </node>
     <node pkg="serial_test" name="mbed_thrower3" type="serial_test_node" output="screen" respawn="true">
       <param name = "port" value = "/dev/serial/by-id/usb-STMicroelectronics_STM32_STLink_066DFF495649657867251820-if02"/>
       <param name = "looprate" value = "400"/>
-      <remap from = "/Serial_sub_float" to = "/pot_distance3" />
-      <remap from = "/Serial_sub_int" to = "/thrower3_flag" />
+      <remap from = "/Serial_sub_float" to = "/thrower3_power" />
+      <remap from = "/Serial_sub_string" to = "/arrow_thrower_emergency_stop" />
+      <remap from = "/Serial_sub_int" to = "/thrower_flag" />
     </node>
     <node pkg="serial_test" name="mbed_thrower4" type="serial_test_node" output="screen" respawn="true">
       <param name = "port" value = "/dev/serial/by-id/usb-STMicroelectronics_STM32_STLink_066DFF495649657867251820-if02"/>
       <param name = "looprate" value = "400"/>
-      <remap from = "/Serial_sub_float" to = "/pot_distance4" />
-      <remap from = "/Serial_sub_int" to = "/thrower4_flag" />
+      <remap from = "/Serial_sub_float" to = "/thrower4_power" />
+      <remap from = "/Serial_sub_string" to = "/arrow_thrower_emergency_stop" />
+      <remap from = "/Serial_sub_int" to = "/thrower_flag" />
     </node>
     <node pkg="serial_test" name="mbed_thrower5" type="serial_test_node" output="screen" respawn="true">
       <param name = "port" value = "/dev/serial/by-id/usb-STMicroelectronics_STM32_STLink_066DFF495649657867251820-if02"/>
       <param name = "looprate" value = "400"/>
-      <remap from = "/Serial_sub_float" to = "/pot_distance5" />
-      <remap from = "/Serial_sub_int" to = "/thrower5_flag" />
+      <remap from = "/Serial_sub_float" to = "/thrower5_power" />
+      <remap from = "/Serial_sub_string" to = "/arrow_thrower_emergency_stop" />
+      <remap from = "/Serial_sub_int" to = "/thrower_flag" />
     </node>
 
 
