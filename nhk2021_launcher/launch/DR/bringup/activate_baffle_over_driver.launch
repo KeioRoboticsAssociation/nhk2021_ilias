@@ -6,4 +6,8 @@
         <remap from = "/Serial_sub_float" to = "/control_baffle_over" />
     </node>
 
+
+    <!-- baffle_over -->
+    <node pkg="nhk2021_launcher" type="baffle_over_flag_pub.py" name="baffle_over_flag_pub"/>
+
 </launch>
