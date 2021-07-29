@@ -2,8 +2,6 @@
 
 import rospy
 
-import bezier_path_planning_pursuit.msg
-from std_msgs.msg import Int32MultiArray
 from std_msgs.msg import String
 from std_msgs.msg import Empty
 
