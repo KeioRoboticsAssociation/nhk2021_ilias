@@ -3,8 +3,7 @@
   <arg name="control_frequency" default="50" />
   <arg name="base_frame_id" default="base_footprint" />
 
-
-    <!-- pot tf (temporary static) -->
+  <!-- pot tf (temporary static) -->
   <node pkg="tf" type="static_transform_publisher" name="map_to_pot1" args="5.72 7.925 0 0 0 0 map pot1 1" />
   <node pkg="tf" type="static_transform_publisher" name="map_to_pot2" args="3.5 6.35 0 0 0 0 map pot2 1" />
   <node pkg="tf" type="static_transform_publisher" name="map_to_pot3" args="6.0 6.35 0 0 0 0 map pot3 1" />
