@@ -3,9 +3,8 @@
         <!--param name = "port" value = "/dev/ttyACM1"/>-->
         <param name = "looprate" value = "400"/>
         <param name = "port" value = "/dev/serial/by-id/usb-STMicroelectronics_STM32_STLink_0673FF515055657867211816-if02"/>
-        <remap from = "/Serial_sub_float" to = "/control_baffle_over" />
+        <remap from = "/Serial_sub_int" to = "/baffle_over_flag" />
     </node>
-
 
     <!-- baffle_over -->
     <node pkg="nhk2021_launcher" type="baffle_over_flag_pub.py" name="baffle_over_flag_pub"/>
