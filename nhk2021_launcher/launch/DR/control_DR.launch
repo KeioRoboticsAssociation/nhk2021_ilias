@@ -1,0 +1,89 @@
+<launch>
+  <!--simulation or real-->
+  <arg name="mode" default="real"/>
+  
+  <arg name="control_frequency" default="50" />
+  <arg name="base_frame_id" default="base_footprint" />
+
+  <!-- important config of bezier_path_planning_pursuit -->
+  <arg name="acc_lim_xy" default="2.0" />
+  <arg name="max_vel_xy" default="2.0" /><!--3.0-->
+  <arg name="acc_lim_theta" default="3.2" />
+  <arg name="max_vel_theta" default="1.57" /><!--3.14-->
+  <arg name="initial_vel" default="0.2" />
+  <arg name="xy_goal_tolerance" default="0.1" />
+  <arg name="yaw_goal_tolerance" default="0.1" />
+
+  <!-- laser filter config -->
+  <arg name="use_laser_filter" default="false"/>
+  <arg name="laser_filter_file" default="laser_filter_DR.yaml"/>  
+
+  <!-- ekf config -->
+  <arg name="use_ekf_localization" default="false"/>
+  <arg name="ekf_params_file" default="ekf_params.yaml"/>  
+
+  <!-- localization method -->
+  <!-- choose "odom" or "amcl" -->
+  <arg name="localization_method" default="amcl"/>
+
+  <!-- bringup -->
+  <include file="$(find nhk2021_launcher)/launch/DR/bringup/bringup_DR.launch">
+    <arg name="mode" value="$(arg mode)" />
+    <arg name="control_frequency" value="$(arg control_frequency)" />
+    <arg name="base_frame_id" value="$(arg base_frame_id)" />
+  </include>
+
+  <!-- bezier_path_planning_and_pursuit-->
+  <include file="$(find bezier_path_planning_pursuit)/launch/bezier_path_planning_pursuit.launch">
+    <arg name="control_frequency" value="$(arg control_frequency)" />
+    <arg name="use_tf" value="true" />
+    <arg name="angle_source" value="imu" />
+    <arg name="csv_path" value="$(find nhk2021_launcher)/config/waypoints/DR" />
+    <arg name="acc_lim_xy" value="$(arg acc_lim_xy)" />
+    <arg name="max_vel_xy" value="$(arg max_vel_xy)" /><!--3.0-->
+    <arg name="acc_lim_theta" value="$(arg acc_lim_theta)" />
+    <arg name="max_vel_theta" value="$(arg max_vel_theta)" /><!--3.14-->
+    <arg name="initial_vel" value="$(arg initial_vel)" />
+    <arg name="corner_speed_rate" value="0.8" />
+    <arg name="global_frame_id" value="map" />
+    <arg name="base_frame_id" value="$(arg base_frame_id)" />
+    <arg name="xy_goal_tolerance" value="$(arg xy_goal_tolerance)" />
+    <arg name="yaw_goal_tolerance" value="$(arg yaw_goal_tolerance)" />
+    <arg name="fix_angle_gain" value="2.0" />
+    <arg name="path_granularity" value="0.001" />
+  </include>
+    
+  <!-- laser_filter -->
+  <group if="$(arg use_laser_filter)">
+    <include file="$(find nhk2021_launcher)/launch/common/localization/laser_filters.launch">
+      <arg name="laser_filter_file" value="$(arg laser_filter_file)"/> 
+    </include>
+  </group>
+
+  <!-- ekf -->
+  <group if="$(arg use_ekf_localization)">
+    <include file="$(find nhk2021_launcher)/launch/common/localization/ekf_localization.launch">
+      <arg name="ekf_params_file" value="$(arg ekf_params_file)"/> 
+    </include>
+  </group>
+
+  <!-- amcl -->
+  <group if="$(eval localization_method=='amcl')">
+    <include file="$(find nhk2021_launcher)/launch/common/localization/amcl.launch">
+      <arg name="use_laser_filter" value="$(arg use_laser_filter)"/> 
+      <arg name="base_frame_id" value="$(arg base_frame_id)" />
+    </include>
+  </group>
+  <group if="$(eval localization_method=='odom')">
+    <node pkg="tf" type="static_transform_publisher" name="map_odom_broadcaster" args="0.5 0.5 0 0 0 0 map odom 1" />
+  </group>
+
+  <!-- task_selector -->
+  <node pkg="nhk2021_launcher" type="task_selector.py" name="task_selector"/>
+
+  <!-- WebGUI -->
+  <include file="$(find nhk2021_webgui)/launch/server.launch">
+    <arg name="name" value="roswww_DR"/>
+  </include>
+
+</launch>

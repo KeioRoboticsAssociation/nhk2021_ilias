@@ -1,192 +1,95 @@
 <launch>
-  <arg name="joy" default="true"/>
-
   <!--simulation or real-->
   <arg name="mode" default="real"/>
-
-  <!--path_planning_node-->
+  
   <arg name="control_frequency" default="50" />
-  <arg name="use_tf" default="true" />
-  <arg name="angle_source" default="imu" />
-  <arg name="csv_path" default="$(find nhk2021_launcher)/config/waypoints/TR" />
-  <arg name="acc_lim_xy" default="0.5" />
-  <arg name="max_vel_xy" default="0.5" /><!--3.0-->
+  <arg name="base_frame_id" default="base_footprint" />
+
+  <!-- important config of bezier_path_planning_pursuit -->
+  <arg name="acc_lim_xy" default="2.0" />
+  <arg name="max_vel_xy" default="2.0" /><!--3.0-->
   <arg name="acc_lim_theta" default="3.2" />
   <arg name="max_vel_theta" default="1.57" /><!--3.14-->
   <arg name="initial_vel" default="0.2" />
-  <arg name="corner_speed_rate" default="0.8" />
-  <arg name="global_frame_id" default="map" />
-  <arg name="base_frame_id" default="base_footprint" />
-  <arg name="xy_goal_tolerance" default="0.01" />
-  <arg name="yaw_goal_tolerance" default="0.01" />
-  <arg name="fix_angle_gain" default="2.0" />
-  <arg name="path_granularity" default="0.001" />
+  <arg name="xy_goal_tolerance" default="0.1" />
+  <arg name="yaw_goal_tolerance" default="0.1" />
 
-  <!--swerve node-->
-  <arg name="initial_table_angle" default="90"/>
+  <!-- laser filter config -->
+  <arg name="use_laser_filter" default="false"/>
+  <arg name="laser_filter_file" default="laser_filter_TR.yaml"/>  
 
-  <node pkg="bezier_path_planning_pursuit" name="bezier_path_planning_pursuit" type="bezier_path_planning_pursuit" output="screen">
-    <param name= "control_frequency" value="$(arg control_frequency)" />
-    <param name = "use_tf" value = "$(arg use_tf)" />
-    <param name = "data_path" value = "$(arg csv_path)" />
-    <param name = "acc_lim_xy" value = "$(arg acc_lim_xy)" />
-    <param name = "max_vel_xy" value = "$(arg max_vel_xy)" />
-    <param name = "acc_lim_theta" value = "$(arg acc_lim_theta)" />
-    <param name = "max_vel_theta" value = "$(arg max_vel_theta)" />
-    <param name = "initial_vel" value = "$(arg initial_vel)" />
-    <param name = "corner_speed_rate" value = "$(arg corner_speed_rate)" />
-    <param name = "global_frame_id" value = "$(arg global_frame_id)" />
-    <param name = "base_frame_id" value = "$(arg base_frame_id)" />
-    <param name = "xy_goal_tolerance" value = "$(arg xy_goal_tolerance)" />
-    <param name = "yaw_goal_tolerance" value = "$(arg yaw_goal_tolerance)" />
-    <param name = "angle_source" value = "$(arg angle_source)" />
-    <param name = "fix_angle_gain" value = "$(arg fix_angle_gain)" />
-    <param name = "path_granularity" value = "$(arg path_granularity)" />
-    <!--
-    <remap from="cmd_vel" to="/simple_diff_drive/diff_drive_controller/cmd_vel" />
-    <remap from="odom" to="/simple_diff_drive/diff_drive_controller/odom" />
-    -->
-  </node>
+  <!-- ekf config -->
+  <arg name="use_ekf_localization" default="false"/>
+  <arg name="ekf_params_file" default="ekf_params.yaml"/>  
 
-  <group if="$(eval mode=='simulation')">
-    <node pkg="swerve_wheelctrl" type="swerve_wheelctrl" name="swerve_wheelctrl" output="screen">
-      <param name="control_frequency" value="$(arg control_frequency)"/>
-      <param name="lost_time_threshold" value="500"/>
-      <param name="body_width" value="0.440"/>
-      <param name="initial_table_angle" value="$(arg initial_table_angle)"/>
-      <param name="gazebo_mode" value="true"/>
-      <remap from="control_RF" to="/simple_swerve/rf_joint_velocity_controller/command" />
-      <remap from="control_LF" to="/simple_swerve/lf_joint_velocity_controller/command" />
-      <remap from="control_LB" to="/simple_swerve/lb_joint_velocity_controller/command" />
-      <remap from="control_RB" to="/simple_swerve/rb_joint_velocity_controller/command" />
-      <remap from="control_RF_angle" to="/simple_swerve/rf_joint_angular_controller/command" />
-      <remap from="control_LF_angle" to="/simple_swerve/lf_joint_angular_controller/command" />
-      <remap from="control_LB_angle" to="/simple_swerve/lb_joint_angular_controller/command" />
-      <remap from="control_RB_angle" to="/simple_swerve/rb_joint_angular_controller/command" />
-    </node>
-      
-    <node pkg="swerve_odom_publisher" type="swerve_odom_publisher" name="swerve_odom_publisher" output="screen">
-      <param name="control_frequency" value="$(arg control_frequency)"/>
-      <param name="base_frame_id" value="base_footprint"/>
-      <param name="body_width" value="0.440"/>
-      <param name="initial_table_angle" value="$(arg initial_table_angle)"/>
-      <param name="gazebo_mode" value="true"/>
-    </node>
-  </group>
+  <!-- localization method -->
+  <!-- choose "odom" or "amcl" -->
+  <arg name="localization_method" default="amcl"/>
 
-  <group if="$(eval mode=='real')">
-    <!-- ################ statis tf settings ################ -->
-    <param name="robot_description" textfile="$(find nhk2021_launcher)/urdf/TR.urdf" />
-    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
-    
-    <include file="$(find nhk2021_launcher)/launch/TR/sensor_activate_TR.launch"/>
+  <!-- bringup -->
+  <include file="$(find nhk2021_launcher)/launch/TR/bringup/bringup_TR.launch">
+    <arg name="mode" value="$(arg mode)" />
+    <arg name="control_frequency" value="$(arg control_frequency)" />
+    <arg name="base_frame_id" value="$(arg base_frame_id)" />
+  </include>
 
-    <include file="$(find nhk2021_launcher)/launch/TR/activate_wheel_TR.launch">
-      <arg name="control_frequency" value="$(arg control_frequency)"/>
-      <arg name="base_frame_id" value="base_footprint"/>
-      <arg name="body_width" value="0.440"/>
-      <arg name="initial_table_angle" value="$(arg initial_table_angle)"/>
-    </include>
+  <!-- arrow table and thrower driver-->
+  <include file="$(find arrow_table_commander)/launch/arrow_table_commander.launch">
+    <arg name="control_frequency" value="$(arg control_frequency)" />
+    <arg name="base_frame_id" value="$(arg base_frame_id)" />
+  </include>
 
-    <include file="$(find nhk2021_launcher)/launch/TR/activate_arrow_thrower.launch"/>
-  </group>
-
-
-<!-- pot tf -->
-  <node pkg="tf" type="static_transform_publisher" name="map_to_pot1" args="5.72 7.925 0 0 0 0 map pot1 1" />
-  <node pkg="tf" type="static_transform_publisher" name="map_to_pot2" args="3.5 6.35 0 0 0 0 map pot2 1" />
-  <node pkg="tf" type="static_transform_publisher" name="map_to_pot3" args="6.0 6.35 0 0 0 0 map pot3 1" />
-  <node pkg="tf" type="static_transform_publisher" name="map_to_pot4" args="8.5 6.35 0 0 0 0 map pot4 1" />
-  <node pkg="tf" type="static_transform_publisher" name="map_to_pot5" args="5.72 4.0 0 0 0 0 map pot5 1" />
-
-  <node pkg="arrow_table_commander" type="arrow_table_commander" name="arrow_table_commander" output="screen">
-    <param name= "control_frequency" value="$(arg control_frequency)" />
-    <param name = "base_frame_id" value = "$(arg base_frame_id)" />
-  </node>
-
+  <!-- bezier_path_planning_and_pursuit-->
+  <include file="$(find bezier_path_planning_pursuit)/launch/bezier_path_planning_pursuit.launch">
+    <arg name="control_frequency" value="$(arg control_frequency)" />
+    <arg name="use_tf" value="true" />
+    <arg name="angle_source" value="imu" />
+    <arg name="csv_path" value="$(find nhk2021_launcher)/config/waypoints/TR" />
+    <arg name="acc_lim_xy" value="$(arg acc_lim_xy)" />
+    <arg name="max_vel_xy" value="$(arg max_vel_xy)" /><!--3.0-->
+    <arg name="acc_lim_theta" value="$(arg acc_lim_theta)" />
+    <arg name="max_vel_theta" value="$(arg max_vel_theta)" /><!--3.14-->
+    <arg name="initial_vel" value="$(arg initial_vel)" />
+    <arg name="corner_speed_rate" value="0.8" />
+    <arg name="global_frame_id" value="map" />
+    <arg name="base_frame_id" value="$(arg base_frame_id)" />
+    <arg name="xy_goal_tolerance" value="$(arg xy_goal_tolerance)" />
+    <arg name="yaw_goal_tolerance" value="$(arg yaw_goal_tolerance)" />
+    <arg name="fix_angle_gain" value="2.0" />
+    <arg name="path_granularity" value="0.001" />
+  </include>
     
   <!-- laser_filter -->
-  <arg name="laser_filter_file" default="laser_filter.yaml"/>  
-
-  <node pkg="laser_filters" type="scan_to_scan_filter_chain" name="laser_filter">
-    <rosparam command="load" file="$(find nhk2021_launcher)/config/laser_filter/$(arg laser_filter_file)" />
-    <!-- <remap from="scan" to="/rplidar/scan" /> -->
-  </node>
-  
-  <node pkg="robot_localization" type="ekf_localization_node" name="ekf_localization" clear_params="true" output="screen">
-      <rosparam command="load" file="$(find nhk2021_launcher)/config/ekf_localization/ekf_params.yaml" />
-      <remap from="/odometry/filtered" to="odom_filtered" />
-  </node>
-
-  <!-- amcl -->
-  <arg name="use_map_topic" default="true"/>
-  <node pkg="map_server" type="map_server" name="map_server" args="$(find nhk2021_launcher)/config/map/map.yaml">
-    <param name="frame_id" value="map"/>
-  </node>
-  
- <node pkg="amcl" type="amcl" name="amcl">
- <!--Overall filter parameters-->
-  <param name="min_particles" value="100"/>
-  <param name="max_particles" value="500"/>
-  <param name="kld_err" value="0.01"/>
-  <param name="kld_z" value="0.99"/>
-  <param name="update_min_d" value="0.22"/>
-  <param name="update_min_a" value="0.785"/>
-  <param name="resample_interval" value="2"/>
-  <param name="transform_tolerance" value="0.1" />
-  <param name="recovery_alpha_slow" value="0.0"/>
-  <param name="recovery_alpha_fast" value="0.0"/>
-  <param name="initial_pose_x" value="0.5"/>
-  <param name="initial_pose_y" value="0.5"/>
-  <param name="initial_pose_a" value="0.0"/>
-  <param name="initial_cov_xx" value="0.04"/><!--0.2 m ^2-->
-  <param name="initial_cov_yy" value="0.04"/><!--0.2 m ^2-->
-  <param name="initial_cov_aa" value="0.030"/><!--10 deg ^2-->
-  <param name="gui_publish_rate" value="-1.0"/>
-  <param name="save_pose_rate" value="2.0"/>
-  <param name="use_map_topic" value="$(arg use_map_topic)"/>
- <!--Laser model parameters-->
-  <param name="laser_min_range" value="-1.0"/>
-  <param name="laser_max_range" value="-1.0"/>
-  <param name="laser_max_beams" value="30"/>
-  <param name="laser_z_hit" value="0.95"/>
-  <param name="laser_z_short" value="0.1"/>
-  <param name="laser_z_max" value="0.05"/>
-  <param name="laser_z_rand" value="0.05"/>
-  <param name="laser_sigma_hit" value="0.2"/>
-  <param name="laser_lambda_short" value="0.1"/>
-  <param name="laser_likelihood_max_dist" value="2.0"/>
-  <param name="laser_model_type" value="likelihood_field"/>
- <!--Odometry model parameters-->
-  <param name="odom_model_type" value="omni-corrected"/>
-  <param name="odom_alpha1" value="0.005"/>
-  <param name="odom_alpha2" value="0.005"/>
-  <param name="odom_alpha3" value="0.010"/>
-  <param name="odom_alpha4" value="0.005"/>
-  <param name="odom_alpha5" value="0.003"/>
-  <param name="odom_frame_id" value="odom"/>
-  <param name="base_frame_id" value="$(arg base_frame_id)"/>
-  <param name="global_frame_id" value="$(arg global_frame_id)"/>
-  <param name="tf_broadcast" value="true"/>
- <!--remapping-->  
-  <remap from="scan" to="scan_filtered" />
- </node>
-
- <group if="$(arg joy)">
-    <node pkg="joy" type="joy_node" name="joy_node"/>
-
-    <node pkg="joy_commander" type="joy_commander" name="joy_commander" output="screen">
-      <param name="control_frequency" value="$(arg control_frequency)"/>
-      <param name = "acc_lim_xy" value = "$(arg acc_lim_xy)" />
-      <param name = "max_vel_xy" value = "$(arg max_vel_xy)" />
-      <param name = "acc_lim_theta" value = "$(arg acc_lim_theta)" />
-      <param name = "max_vel_theta" value = "$(arg max_vel_theta)" />
-      <remap from = "teleopflag" to = "/task_selector/teleop_mode"/>
-    </node>
-
-    <node pkg="nhk2021_launcher" type="task_selector.py" name="task_selector"/>
+  <group if="$(arg use_laser_filter)">
+    <include file="$(find nhk2021_launcher)/launch/common/localization/laser_filters.launch">
+      <arg name="laser_filter_file" value="$(arg laser_filter_file)"/> 
+    </include>
   </group>
 
-  <include file="$(find nhk2021_webgui)/launch/server.launch"/>
+  <!-- ekf -->
+  <group if="$(arg use_ekf_localization)">
+    <include file="$(find nhk2021_launcher)/launch/common/localization/ekf_localization.launch">
+      <arg name="ekf_params_file" value="$(arg ekf_params_file)"/> 
+    </include>
+  </group>
+
+  <!-- amcl -->
+  <group if="$(eval localization_method=='amcl')">
+    <include file="$(find nhk2021_launcher)/launch/common/localization/amcl.launch">
+      <arg name="use_laser_filter" value="$(arg use_laser_filter)"/> 
+      <arg name="base_frame_id" value="$(arg base_frame_id)" />
+    </include>
+  </group>
+  <group if="$(eval localization_method=='odom')">
+    <node pkg="tf" type="static_transform_publisher" name="map_odom_broadcaster" args="0.5 0.5 0 0 0 0 map odom 1" />
+  </group>
+
+  <!-- task_selector -->
+  <node pkg="nhk2021_launcher" type="task_selector.py" name="task_selector"/>
+
+  <!-- WebGUI -->
+  <include file="$(find nhk2021_webgui)/launch/server.launch">
+    <arg name="name" value="roswww_TR"/>
+  </include>
 
 </launch>

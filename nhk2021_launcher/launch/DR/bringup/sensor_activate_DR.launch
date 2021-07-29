@@ -9,4 +9,15 @@
     <!--LiDAR-->
     <!--RPlidar-->
     <!-- <include file="$(find rplidar_ros)/launch/rplidar_a3.launch" /> -->
+    <!-- sick -->
+    <include file="$(find sick_scan)/launch/sick_tim_5xx.launch.launch" />
+
+    <!-- inverted_laser -->
+    <!-- git clone https://github.com/timkambic/invert_laser.git -->
+    <!-- publish /scan_inv -->
+    <node pkg="invert_laser" type="invert_laser_node" name="invert_laser">
+      <param name="out_frame" value="laser"/>
+    </node>
+
+
 </launch>

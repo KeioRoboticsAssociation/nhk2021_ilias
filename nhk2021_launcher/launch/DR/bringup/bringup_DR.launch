@@ -1,0 +1,70 @@
+<launch>
+  <!--simulation or real-->
+  <arg name="mode" default="real"/>
+
+  <!--path_planning_node-->
+  <arg name="control_frequency" default="50" />
+  <arg name="base_frame_id" default="base_footprint" />
+
+  <group if="$(eval mode=='simulation')">
+    <!-- controller -->
+    <node pkg="mecanum_wheelctrl" type="mecanum_wheelctrl" name="mecanum_wheelctrl" output="screen">
+      <param name="control_frequency" value="$(arg control_frequency)"/>
+      <param name="base_frame_id" value="$(arg base_footprint)"/>
+      <param name="body_width" value="0.440"/>
+      <param name="body_height" value="0.440"/>
+      <param name="gazebo_mode" value="true"/>
+    </node>
+      
+    <node pkg="mecanum_odom_publisher" type="mecanum_odom_publisher" name="mecanum_odom_publisher" output="screen">
+      <param name="control_frequency" value="$(arg control_frequency)"/>
+      <param name="base_frame_id" value="$(arg base_footprint)"/>
+      <param name="body_width" value="0.440"/>
+      <param name="body_height" value="0.440"/>
+      <param name="gazebo_mode" value="true"/>
+    </node>
+  </group>
+
+  <group if="$(eval mode=='real')">
+    <!-- ################ statis tf settings ################ -->
+    <param name="robot_description" textfile="$(find nhk2021_launcher)/urdf/DR.urdf" />
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+    
+    <!-- sensors and mbed devices -->
+    <include file="$(find nhk2021_launcher)/launch/DR/bringup/sensor_activate_DR.launch"/>
+
+    <include file="$(find nhk2021_launcher)/launch/DR/bringup/activate_wheel_DR.launch"/>
+
+    <include file="$(find nhk2021_launcher)/launch/DR/bringup/activate_baffle_over_driver.launch"/>
+
+    <!-- controller -->
+    <node pkg="mecanum_wheelctrl" type="mecanum_wheelctrl" name="mecanum_wheelctrl" output="screen">
+      <param name="control_frequency" value="$(arg control_frequency)"/>
+      <param name="base_frame_id" value="$(arg base_footprint)"/>
+      <param name="body_width" value="0.440"/>
+      <param name="body_height" value="0.440"/>
+      <param name="gazebo_mode" value="false"/>
+    </node>
+
+    <node pkg="mecanum_odom_publisher" type="mecanum_odom_publisher" name="mecanum_odom_publisher" output="screen">
+      <param name="control_frequency" value="$(arg control_frequency)"/>
+      <param name="base_frame_id" value="$(arg base_footprint)"/>
+      <param name="body_width" value="0.440"/>
+      <param name="body_height" value="0.440"/>
+    </node>
+
+  </group>
+
+  <!-- Joy controller -->
+  <node pkg="joy" type="joy_node" name="joy_node"/>
+
+  <node pkg="joy_commander" type="joy_commander" name="joy_commander" output="screen">
+    <param name="control_frequency" value="$(arg control_frequency)"/>
+    <param name = "acc_lim_xy" value = "1.0" />
+    <param name = "max_vel_xy" value = "0.3" />
+    <param name = "acc_lim_theta" value = "1.57" />
+    <param name = "max_vel_theta" value = "0.785" />
+    <remap from = "teleopflag" to = "/task_selector/teleop_mode"/>
+  </node>
+
+</launch>

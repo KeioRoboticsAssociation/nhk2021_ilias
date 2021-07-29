@@ -1,13 +1,9 @@
 <launch>
     <!--select mbed device (only when real) -->
-    <arg name="RF" default="false"/>
-    <arg name="LF" default="false"/>
-    <arg name="LB" default="false"/>
-    <arg name="RB" default="false"/>
-    <arg name="control_frequency"/>
-    <arg name="base_frame_id"/>
-    <arg name="body_width"/>
-    <arg name="initial_table_angle"/>
+    <arg name="RF" default="true"/>
+    <arg name="LF" default="true"/>
+    <arg name="LB" default="true"/>
+    <arg name="RB" default="true"/>
 
     <!--mbed serial-->
     <!--wheel-->
@@ -48,19 +44,4 @@
       </node>
     </group>
 
-    <node pkg="swerve_wheelctrl" type="swerve_wheelctrl" name="swerve_wheelctrl" output="screen">
-      <param name="control_frequency" value="$(arg control_frequency)"/>
-      <param name="lost_time_threshold" value="500"/>
-      <param name="body_width" value="0.440"/>
-      <param name="initial_table_angle" value="$(arg initial_table_angle)"/>
-      <param name="gazebo_mode" value="false"/>
-    </node>
-          
-    <node pkg="swerve_odom_publisher" type="swerve_odom_publisher" name="swerve_odom_publisher" output="screen">
-      <param name="control_frequency" value="$(arg control_frequency)"/>
-      <param name="base_frame_id" value="base_footprint"/>
-      <param name="body_width" value="0.440"/>
-      <param name="initial_table_angle" value="$(arg initial_table_angle)"/>
-      <param name="gazebo_mode" value="false"/>
-    </node>
 </launch>

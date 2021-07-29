@@ -1,0 +1,39 @@
+<launch>
+  <!--path_planning_node-->
+  <arg name="control_frequency" default="50" />
+  <arg name="use_tf" default="true" />
+  <arg name="angle_source" default="imu" />
+  <arg name="csv_path" default="$(find nhk2021_launcher)/config/waypoints/TR" />
+  <arg name="acc_lim_xy" default="0.5" />
+  <arg name="max_vel_xy" default="0.5" /><!--3.0-->
+  <arg name="acc_lim_theta" default="3.2" />
+  <arg name="max_vel_theta" default="1.57" /><!--3.14-->
+  <arg name="initial_vel" default="0.2" />
+  <arg name="corner_speed_rate" default="0.8" />
+  <arg name="global_frame_id" default="map" />
+  <arg name="base_frame_id" default="base_footprint" />
+  <arg name="xy_goal_tolerance" default="0.01" />
+  <arg name="yaw_goal_tolerance" default="0.01" />
+  <arg name="fix_angle_gain" default="2.0" />
+  <arg name="path_granularity" default="0.001" />
+
+  <node pkg="bezier_path_planning_pursuit" name="bezier_path_planning_pursuit" type="bezier_path_planning_pursuit" output="screen">
+    <param name= "control_frequency" value="$(arg control_frequency)" />
+    <param name = "use_tf" value = "$(arg use_tf)" />
+    <param name = "data_path" value = "$(arg csv_path)" />
+    <param name = "acc_lim_xy" value = "$(arg acc_lim_xy)" />
+    <param name = "max_vel_xy" value = "$(arg max_vel_xy)" />
+    <param name = "acc_lim_theta" value = "$(arg acc_lim_theta)" />
+    <param name = "max_vel_theta" value = "$(arg max_vel_theta)" />
+    <param name = "initial_vel" value = "$(arg initial_vel)" />
+    <param name = "corner_speed_rate" value = "$(arg corner_speed_rate)" />
+    <param name = "global_frame_id" value = "$(arg global_frame_id)" />
+    <param name = "base_frame_id" value = "$(arg base_frame_id)" />
+    <param name = "xy_goal_tolerance" value = "$(arg xy_goal_tolerance)" />
+    <param name = "yaw_goal_tolerance" value = "$(arg yaw_goal_tolerance)" />
+    <param name = "angle_source" value = "$(arg angle_source)" />
+    <param name = "fix_angle_gain" value = "$(arg fix_angle_gain)" />
+    <param name = "path_granularity" value = "$(arg path_granularity)" />
+  </node>
+    
+</launch>

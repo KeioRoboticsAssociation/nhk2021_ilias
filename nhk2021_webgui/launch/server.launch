@@ -1,5 +1,9 @@
 <launch>
-  <include file="$(find roswww)/launch/roswww.launch" />
+  <arg name="name"/>
+
+  <include file="$(find roswww)/launch/roswww.launch" >
+    <arg name="name" value="$(arg name)"/>
+  </include>
   <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch" />
   <node pkg="tf2_web_republisher" type="tf2_web_republisher" name="tf2_web_republisher"/>
 </launch>

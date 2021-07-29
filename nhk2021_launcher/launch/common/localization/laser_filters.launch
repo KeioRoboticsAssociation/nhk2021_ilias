@@ -1,0 +1,9 @@
+<launch>
+  <!-- laser_filter -->
+  <arg name="laser_filter_file"/>  
+
+  <node pkg="laser_filters" type="scan_to_scan_filter_chain" name="laser_filter">
+    <rosparam command="load" file="$(find nhk2021_launcher)/config/laser_filter/$(arg laser_filter_file)" />
+    <!-- <remap from="scan" to="/rplidar/scan" /> -->
+  </node>
+</launch>

@@ -1,0 +1,10 @@
+<launch>  
+
+  <!-- ekf_localization -->
+  <arg name="ekf_params_file"/>
+
+  <node pkg="robot_localization" type="ekf_localization_node" name="ekf_localization" clear_params="true" output="screen">
+      <rosparam command="load" file="$(find nhk2021_launcher)/config/ekf_localization/$(arg ekf_params_file)" />
+      <remap from="/odometry/filtered" to="odom_filtered" />
+  </node>
+</launch>

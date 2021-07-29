@@ -1,0 +1,9 @@
+<launch>
+    <node pkg="serial_test" name="mbed_baffle_over" type="serial_test_node" output="screen" respawn="true">
+    <!--param name = "port" value = "/dev/ttyACM1"/>-->
+    <param name = "looprate" value = "400"/>
+    <param name = "port" value = "/dev/serial/by-id/usb-STMicroelectronics_STM32_STLink_0673FF515055657867211816-if02"/>
+    <remap from = "/Serial_sub_float" to = "/control_baffle_over" />
+    </node>
+
+</launch>
