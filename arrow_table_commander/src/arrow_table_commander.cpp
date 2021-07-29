@@ -39,6 +39,8 @@ Arrow_Table_Commander::Arrow_Table_Commander(ros::NodeHandle &nh, const int &loo
         else{
             CalculateTableAngleAndDistance();
         }
+        
+        // std::cout << "table_angle " << table_angle * 180.0 / M_PI << std::endl;
         BroadcastThrowerTF();
         ros::spinOnce();
         r.sleep();
@@ -145,7 +147,7 @@ void Arrow_Table_Commander::BroadcastThrowerTF()
     pot_table_trans.header.frame_id = base_frame_id_;
     pot_table_trans.child_frame_id = "pot_table";
 
-    pot_table_trans.transform.translation.x = 0.0;
+    pot_table_trans.transform.translation.x = 0.1315;
     pot_table_trans.transform.translation.y = 0.0;
     pot_table_trans.transform.translation.z = 0.2;
     pot_table_trans.transform.rotation = rpy_to_geometry_quat(0.0, 0.0, table_angle);
@@ -160,7 +162,7 @@ void Arrow_Table_Commander::BroadcastThrowerTF()
         thrower_trans.header.frame_id = "pot_table";
         thrower_trans.child_frame_id = "thrower" + std::to_string(i+1);
 
-        thrower_trans.transform.translation.x = 0.0;
+        thrower_trans.transform.translation.x = 0.35325;
         thrower_trans.transform.translation.y = -thrower_position[i];
         thrower_trans.transform.translation.z = 0.0;
         thrower_trans.transform.rotation = rpy_to_geometry_quat(0.0, 0.0, 0.0);
@@ -188,7 +190,6 @@ void Arrow_Table_Commander::CalculateTableAngleAndDistance()
     // std::cout << "y " << transform.getOrigin().y() << std::endl;
     // std::cout << "atan2 " << M_PI - atan2(transform.getOrigin().x(),transform.getOrigin().y()) * 180.0 / M_PI << std::endl;
     // std::cout << "acos " << acos(thrower_position[thrower_number-1] / pot_distance) * 180.0 / M_PI << std::endl;
-    // std::cout << "table_angle " << table_angle * 180.0 / M_PI << std::endl;
 
     std_msgs::Float32MultiArray msg;
     msg.data.resize(1);

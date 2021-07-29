@@ -6,15 +6,15 @@
     <!--param name = "port" value = "/dev/ttyACM1"/>-->
     <param name = "looprate" value = "400"/>
     <param name = "port" value = "/dev/serial/by-id/usb-STMicroelectronics_STM32_STLink_0673FF515055657867211816-if02"/>
-    <remap from = "/Serial_sub_float" to = "/control_R" />
-    <remap from = "/Serial_pub_float" to = "/data_R" />
+    <remap from = "/Serial_sub_float" to = "/control_Right" />
+    <remap from = "/Serial_pub_float" to = "/data_Right" />
   </node>
 
   <node pkg="serial_test" name="mbed_wheel_left" type="serial_test_node" output="screen" respawn="true">
     <param name = "port" value = "/dev/serial/by-id/usb-STMicroelectronics_STM32_STLink_0672FF495649657867253138-if02"/>
     <param name = "looprate" value = "400"/>
-    <remap from = "/Serial_sub_float" to = "/control_L" />
-    <remap from = "/Serial_pub_float" to = "/data_L" />
+    <remap from = "/Serial_sub_float" to = "/control_Left" />
+    <remap from = "/Serial_pub_float" to = "/data_Left" />
   </node>
 
 </launch>
