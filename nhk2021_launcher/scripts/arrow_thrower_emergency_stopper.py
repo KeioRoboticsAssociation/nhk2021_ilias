@@ -11,7 +11,7 @@ class ArrowThrowerEmergencyStop():
         self.emergency_flag_pub = rospy.Publisher('/arrow_thrower_emergency_stop', String, queue_size=1)
 
     def emergencycallback(self, msg):
-        self.emergency_flag_pub.publish("stop")
+        self.emergency_flag_pub.publish("s")
 
 if __name__ == '__main__':
     try:
