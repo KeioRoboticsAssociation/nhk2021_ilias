@@ -2,7 +2,7 @@
     <!-- sensors-->
     <!--IMU-->
     <node pkg="bno055_usb_stick" type="bno055_usb_stick_node" name="bno055" output="screen">
-      <param name="port" value = "/dev/ttyACM0"/>
+      <param name="port" value = "/dev/ttyACM6"/>
       <param name="publish_tf" value="false"/>
     </node>
 
@@ -10,14 +10,14 @@
     <!--RPlidar-->
     <!-- <include file="$(find rplidar_ros)/launch/rplidar_a3.launch" /> -->
     <!-- sick -->
-    <include file="$(find sick_scan)/launch/sick_tim_5xx.launch" />
+    <!-- <include file="$(find sick_scan)/launch/sick_tim_5xx.launch" /> -->
 
     <!-- inverted_laser -->
     <!-- git clone https://github.com/timkambic/invert_laser.git -->
     <!-- publish /scan_inv -->
-    <node pkg="invert_laser" type="invert_laser_node" name="invert_laser">
+    <!-- <node pkg="invert_laser" type="invert_laser_node" name="invert_laser">
       <param name="out_frame" value="laser"/>
-    </node>
+    </node> -->
 
 
 </launch>
