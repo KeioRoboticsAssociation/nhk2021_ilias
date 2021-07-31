@@ -22,9 +22,13 @@
 
 
     <!-- ################ rosbag setting ################ -->
-    <arg name="input_rosbag" default="/root/rosbag/210724_01.bag" />
+    <!-- <arg name="input_rosbag" default="/root/rosbag/210730.bag" />
     <arg name="play_speed" default="1.0" />
-    <arg name="start_time" default="10.0" />
+    <arg name="start_time" default="730.0" /> -->
+  
+    <arg name="input_rosbag" default="/root/rosbag/210730_1.bag" />
+    <arg name="play_speed" default="1.0" />
+    <arg name="start_time" default="0.0" />
 
     <param name="/use_sim_time" value="true" />
     <!--rosbag play-->
@@ -41,5 +45,10 @@
       <remap from = "/control_RB" to = "/fixed_control_RB" />
       <remap from = "/control_LB" to = "/fixed_control_LB" />
     </node> -->
+
+  <arg name="rvizconfig" default="$(find nhk2021_simulator)/config/localization.rviz" />
+
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig) -f map" required="true" />
+
 
 </launch>

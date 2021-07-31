@@ -1,34 +1,47 @@
 <launch>
+    <!--select mbed device (only when real) -->
+    <arg name="RF" default="true"/>
+    <arg name="LF" default="true"/>
+    <arg name="LB" default="true"/>
+    <arg name="RB" default="true"/>
 
-  <!--mbed serial-->
-  <!--wheel-->
-  <node pkg="serial_test" name="mbed_wheel_RB" type="serial_test_node" output="screen" respawn="true">
-    <!--param name = "port" value = "/dev/ttyACM1"/>-->
-    <param name = "looprate" value = "400"/>
-    <param name = "port" value = "/dev/serial/by-id/usb-STMicroelectronics_STM32_STLink_066CFF303032424257013528-if02"/>
-    <remap from = "/Serial_sub_float" to = "/control_RB" />
-    <remap from = "/Serial_pub_float" to = "/data_RB" />
-  </node>
+    <!--mbed serial-->
+    <!--wheel-->
+    <group if="$(eval RF)">
+      <node pkg="serial_test" name="mbed_RF" type="serial_test_node" output="screen" respawn="true">
+        <!--param name = "port" value = "/dev/ttyACM1"/>-->
+        <param name = "looprate" value = "400"/>
+        <param name = "port" value = "/dev/serial/by-id/usb-STMicroelectronics_STM32_STLink_066AFF495649657867072316-if02"/>
+        <remap from = "/Serial_sub_float" to = "/control_RF" />
+        <remap from = "/Serial_pub_float" to = "/data_RF" />
+      </node>
+    </group>
 
-  <node pkg="serial_test" name="mbed_wheel_RF" type="serial_test_node" output="screen" respawn="true">
-    <param name = "port" value = "/dev/serial/by-id/usb-STMicroelectronics_STM32_STLink_066AFF495649657867072316-if02"/>
-    <param name = "looprate" value = "400"/>
-    <remap from = "/Serial_sub_float" to = "/control_RF" />
-    <remap from = "/Serial_pub_float" to = "/data_RF" />
-  </node>
+    <group if="$(eval LF)">
+      <node pkg="serial_test" name="mbed_LF" type="serial_test_node" output="screen" respawn="true">
+        <param name = "port" value = "/dev/serial/by-id/usb-STMicroelectronics_STM32_STLink_066AFF303032424257011228-if02"/>
+        <param name = "looprate" value = "400"/>
+        <remap from = "/Serial_sub_float" to = "/control_LF" />
+        <remap from = "/Serial_pub_float" to = "/data_LF" />
+      </node>
+    </group>
 
- <node pkg="serial_test" name="mbed_wheel_LB" type="serial_test_node" output="screen" respawn="true">
-    <param name = "port" value = "/dev/serial/by-id/usb-STMicroelectronics_STM32_STLink_066DFF303032424257021629-if02"/>
-    <param name = "looprate" value = "400"/>
-    <remap from = "/Serial_sub_float" to = "/control_LB" />
-    <remap from = "/Serial_pub_float" to = "/data_LB" />
-  </node>
+    <group if="$(eval LB)">
+      <node pkg="serial_test" name="mbed_LB" type="serial_test_node" output="screen" respawn="true">
+        <param name = "port" value = "/dev/serial/by-id/usb-STMicroelectronics_STM32_STLink_066DFF303032424257021629-if02"/>
+        <param name = "looprate" value = "400"/>
+        <remap from = "/Serial_sub_float" to = "/control_LB" />
+        <remap from = "/Serial_pub_float" to = "/data_LB" />
+      </node>
+    </group>
 
- <node pkg="serial_test" name="mbed_wheel_LF" type="serial_test_node" output="screen" respawn="true">
-    <param name = "port" value = "/dev/serial/by-id/usb-STMicroelectronics_STM32_STLink_066AFF303032424257011228-if02"/>
-    <param name = "looprate" value = "400"/>
-    <remap from = "/Serial_sub_float" to = "/control_LF" />
-    <remap from = "/Serial_pub_float" to = "/data_LF" />
-  </node>
+    <group if="$(eval RB)">
+      <node pkg="serial_test" name="mbed_RB" type="serial_test_node" output="screen" respawn="true">
+        <param name = "port" value = "/dev/serial/by-id/usb-STMicroelectronics_STM32_STLink_066CFF303032424257013528-if02"/>
+        <param name = "looprate" value = "400"/>
+        <remap from = "/Serial_sub_float" to = "/control_RB" />
+        <remap from = "/Serial_pub_float" to = "/data_RB" />
+      </node>
+    </group>
 
 </launch>

@@ -40,7 +40,7 @@ private:
     //Configurations
     int loop_rate_;
     std::string base_frame_id_;
-    float thrower_position[5] = {0.3845, 0.1845, -0.0155, -0.2155, -0.4155};
+    float thrower_position[5] = {0.4155, 0.2155, 0.0155, -0.1845, -0.3845};
 
     //variables
     tf::TransformListener listener;

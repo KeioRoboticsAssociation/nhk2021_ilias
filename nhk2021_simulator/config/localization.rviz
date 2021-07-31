@@ -182,8 +182,6 @@ Visualization Manager:
           Value: true
         base_link:
           Value: false
-        bno055:
-          Value: true
         body:
           Value: true
         camera_bottom_screw_frame:
@@ -208,8 +206,6 @@ Visualization Manager:
           Value: true
         imu_link:
           Value: false
-        laser:
-          Value: true
         map:
           Value: true
         odom:
@@ -225,6 +221,8 @@ Visualization Manager:
         pot5:
           Value: true
         pot_table:
+          Value: true
+        pot_table_central:
           Value: true
         rplidar_link:
           Value: false
@@ -265,13 +263,9 @@ Visualization Manager:
             base_footprint:
               base_link:
                 {}
-              bno055:
-                {}
               body:
                 {}
               imu_link:
-                {}
-              laser:
                 {}
               pot_table:
                 thrower1:
@@ -284,6 +278,8 @@ Visualization Manager:
                   {}
                 thrower5:
                   {}
+              pot_table_central:
+                {}
               rplidar_link:
                 camera_bottom_screw_frame:
                   camera_link:
@@ -459,26 +455,21 @@ Visualization Manager:
   Value: true
   Views:
     Current:
-      Class: rviz/Orbit
-      Distance: 16.231929779052734
+      Angle: 0
+      Class: rviz/TopDownOrtho
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
-      Focal Point:
-        X: 4.785486698150635
-        Y: 5.686244964599609
-        Z: 0.8334326148033142
-      Focal Shape Fixed Size: true
-      Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 1.5697963237762451
+      Scale: 54.636436462402344
       Target Frame: <Fixed Frame>
-      Value: Orbit (rviz)
-      Yaw: 4.6885857582092285
+      Value: TopDownOrtho (rviz)
+      X: 5.695645809173584
+      Y: 5.635776996612549
     Saved:
       - Class: rviz/Orbit
         Distance: 15.980464935302734
@@ -516,5 +507,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1504
-  X: 72
-  Y: 27
+  X: 229
+  Y: 48

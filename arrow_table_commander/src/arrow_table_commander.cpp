@@ -32,13 +32,14 @@ Arrow_Table_Commander::Arrow_Table_Commander(ros::NodeHandle &nh, const int &loo
             pot_distance = 0.0;
             table_angle = 0.0;
         }
-        else if (pot_number == -1){
-            pot_distance = 0.0;
-            table_angle = M_PI;
-        }
         else{
             CalculateTableAngleAndDistance();
         }
+
+        std_msgs::Float32MultiArray msg;
+        msg.data.resize(1);
+        msg.data[0] = table_angle;
+        arrow_table_angle_pub.publish(msg);
         
         // std::cout << "table_angle " << table_angle * 180.0 / M_PI << std::endl;
         BroadcastThrowerTF();
@@ -56,16 +57,16 @@ geometry_msgs::Quaternion Arrow_Table_Commander::rpy_to_geometry_quat(double rol
 
 void Arrow_Table_Commander::joy_callback(const sensor_msgs::Joy::ConstPtr &joy_msg)
 {
-  std::cout << arrow_table_mode << std::endl;
-    std::cout << thrower_number << std::endl;
+  std::cout << "arrow_table_mode " <<  arrow_table_mode << std::endl;
+    std::cout << "thrower_number " << thrower_number << std::endl;
   if (joy_msg->buttons[JOY_PLUS_POT_NUMBER]){
       if(pot_number == 5){
-          pot_number = -1;
+          pot_number = 0;
       }
       else pot_number++;
   }
   else if (joy_msg->buttons[JOY_MINUS_POT_NUMBER]){
-      if (pot_number == -1){
+      if (pot_number == 0){
           pot_number = 5;
       }
       else pot_number--;
@@ -147,7 +148,7 @@ void Arrow_Table_Commander::BroadcastThrowerTF()
     pot_table_trans.header.frame_id = base_frame_id_;
     pot_table_trans.child_frame_id = "pot_table";
 
-    pot_table_trans.transform.translation.x = 0.1315;
+    pot_table_trans.transform.translation.x = -0.1315;
     pot_table_trans.transform.translation.y = 0.0;
     pot_table_trans.transform.translation.z = 0.2;
     pot_table_trans.transform.rotation = rpy_to_geometry_quat(0.0, 0.0, table_angle);
@@ -162,7 +163,7 @@ void Arrow_Table_Commander::BroadcastThrowerTF()
         thrower_trans.header.frame_id = "pot_table";
         thrower_trans.child_frame_id = "thrower" + std::to_string(i+1);
 
-        thrower_trans.transform.translation.x = 0.35325;
+        thrower_trans.transform.translation.x = -0.35325;
         thrower_trans.transform.translation.y = -thrower_position[i];
         thrower_trans.transform.translation.z = 0.0;
         thrower_trans.transform.rotation = rpy_to_geometry_quat(0.0, 0.0, 0.0);
@@ -175,7 +176,7 @@ void Arrow_Table_Commander::CalculateTableAngleAndDistance()
     tf::StampedTransform transform;
     try
     {
-        listener.lookupTransform("/" + base_frame_id_, "/pot" + std::to_string(pot_number), ros::Time(0), transform);
+        listener.lookupTransform("/pot_table_central", "/pot" + std::to_string(pot_number), ros::Time(0), transform);
     }
     catch (tf::TransformException ex)
     {
@@ -183,18 +184,23 @@ void Arrow_Table_Commander::CalculateTableAngleAndDistance()
         ros::Duration(1.0).sleep();
     }
 
-    pot_distance = sqrt(transform.getOrigin().x()*transform.getOrigin().x() + transform.getOrigin().y()*transform.getOrigin().y());
-    table_angle = M_PI - atan2(transform.getOrigin().x(),transform.getOrigin().y()) - acos(thrower_position[thrower_number-1] / pot_distance);
+    float pot_distance_from_table = sqrt(transform.getOrigin().x()*transform.getOrigin().x() + transform.getOrigin().y()*transform.getOrigin().y());
+    table_angle = M_PI / 2 + atan2(transform.getOrigin().y(),transform.getOrigin().x()) + acos(thrower_position[thrower_number-1] / pot_distance_from_table);
+
+    pot_distance = sqrt(pot_distance_from_table * pot_distance_from_table - thrower_position[thrower_number-1] * thrower_position[thrower_number-1]);
 
     // std::cout << "x " << transform.getOrigin().x() << std::endl;
     // std::cout << "y " << transform.getOrigin().y() << std::endl;
-    // std::cout << "atan2 " << M_PI - atan2(transform.getOrigin().x(),transform.getOrigin().y()) * 180.0 / M_PI << std::endl;
-    // std::cout << "acos " << acos(thrower_position[thrower_number-1] / pot_distance) * 180.0 / M_PI << std::endl;
+    // std::cout << "atan2 " << atan2(transform.getOrigin().x(),transform.getOrigin().y()) * 180.0 / M_PI << std::endl;
+    // std::cout << "acos " << acos(thrower_position[thrower_number-1] / pot_distance_from_table) * 180.0 / M_PI << std::endl;
 
-    std_msgs::Float32MultiArray msg;
-    msg.data.resize(1);
-    msg.data[0] = table_angle;
-    arrow_table_angle_pub.publish(msg);
+    if (table_angle < 0){
+        table_angle += 2 * M_PI;
+    }
+    if (table_angle > 4.9){
+        table_angle = 4.9;
+    }
+
 }
 
 int main(int argc, char **argv)
