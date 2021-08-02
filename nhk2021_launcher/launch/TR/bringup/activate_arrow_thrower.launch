@@ -48,6 +48,7 @@
       <remap from = "/Serial_sub_string" to = "/arrow_thrower_emergency_stop" />
       <remap from = "/Serial_sub_int" to = "/thrower_flag" />
       <remap from = "/Serial_pub_float" to = "/thrower5_status" />
+      <remap from = "/Serial_pub_int" to = "/thrower5_int" />
     </node>
 
 
