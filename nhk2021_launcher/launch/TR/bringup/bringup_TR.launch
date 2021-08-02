@@ -5,6 +5,7 @@
   <!--path_planning_node-->
   <arg name="control_frequency" default="50" />
   <arg name="base_frame_id" default="base_footprint" />
+  <arg name="RB_recovery_mode"/>
 
   <group if="$(eval mode=='simulation')">
     <!-- controller -->
@@ -41,7 +42,9 @@
     <!-- sensors and mbed devices -->
     <include file="$(find nhk2021_launcher)/launch/TR/bringup/sensor_activate_TR.launch"/>
 
-    <include file="$(find nhk2021_launcher)/launch/TR/bringup/activate_wheel_TR.launch"/>
+    <include file="$(find nhk2021_launcher)/launch/TR/bringup/activate_wheel_TR.launch">
+      <arg name="RB_recovery_mode" value="$(arg RB_recovery_mode)" />
+    </include>
 
     <include file="$(find nhk2021_launcher)/launch/TR/bringup/activate_arrow_thrower.launch"/>
 
@@ -63,6 +66,7 @@
       <param name="body_width" value="0.440"/>
       <param name="initial_table_angle" value="90"/>
       <param name="gazebo_mode" value="false"/>
+      <param name="RB_recovery_mode" value="$(arg RB_recovery_mode)" />
     </node>
   </group>
 

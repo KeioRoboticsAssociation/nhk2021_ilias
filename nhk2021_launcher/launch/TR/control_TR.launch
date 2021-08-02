@@ -4,6 +4,7 @@
   
   <arg name="control_frequency" default="50" />
   <arg name="base_frame_id" default="base_footprint" />
+  <arg name="RB_recovery_mode" default="true" />
 
   <!-- important config of bezier_path_planning_pursuit -->
   <arg name="acc_lim_xy" default="2.0" />
@@ -31,6 +32,7 @@
     <arg name="mode" value="$(arg mode)" />
     <arg name="control_frequency" value="$(arg control_frequency)" />
     <arg name="base_frame_id" value="$(arg base_frame_id)" />
+    <arg name="RB_recovery_mode" value="$(arg RB_recovery_mode)" />
   </include>
 
   <!-- bezier_path_planning_and_pursuit-->
