@@ -15,6 +15,7 @@
       <remap from = "/Serial_sub_float" to = "/thrower1_power" />
       <remap from = "/Serial_sub_string" to = "/arrow_thrower_emergency_stop" />
       <remap from = "/Serial_sub_int" to = "/thrower_flag" />
+      <remap from = "/Serial_pub_float" to = "/thrower1_status" />
     </node>
     <node pkg="serial_test" name="mbed_thrower2" type="serial_test_node" output="screen" respawn="true">
       <param name = "port" value = "/dev/serial/by-id/usb-STMicroelectronics_STM32_STLink_066FFF515055657867244552-if02"/>
@@ -22,6 +23,7 @@
       <remap from = "/Serial_sub_float" to = "/thrower2_power" />
       <remap from = "/Serial_sub_string" to = "/arrow_thrower_emergency_stop" />
       <remap from = "/Serial_sub_int" to = "/thrower_flag" />
+      <remap from = "/Serial_pub_float" to = "/thrower2_status" />
     </node>
     <node pkg="serial_test" name="mbed_thrower3" type="serial_test_node" output="screen" respawn="true">
       <param name = "port" value = "/dev/serial/by-id/usb-STMicroelectronics_STM32_STLink_0670FF303032424257022727-if02"/>
@@ -29,6 +31,7 @@
       <remap from = "/Serial_sub_float" to = "/thrower3_power" />
       <remap from = "/Serial_sub_string" to = "/arrow_thrower_emergency_stop" />
       <remap from = "/Serial_sub_int" to = "/thrower_flag" />
+      <remap from = "/Serial_pub_float" to = "/thrower3_status" />
     </node>
     <node pkg="serial_test" name="mbed_thrower4" type="serial_test_node" output="screen" respawn="true">
       <param name = "port" value = "/dev/serial/by-id/usb-STMicroelectronics_STM32_STLink_066DFF303032424257021639-if02"/>
@@ -36,6 +39,7 @@
       <remap from = "/Serial_sub_float" to = "/thrower4_power" />
       <remap from = "/Serial_sub_string" to = "/arrow_thrower_emergency_stop" />
       <remap from = "/Serial_sub_int" to = "/thrower_flag" />
+      <remap from = "/Serial_pub_float" to = "/thrower4_status" />
     </node>
     <node pkg="serial_test" name="mbed_thrower5" type="serial_test_node" output="screen" respawn="true">
       <param name = "port" value = "/dev/serial/by-id/usb-STMicroelectronics_STM32_STLink_066EFF393935424257101328-if02"/>
@@ -43,6 +47,7 @@
       <remap from = "/Serial_sub_float" to = "/thrower5_power" />
       <remap from = "/Serial_sub_string" to = "/arrow_thrower_emergency_stop" />
       <remap from = "/Serial_sub_int" to = "/thrower_flag" />
+      <remap from = "/Serial_pub_float" to = "/thrower5_status" />
     </node>
 
 
