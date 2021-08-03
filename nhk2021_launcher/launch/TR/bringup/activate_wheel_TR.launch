@@ -51,7 +51,7 @@
       <group if="$(eval RB)">
       <!-- wheel -->
         <node pkg="serial_test" name="mbed_RB_wheel" type="serial_test_node" output="screen" respawn="true">
-          <param name = "port" value = "/dev/serial/by-id/usb-STMicroelectronics_STM32_STLink_0672FF495649657867253138-if02"/>
+          <param name = "port" value = "/dev/serial/by-id/usb-STMicroelectronics_STM32_STLink_066FFF515055657867203313-if02"/>
           <param name = "looprate" value = "400"/>
           <remap from = "/Serial_sub_float" to = "/control_RB" />
           <remap from = "/Serial_pub_float" to = "/data_RB_wheel" />
