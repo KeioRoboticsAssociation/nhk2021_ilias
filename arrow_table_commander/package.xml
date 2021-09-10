@@ -61,7 +61,6 @@
   <exec_depend>rospy</exec_depend>
   <exec_depend>std_msgs</exec_depend>
   <exec_depend>tf</exec_depend>
-  <build_depend>arrow_table_commander_msgs</build_depend>
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>

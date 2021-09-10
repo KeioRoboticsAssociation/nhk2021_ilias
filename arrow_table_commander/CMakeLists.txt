@@ -12,7 +12,6 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   std_msgs
   tf
-  arrow_table_commander_msgs
 )
 
 catkin_package(
