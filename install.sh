@@ -19,6 +19,7 @@ done
 
 ## Resolve dependencies (from apt repository)
 echo "2/4 Resolve dependencies (from apt repository)"
+rosdep update
 rosdep install -i --from-paths -y ../roswww
 dirs=`find $dir_path -maxdepth 1 -type d`
 
@@ -31,6 +32,7 @@ done
 sudo apt-get install -y ros-melodic-realsense2-description
 sudo apt-get install -y ros-melodic-robot-localization
 sudo apt-get install -y ros-melodic-navigation
+sudo apt-get install -y ros-melodic-rplidar-ros
 
 ## Give permission to python scripts
 echo "3/4 Give permissions to python scripts"
@@ -44,6 +46,8 @@ done
 
 ## Give permission to action msg
 chmod +x ./bezier_path_planning_pursuit/action/PursuitPath.action
+
+## install pyrealsense2
 sudo apt install python-pip
 pip install pyrealsense2
 

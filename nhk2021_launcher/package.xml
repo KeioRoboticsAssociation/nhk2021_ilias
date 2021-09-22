@@ -16,6 +16,7 @@
   <exec_depend>laser_filters</exec_depend>
   <exec_depend>joy</exec_depend>
   <exec_depend>joystick_drivers</exec_depend>
+  <exec_depend>rplidar_ros</exec_depend>
   
   <exec_depend>bno055_usb_stick</exec_depend>
   <exec_depend>wheelctrl</exec_depend>

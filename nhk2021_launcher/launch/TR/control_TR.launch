@@ -8,7 +8,7 @@
 
   <!-- important config of bezier_path_planning_pursuit -->
   <arg name="acc_lim_xy" default="2.0" />
-  <arg name="max_vel_xy" default="2.0" /><!--3.0-->
+  <arg name="max_vel_xy" default="1.0" /><!--3.0-->
   <arg name="acc_lim_theta" default="3.2" />
   <arg name="max_vel_theta" default="1.57" /><!--3.14-->
   <arg name="initial_vel" default="0.2" />
