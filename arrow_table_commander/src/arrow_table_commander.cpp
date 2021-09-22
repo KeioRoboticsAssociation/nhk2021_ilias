@@ -185,9 +185,9 @@ void Arrow_Table_Commander::CalculateTableAngleAndDistance()
     }
 
     float pot_distance_from_table = sqrt(transform.getOrigin().x()*transform.getOrigin().x() + transform.getOrigin().y()*transform.getOrigin().y());
-    table_angle = M_PI / 2 + atan2(transform.getOrigin().y(),transform.getOrigin().x()) + acos(thrower_position[thrower_number-1] / pot_distance_from_table);
+    table_angle = M_PI / 2 + atan2(transform.getOrigin().x(),-transform.getOrigin().y()) - asin(thrower_position[thrower_number-1] / pot_distance_from_table);
 
-    pot_distance = sqrt(pot_distance_from_table * pot_distance_from_table - thrower_position[thrower_number-1] * thrower_position[thrower_number-1]);
+    pot_distance = sqrt(pot_distance_from_table * pot_distance_from_table - thrower_position[thrower_number-1] * thrower_position[thrower_number-1]) - 0.1315;
 
     // std::cout << "x " << transform.getOrigin().x() << std::endl;
     // std::cout << "y " << transform.getOrigin().y() << std::endl;
