@@ -7,16 +7,6 @@
 **NHK Robocon 2021** project  team "**ilias**" (KeioRoboticsAssociation:robot:)
 
 
-
-## Git管理上の注意
-
-1. ”機能ごとに”ブランチを切ってください。名前は基本的には「featrue/機能名」としましょう
-1. mainブランチには基本的には触らないようにしましょう。(管理者がmainにマージします)
-2. mainにマージする時はPull Requestを作成してください。マージできるか確認したら管理人がマージします。
-3. 他に管理上気になったことがあったら追記してください。
-
-
-
 ## Install
 
 Clone this repository and just run `install.sh`
@@ -33,6 +23,9 @@ source install.sh
 
 
 ## 各パッケージについて
+- [arrow_table_commander](https://github.com/KeioRoboticsAssociation/nhk2021_ilias/blob/main/arrow_table_commander/README.md)
+
+  射出台の回転テーブル角決定を担当するパッケージ
 
 - [bezier_path_planning_pursuit](https://github.com/KeioRoboticsAssociation/nhk2021_ilias/blob/main/bezier_path_planning_pursuit/README.md)
 
@@ -54,6 +47,9 @@ source install.sh
 
   WebGUIを起動するためのファイルが入っているパッケージ
 
+- [pot_position_estimator](https://github.com/KeioRoboticsAssociation/nhk2021_ilias/blob/main/pot_position_estimator/README.md)
+
+  RGBDカメラ (Realsense D455) を用いてポットの位置を推定するパッケージ
 
 
 ## シミュレーターの簡単な遊び方
@@ -86,26 +82,12 @@ source install.sh
   roslaunch nhk2021_launcher control_DR.launch
   ```
 
-3. 手動コントロールの場合
+  キーコンフィグ
 
-   ```shell
-   rosrun teleop_twist_keyboard teleop_twist_keyboard.py
-   ```
+  <img src="key_config.png" width="100%"/>
 
-   ↑こちらのインストールは
-
-   ```shell
-   sudo apt install ros-melodic-teleop-twist-keyboard
-   ```
-
-4. 自動コントロールの場合
-
-   ```shell
-   rosrun actionlib axclient.py /bezier_path_planning_pursuit
-   ```
-
-5. WebGUIのリンクは[こちら](http://localhost:8085/nhk2021_webgui/WebGUI.html)
-
+  
+3. WebGUIのリンクは[こちら](http://localhost:8085/nhk2021_webgui/WebGUI.html)
 
 
 ## Lisence
