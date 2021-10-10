@@ -1,18 +1,18 @@
 <launch>
   <!--simulation or real-->
-  <arg name="mode" default="real"/>
+  <arg name="mode" default="simulation"/>
   
   <arg name="control_frequency" default="50" />
   <arg name="base_frame_id" default="base_footprint" />
 
   <!-- important config of bezier_path_planning_pursuit -->
   <arg name="acc_lim_xy" default="2.0" />
-  <arg name="max_vel_xy" default="2.0" /><!--3.0-->
+  <arg name="max_vel_xy" default="3.0" /><!--3.0-->
   <arg name="acc_lim_theta" default="3.2" />
-  <arg name="max_vel_theta" default="1.57" /><!--3.14-->
+  <arg name="max_vel_theta" default="3.14" /><!--3.14-->
   <arg name="initial_vel" default="0.2" />
-  <arg name="xy_goal_tolerance" default="0.1" />
-  <arg name="yaw_goal_tolerance" default="0.1" />
+  <arg name="xy_goal_tolerance" default="0.05" />
+  <arg name="yaw_goal_tolerance" default="0.05" />
 
   <!-- laser filter config -->
   <arg name="use_laser_filter" default="false"/>
