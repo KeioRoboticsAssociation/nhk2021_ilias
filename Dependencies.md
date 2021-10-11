@@ -18,7 +18,7 @@ by **git clone**
 
 ```shell
 cd ~/catkin_ws/src
-git clone https://github.com/KeioRoboticsAssociation/wheelctrl.git
+git clone https://github.com/KeioRoboticsAssociation/wheelctrl_ros.git
 git clone https://github.com/anhquanvgu/bno055_usb_stick.git
 git clone https://github.com/yoshito-n-students/bno055_usb_stick_msgs.git
 git clone https://github.com/moden3/serial_test.git

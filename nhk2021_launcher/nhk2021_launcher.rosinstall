@@ -7,8 +7,8 @@
     uri: https://github.com/yoshito-n-students/bno055_usb_stick_msgs.git
     version: master
 - git:
-    local-name: wheelctrl
-    uri: https://github.com/KeioRoboticsAssociation/wheelctrl.git
+    local-name: wheelctrl_ros
+    uri: https://github.com/KeioRoboticsAssociation/wheelctrl_ros.git
     version: main
 - git:
     local-name: serial_test
